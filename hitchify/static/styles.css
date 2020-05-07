@@ -1,0 +1,461 @@
+body {
+    user-select: none;
+    background: #2f3437;
+    line-height: 1.2;
+    color: white;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+a {
+    text-decoration: none;
+}
+
+/*Container styles*/
+
+.container {
+    width: 100vw;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex: 1 1 0;
+}
+
+/*Frame styles*/
+
+.frame {
+    flex-grow: 1;
+    flex-shrink: 1;
+    display: flex;
+    flex-direction: column;
+    background: rgb(47, 52, 55);
+    height: 100vh;
+    max-height: 100%;
+    overflow: auto;
+}
+
+/*Sidebar styles*/
+
+.sidebar {
+    height: 100vh;
+    width: 220px;
+    background: rgb(55, 60, 63);
+    user-select: none;
+    position: relative;
+    flex-grow: 0;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+}
+
+.sidebar-member {
+    display: flex;
+    transition: background 120ms ease-in 0s;
+    padding: 2px 14px;
+    min-height: 27px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+    align-items: center;
+}
+
+.sidebar-member:hover, .chosen {
+    background-color: rgb(71, 76, 80);
+}
+
+.sidebar-member-label {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.sidebar-member-icon {
+    margin-right: 5px;
+    background-color: inherit;
+    font-size: 14px;
+}
+
+.workspace-label {
+    display: flex;
+    height: 45px;
+    vertical-align: middle;
+    align-items: center;
+    color: white;
+    cursor: default;
+}
+
+.sidebar-user-label {
+    height: 45px;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    cursor: default;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.login-container {
+    margin-top: 50px;
+    width: 200px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    padding-top: 10px;
+}
+
+.centred-button {
+    display: flex;
+    margin-top: 5px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.login-container > form > div > input {
+    margin-bottom: 10px;
+}
+
+.sidebar-user-label > .sidebar-member {
+    cursor: default;
+}
+
+.sidebar-user-label > .sidebar-member:hover {
+    background: none;
+}
+.workspace-label:hover {
+    background: none;
+}
+
+/*Pool grid styles*/
+
+.sub-container {
+    margin-top: 50px;
+    margin-left: 60px;
+    max-width: 900px;
+}
+
+.top-toolbar {
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    border-top: 1px solid rgb(71, 76, 80);
+}
+
+.bottom-toolbar {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    border-bottom: 1px solid rgb(71, 76, 80);
+}
+
+.sub-container-title {
+    font-size: 40px;
+    font-weight: 700;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-style: hidden;
+    border-bottom: 1px solid rgb(71, 76, 80);
+    border-top: 1px solid rgb(71, 76, 80);
+    font-size: 14px;
+    text-align: left;
+}
+
+th {
+    font-weight: 400;
+    min-width: 100px;
+}
+
+td {
+    font-weight: 500;
+}
+
+table td, table th {
+    padding: 5px 8px 6px;
+    border: 1px solid rgb(71, 76, 80);
+}
+
+.button-style {
+    user-select: none;
+    transition: background 120ms ease-in 0s;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    white-space: nowrap;
+    height: 26px;
+    border-radius: 3px;
+    box-shadow: rgba(15, 15, 15, 0.2) 0 0 0 1px inset, rgba(15, 15, 15, 0.1) 0 1px 2px;
+    background: rgb(46, 170, 220);
+    color: white;
+    fill: white;
+    line-height: 1.2;
+    padding-left: 12px;
+    padding-right: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    outline: none;
+}
+
+.button-style:hover {
+    background: rgb(6, 156, 205);
+}
+
+.grid-button {
+    background: #2F3437;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.grid-button:hover {
+    background: rgb(71, 76, 80);
+}
+
+.disabled-button {
+    cursor: default;
+    color: white;
+    background: rgba(89, 65, 65, 0.3);
+}
+
+.disabled-button:hover {
+    background: rgba(89, 65, 65, 0.3);
+}
+
+input {
+    align-items: center;
+    font-size: 14px;
+    line-height: 20px;
+    padding: 4px 10px;
+    position: relative;
+    border-radius: 3px;
+    box-shadow: rgba(15, 15, 15, 0.2) 0 0 0 1px inset, rgba(15, 15, 15, 0.2) 0 1px 1px inset;
+    background: rgba(15, 15, 15, 0.3) none repeat scroll 0 0;
+    cursor: text;
+    border: none;
+    color: white;
+}
+
+.radiobutton{
+    cursor: pointer;
+}
+
+textarea:focus,
+input:focus {
+    outline: none;
+}
+
+select {
+    cursor: pointer;
+    background: #2F3437;
+    box-shadow: rgba(15, 15, 15, 0.2) 0 0 0 1px inset, rgba(15, 15, 15, 0.2) 0 1px 1px inset;
+    padding: 5.5px;
+    color: white;
+    border: none;
+    margin: 0;
+    border-radius: 3px;
+    outline: none;
+    font-weight: 500;
+}
+
+select:hover {
+    transition: background 120ms ease-in 0s;
+    background: rgb(71, 76, 80);
+}
+
+.properties-holder {
+    border-top: 1px solid rgb(71, 76, 80);
+    border-bottom: 1px solid rgb(71, 76, 80);
+    padding: 10px 0;
+    max-width: 700px;
+    margin-top: 50px;
+}
+
+.ticket-content-holder {
+    margin-top: 20px;
+    max-width: 700px;
+    font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", SimSun, "Nanum Myeongjo", NanumMyeongjo, Batang, serif;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgb(71, 76, 80);
+    font-size: 18px;
+}
+
+.highlight {
+    background: rgba(255, 220, 73, 0.5);
+    color: #2f3437;
+    font-weight: 600;
+    border: none;
+    display: inline-block;
+    min-width: 10px;
+    min-height: 10px;
+    outline: none;
+}
+
+.property {
+    width: 100%;
+    height: 35px;
+    display: flex;
+    align-items: center;
+}
+
+.property-name {
+    width: 35%;
+    display: flex;
+    margin-right: 10%;
+    font-size: 14px;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+    height: 24px;
+    padding: 5px 0;
+}
+
+.property-icon {
+    /*color: white;*/
+    margin-right: 10px;
+}
+
+.property-value {
+    vertical-align: center;
+    width: 65%;
+    display: flex;
+    padding: 5px 8px 5px;
+    border-radius: 3px;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 500;
+    height: 24px;
+}
+
+.text-property {
+    cursor: pointer;
+}
+
+.select-property {
+    padding: 5px 0;
+}
+
+.text-property:hover {
+    background: rgb(71, 76, 80);
+    transition: background 120ms ease-in 0s;
+}
+
+.text-property:focus {
+    cursor: auto;
+    background: rgb(63, 68, 71);
+    transition: background 120ms ease-in 0s;
+    box-shadow: rgba(15, 15, 15, 0.1) 0 0 0 1px, rgba(15, 15, 15, 0.2) 0 3px 6px, rgba(15, 15, 15, 0.4) 0 9px 24px;
+}
+
+.comments-holder {
+    margin-top: 40px;
+    width: 700px;
+}
+
+.comment {
+    border-bottom: 1px solid rgb(71, 76, 80);
+    padding: 10px 0;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.predefined-comment {
+    border-bottom: none;
+}
+
+.comment-timestamp, .comment-author {
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.comment-content {
+    border-top: 1px solid rgb(71, 76, 80);
+    padding-top: 10px;
+    margin-top: 10px;
+}
+
+.new-comment-textarea {
+    width: 100%;
+    height: 100px;
+    background: #2f3437;
+    color: white;
+    max-width: 100%;
+    min-width: 100%;
+    border: none;
+    box-shadow: rgba(15, 15, 15, 0.2) 0 0 0 1px inset, rgba(15, 15, 15, 0.2) 0 2px 2px inset;
+    border-radius: 3px;
+    padding: 10px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.text-property {
+    outline: none;
+    border: none;
+}
+/* Style the tab */
+.tab {
+    overflow: hidden;
+    border-bottom: 1px solid rgb(71, 76, 80);
+    background-color: inherit;
+    margin-top: 50px;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+    color: rgba(255, 255, 255, 0.6);
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+.tablinks {
+    width: 33.3%;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: rgb(71, 76, 80);
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    border-bottom: 2px solid deepskyblue;
+    background-color: rgb(71, 76, 80);
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+}
+
+ul>li>a{
+    color: rgba(255, 255, 255, 0.6);
+}
+ul>li>a:hover{
+    background-color: rgb(71, 76, 80);
+}
+ul>li {
+    padding-bottom: 5px;
+}
+
+.sub-container a {
+    color: rgba(255, 255, 255, 0.6);
+}
+.sub-container a:hover{
+    background-color: rgb(71, 76, 80);
+}
+
+.form-text
+{
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0 0 5px;
+}

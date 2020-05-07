@@ -1,37 +1,38 @@
 {% extends "base_generic.html" %}
 
-{% block content %}
+{% block title %} <title>Authorization</title> {% endblock %}
 
-  {% if form.errors %}
-    <p>Your username and password didn't match. Please try again.</p>
-  {% endif %}
-  
-  {% if next %}
-    {% if user.is_authenticated %}
-      <p>Your account doesn't have access to this page. To proceed,
-      please login with an account that has access.</p>
-    {% else %}
-      <p>Please login to see this page.</p>
-    {% endif %}
-  {% endif %}
-  
-  <form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <table>
-      <tr>
-        <td>{{ form.username.label_tag }}</td>
-        <td>{{ form.username }}</td>
-      </tr>
-      <tr>
-        <td>{{ form.password.label_tag }}</td>
-        <td>{{ form.password }}</td>
-      </tr>
-    </table>
-    <input type="submit" value="login" />
-    <input type="hidden" name="next" value="{{ next }}" />
-  </form>
-  
-  {# Assumes you setup the password_reset view in your URLconf #}
-  <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
-  
+{% block mainframe %}
+    <div class="sub-container">
+        {% if user.is_authenticated %}
+            <div class="sub-container-title"><span class="login-icon">🔓</span> Hi, <span class="username">{{ user.get_username }}</span></div>
+        {% else %}
+            <div class="sub-container-title"><span class="login-icon">🔐</span> Hi, <span class="username">Stranger</span></div>
+        {% endif %}
+
+
+        <div class="login-container">
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="button-style">Log out</button>
+            </form>
+        {% else %}
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div>
+                    <div>{{ form.username.label_tag }}</div>
+                    <div>{{ form.username }}</div>
+                </div>
+                <div>
+                    <div>{{ form.password.label_tag }}</div>
+                    <div>{{ form.password }}</div>
+                </div>
+                <button type="submit" class="button-style">Log in</button>
+            </form>
+        {% endif %}
+        </div>
+
+    </div>
+
 {% endblock %}
