@@ -1,0 +1,56 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="sub-container">
+    <div class="sub-container-title">📌 Hitchspots</div>
+
+    <div class="top-toolbar">
+        <form id="filter">
+            <input name="query" placeholder="Query">
+            <select name="select">
+                <option selected >Country</option>
+                <option >Date</option>
+                <option >Hitchability</option>
+            </select>
+            <button type="submit" class="button-style">Filter</button>
+        </form>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>🌐 Country</th>
+            <th>🧭Coordinates</th>
+            <th>🔍 Description</th>
+            <th>👍 Hitchability</th>
+            <th>🕑 Waiting time</th>
+            <th>📆 Created</th>
+            <th>📆 Updated</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="hitchspots-grid">
+            {% for hs in hitchspot %}
+            <tr>
+                <td>{{hs.country_id}}</td>
+                <td>{{hs.latitude}};
+                    {{hs.longitude}}</td>
+                <td>{{hs.description}}</td>
+                <td>{{hs.average_hitchability}}</td>
+                <td>{{hs.average_waiting_time}} min</td>
+                <td>{{hs.creation_date}}</td>
+                <td>{{hs.last_update}}}</td>
+                <td>
+                    <button class="grid-button">Open</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="bottom-toolbar" >
+        <button id="add-hitchspot" class="button-style">Add</button>
+    </div>
+</div>
+{% endblock %}
+

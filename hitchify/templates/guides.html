@@ -1,0 +1,33 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="sub-container">
+    <div class="sub-container-title">📝 Guides</div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>🔖 Title</th>
+            <th>📃 Short summary</th>
+            <th>📆 Created</th>
+            <th>📆 Updated</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="guides-grid">
+        {% for g in guides %}
+        <tr>
+            <th>{{g.title}}</th>
+            <th>{{g.short_summary}}</th>
+            <th>{{g.creation_date}}</th>
+            <th>{{g.last_update}}</th>
+            <td>
+                <a href="{% url 'guide' %}"><button class="grid-button">Open</button></a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

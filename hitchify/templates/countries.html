@@ -1,0 +1,16 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+        <div class="sub-container">
+            <div class="sub-container-title">🌐 Countries</div>
+
+            <ul>
+				{% for c in country %}
+                <li>
+                    <a href="{% url 'country' c.country_id %}">{{ c.country_name }}</a>
+                </li>
+				{% endfor %}
+            </ul>
+
+        </div>
+{% endblock %}

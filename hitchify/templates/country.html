@@ -1,0 +1,132 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+        <div class="sub-container">
+            <div class="sub-container-title">
+                <span class="countryname">{{ country.country_name }}</span>
+            </div>
+
+            <div class="tab">
+                <button class="tablinks active" onclick="openTab(event,'country-hitchspots')">Hitchspots</button>
+                <button class="tablinks" onclick="openTab(event, 'country-posts')">Posts</button>
+                <button class="tablinks" onclick="openTab(event, 'guides')">Guides</button>
+            </div>
+
+            <div id="country-hitchspots" class="tabcontent">
+                <div class="top-toolbar">
+                    <form id="filter-hitchspot">
+                        <input name="query" placeholder="Query">
+                        <select name="select">
+                            <option >Date</option>
+                            <option selected  >Hitchability</option>
+                            <option >Waiting time</option>
+                        </select>
+                        <button type="submit" class="button-style">Filter</button>
+                    </form>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>🧭Coordinates</th>
+                        <th>🔍 Description</th>
+                        <th>👍 Hitchability</th>
+                        <th>🕑 Waiting time</th>
+                        <th>📆 Created</th>
+                        <th>📆 Updated</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody id="hitchspots-grid">
+                    <tr>
+                        <td>39.405452905285834,
+                            -7,44445851445174</td>
+                        <td>good place to stop for cars.</td>
+                        <td>4</td>
+                        <td>10 min</td>
+                        <td>19.05.2020 </td>
+                        <td>20.05.2020</td>
+
+                        <td>
+                            <button class="grid-button">Open</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="bottom-toolbar" >
+                    <button id="add-hitchspot" class="button-style">Add</button>
+                </div>
+            </div>
+
+            <div id="country-posts" class="tabcontent">
+                <div class="top-toolbar">
+                    <form id="filter-posts">
+                        <input name="query" placeholder="Query">
+                        <select name="select">
+                            <option selected >Title</option>
+                            <option >Author</option>
+                        </select>
+                        <button type="submit" class="button-style">Filter</button>
+                    </form>
+                </div>
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>🔖 Title</th>
+                        <th>👤 Author</th>
+                        <th>📆 Created</th>
+                        <th>📆 Updated</th>
+                        <th>❤ Likes</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody id="posts-grid">
+                    <tr>
+                        <td>Trip Porto</td>
+                        <td>Linda Kirk</td>
+                        <td>27.04.2020 00:00:00</td>
+                        <td>29.04.2020 00:00:00</td>
+                        <td>22</td>
+                        <td><button class="grid-button">Open</button></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="bottom-toolbar" >
+                    <button id="add-post" class="button-style">Add</button>
+                </div>
+
+            </div>
+
+            <div id="guides" class="tabcontent">
+                <p>guides</p>
+            </div>
+        </div>
+		
+		<script>
+			function openTab(evt, tabName) {
+				let i, tabcontent, tablinks;
+				tabcontent = document.getElementsByClassName("tabcontent");
+				for (i = 0; i < tabcontent.length; i++) {
+					tabcontent[i].style.display = "none";
+				}
+				tablinks = document.getElementsByClassName("tablinks");
+				
+				let ii = 0;
+				if (evt == 1) {
+					ii = 1;
+				}
+				
+				for (i = ii; i < tablinks.length; i++) {
+					
+					tablinks[i].className = tablinks[i].className.replace(" active", "");
+				}
+				document.getElementById(tabName).style.display = "block";
+				if (evt != 1) evt.currentTarget.className += " active";
+			}
+			openTab(1,'country-hitchspots');
+		</script>
+
+{% endblock %}
+

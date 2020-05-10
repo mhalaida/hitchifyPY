@@ -1,0 +1,54 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<div class="sub-container">
+    <div class="sub-container-title">💬 Forum</div>
+
+    <div class="top-toolbar">
+        <form id="filter">
+            <input name="query" placeholder="Query">
+            <select name="select">
+                <option selected >Title</option>
+                <option >Country</option>
+                <option >Author</option>
+            </select>
+            <button type="submit" class="button-style">Filter</button>
+        </form>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>🔖 Title</th>
+            <th>🌐 Country</th>
+            <th>👤 Author</th>
+            <th>📆 Created</th>
+            <th>📆 Updated</th>
+            <th>❤ Likes</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="posts-grid">
+        {% for post in forum %}
+        <tr>
+            <td>{{post.title}}</td>
+            <td>{{post.country_id}}</td>
+            <td>{{post.user_id}}</td>
+            <td>{{post.creation_date}}</td>
+            <td>{{posts.last_update}}</td>
+			<td>{{posts.likes}}</td>
+            <td>
+                <a href="{% url 'post' %}"><button class="grid-button">Open</button></a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="bottom-toolbar" >
+        <button id="add-post" class="button-style">Add</button>
+    </div>
+</div>
+
+{% endblock %}

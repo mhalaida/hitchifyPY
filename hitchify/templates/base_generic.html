@@ -12,32 +12,32 @@
       {% block sidebar %}
       <div class="sidebar">
           <div class="sidebar-member workspace-label" >
-            <img src="../static/logo.png" width="30px" /><span style="margin-left: 5px; margin-top: 4px; font-size: 21px">Hitchify</span>
+            <img src="{% static 'logo.png' %}" width="30px" /><span style="margin-left: 5px; margin-top: 4px; font-size: 21px">Hitchify</span>
           </div>
-          <a href="{% url 'index' %}">
+          <a href="{% url 'map' %}">
             <div class="sidebar-member" >
                 <span class="sidebar-member-icon">🗺️</span>
                 <span class="sidebar-member-label">Map</span>
             </div>
           </a>
-          <a href="{% url 'index' %}">
+          <a href="{% url 'countries' %}">
             <div class="sidebar-member" >
                 <span class="sidebar-member-icon">🌐</span>
                 <span class="sidebar-member-label">Countries</span>
             </div>
           </a>
-          <a href="{% url 'index' %}">
+          <a href="{% url 'hitchspots' %}">
             <div class="sidebar-member">
                 <span class="sidebar-member-icon">📌</span>
                 <span class="sidebar-member-label">Hitchspots</span>
             </div>
           </a>
-          <a href="{% url 'index' %}">
+          <a href="{% url 'forum' %}">
             <div class="sidebar-member">
                 <span class="sidebar-member-icon">💬</span>
                 <span class="sidebar-member-label">Forum</span></div>
           </a>
-          <a href="{% url 'index' %}">
+          <a href="{% url 'guides' %}">
             <div class="sidebar-member"><span class="sidebar-member-icon">📝</span><span
                     class="sidebar-member-label">Guides</span></div>
           </a>
@@ -49,9 +49,9 @@
             <div class="sidebar-member"><span class="sidebar-member-icon">👋</span><span
                     class="sidebar-member-label">Hi,
                         {% if user.is_authenticated %}
-                        {{ user.get_username }}
+							{{ user.get_username }}
                         {% else %}
-                        Stranger
+							Stranger
                         {% endif %}
                 <span class="username"></span></span></div>
           </div>
@@ -59,20 +59,12 @@
       {% endblock %}
 
       <div class="frame">
-          {% block mainframe %}{% endblock %}
+          {% block content %}{% endblock %}
       </div>
-{#    <div class="row">#}
-{#      <div class="col-sm-2">#}
-{#      {% block sidebar %}#}
-{#        <ul class="sidebar">#}
-{#          <li><a href="{% url 'index' %}">Home</a></li>#}
-{#          <li><a href="">All books</a></li>#}
-{#          <li><a href="">All authors</a></li>#}
-{#        </ul>#}
-{#      {% endblock %}#}
-{#      </div>#}
-{#      <div class="col-sm-10 ">{% block content %}{% endblock %}</div>#}
-{#    </div>#}
+	  
   </div>
+  
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  
 </body>
 </html>
