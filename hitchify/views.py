@@ -6,19 +6,6 @@ from hitchify.models import Comment, Country, ForumPost, Guide, \
 
 # Create your views here.
 
-def index(request):
-
-    num_spots = Hitchspot.objects.all().count()
-    num_forum_posts = ForumPost.objects.all().count()
-    num_guides = Guide.objects.all().count()
-
-    context = {
-        'num_spots': num_spots,
-        'num_forum_posts': num_forum_posts,
-        'num_guides': num_guides
-    }
-
-    return render(request, 'index.html', context = context)
 
 def login(request):
 
@@ -39,6 +26,7 @@ def countries(request):
 
     return render(request, 'countries.html', context = context)
 
+
 def country(request, country_id):
 
     country = Country.objects.get(country_id=country_id)
@@ -48,6 +36,7 @@ def country(request, country_id):
     }
 
     return render(request, 'country.html', context = context)
+
 
 def hitchspots(request):
 
@@ -70,6 +59,7 @@ def forum(request):
 
     return render(request, 'forum.html', context = context)
 
+
 def post(request):
 
     context = {
@@ -88,13 +78,15 @@ def guides(request):
 
     return render(request, 'guides.html', context = context)
 
+
 def guide(request):
 
     context = {}
 
     return render(request, 'guide.html', context = context)
 
-def map(request):
+
+def hitchify_map(request):
 
     context = {}
 
