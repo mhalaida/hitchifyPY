@@ -6,8 +6,10 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('', authviews.LoginView.as_view(), name='login'),
-    path('login/', authviews.LoginView.as_view(), name='login'),
+    path('', authviews.LoginView.as_view(), name='index'),
+    # path('login/', authviews.LoginView.as_view(), name='login'),
+    path('login/', views.login, name='login'),
+    path('signup/', views.signup, name='signup'),
     path('countries/', views.countries, name='countries'),
     path('country/<country_id>', views.country, name='country'),
     path('hitchspots/', views.hitchspots, name='hitchspots'),
@@ -16,6 +18,4 @@ urlpatterns = [
     path('guides/', views.guides, name='guides'),
     path('guide/', views.guide, name='guide'),
     path('map/', views.hitchify_map, name='map'),
-
-    # path('accounts/', include('django.contrib.auth.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
