@@ -1,0 +1,10 @@
+<?xml version='1.0' ?>
+	<markers>
+		<hs>
+			{% for marker in hitchspot %}
+				<marker lat="{{ marker.latitude }}" 
+					lng="{{ marker.longitude }}" 
+					desc="{{ marker.description }}" />
+			{% endfor %}
+		</hs>
+	</markers>

@@ -17,4 +17,5 @@ urlpatterns = [
     path('guides/', views.guides, name='guides'),
     path('guide/', views.guide, name='guide'),
     path('map/', views.hitchify_map, name='map'),
+    path('map_xml/', views.hitchify_xml, name='map_xml'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
