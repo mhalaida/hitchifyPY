@@ -5,6 +5,15 @@
             <div class="sub-container-title">
                 <span class="countryname">{{ country.country_name }}</span>
             </div>
+            <br>
+            <div>{{ country.short_description }}</div>
+            <br>
+            <div>Languages:
+                {% for lang in country.languages %}
+                    {{ lang }},
+                {% endfor %}
+            </div>
+            <div>National currency: {{ country.national_currency }}</div>
 
             <div class="tab">
                 <button class="tablinks active" onclick="openTab(event,'country-hitchspots')">Hitchspots</button>
@@ -27,7 +36,7 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>🧭Coordinates</th>
+                        <th>🧭 Coordinates</th>
                         <th>🔍 Description</th>
                         <th>👍 Hitchability</th>
                         <th>🕑 Waiting time</th>
@@ -37,19 +46,16 @@
                     </tr>
                     </thead>
                     <tbody id="hitchspots-grid">
-                    <tr>
-                        <td>39.405452905285834,
-                            -7,44445851445174</td>
-                        <td>good place to stop for cars.</td>
-                        <td>4</td>
-                        <td>10 min</td>
-                        <td>19.05.2020 </td>
-                        <td>20.05.2020</td>
-
-                        <td>
-                            <button class="grid-button">Open</button>
-                        </td>
-                    </tr>
+                    {% for spot in country.hitchspots %}
+                        <td>{{ spot.latitude }};
+                        {{ spot.longitude }}</td>
+                        <td>{{ spot.description }}</td>
+                        <td>{{ spot.avg_hitchability }}</td>
+                        <td>{{ spot.avg_waiting_time }}</td>
+                        <td>{{ spot.creation_date }}</td>
+                        <td>{{ spot.last_update }}</td>
+                        <td><button class="button-style">Open</button></td>
+                    {% endfor %}
                     </tbody>
                 </table>
 

@@ -20,8 +20,7 @@
         <thead>
         <tr>
             <th>🌐 Country</th>
-            <th>🧭Coordinates</th>
-            <th>🔍 Description</th>
+            <th>🧭 Coordinates</th>
             <th>👍 Hitchability</th>
             <th>🕑 Waiting time</th>
             <th>📆 Created</th>
@@ -35,13 +34,12 @@
                 <td>{{hs.country_id}}</td>
                 <td>{{hs.latitude}};
                     {{hs.longitude}}</td>
-                <td>{{hs.description}}</td>
-                <td>{{hs.average_hitchability}}</td>
-                <td>{{hs.average_waiting_time}} min</td>
+                <td>{{hs.avg_hitchability}}</td>
+                <td>{{hs.avg_waiting_time}} min</td>
                 <td>{{hs.creation_date}}</td>
-                <td>{{hs.last_update}}}</td>
+                <td>{{hs.last_update}}</td>
                 <td>
-                    <button class="grid-button">Open</button>
+                    <button class="button-style">Open</button>
                 </td>
             </tr>
             {% endfor %}
