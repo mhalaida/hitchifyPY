@@ -459,3 +459,7 @@ ul>li {
     color: rgba(255, 255, 255, 0.6);
     margin: 0 0 5px;
 }
+
+.text_on_map {
+	color:gray
+}

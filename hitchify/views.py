@@ -111,3 +111,10 @@ def hitchify_map(request):
     context = {}
 
     return render(request, 'map.html', context = context)
+
+def hitchify_xml(request):
+
+    hitchspot = Hitchspot.objects.all()
+    context = {'hitchspot': hitchspot}
+    
+    return render(request, 'map_xml.html', context = context, content_type="application/xhtml+xml")
