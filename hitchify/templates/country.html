@@ -91,14 +91,16 @@
                     </tr>
                     </thead>
                     <tbody id="posts-grid">
-                    <tr>
-                        <td>Trip Porto</td>
-                        <td>Linda Kirk</td>
-                        <td>27.04.2020 00:00:00</td>
-                        <td>29.04.2020 00:00:00</td>
-                        <td>22</td>
-                        <td><button class="grid-button">Open</button></td>
-                    </tr>
+                    {% for post in country.forum_posts %}
+                        <tr>
+                        <td>{{ post.title }}</td>
+                        <td>{{ post.author }}</td>
+                        <td>{{ post.creation_date }}</td>
+                        <td>{{ post.last_update }}</td>
+                        <td>{{ post.likes }}</td>
+                        <td><button class="button-style">Open</button></td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
 

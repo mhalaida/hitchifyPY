@@ -139,6 +139,15 @@ class Country(models.Model):
             res_hitchspots_list.append(spot)
         return res_hitchspots_list
 
+    @property
+    def forum_posts(self):
+        res_forum_posts = ForumPost.objects.raw('SELECT post_id, title, username AS author, creation_date, last_update, likes '
+                                                'FROM forum_post '
+                                                'INNER JOIN auth_user ON forum_post.user_id = auth_user.id '
+                                                'WHERE country_id = %s', [self.country_id])
+        res_forum_posts = list(res_forum_posts)
+        return res_forum_posts
+
     class Meta:
         managed = False
         db_table = 'country'
