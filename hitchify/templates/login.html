@@ -1,0 +1,48 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<div class="sub-container">
+
+    <div class="sub-container-title"><span class="login-icon"></span> Hi, <span class="username"></span></div>
+
+    <div class="login-container" id="div_login">
+        <form id="login">
+            <div >
+                <input name="login" id="loginField" placeholder="Login">
+                <input name="password" id="passwordField" type="password" placeholder="Password">
+                <button type="submit"  class="button-style">Log in</button>
+            </div>
+            <button id="logout" class="button-style">Logout</button>
+        </form>
+        <div style="margin-top: 10px;">
+            <a href="#" onclick="$('#div_registration').show(); $('#div_login').hide(); return false;">Create account</a>
+        </div>
+    </div>
+
+    <div class="login-container" id="div_registration" style="display: none">
+        <form id="registration" >
+            <div>
+                <input name="login" id="logField" placeholder="Login">
+                <input name="firstName" id="firstName" type="password" placeholder="First name">
+                <input name="lastName" id="lastName" type="password" placeholder="Last name">
+                <input name="email" id="email" type="password" placeholder="Email">
+                <input name="password" id="password" type="password" placeholder="New password">
+                <input name="country" id="country" type="password" placeholder="Country">
+                <input name="city" id="city" type="password" placeholder="City">
+
+                <p class="form-text">Birthday</p>
+                <input name="birthDate" id="birthDate" type="date">
+
+                <p class="form-text">Gender</p>
+                <input name="gender" type="radio" value="0" class="radiobutton"><span class="form-text">Male</span>
+                <input name="gender" type="radio" value="1" class="radiobutton"><span class="form-text">Female</span>
+                <br>
+                <br>
+                <button type="submit"  class="button-style">Create account</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

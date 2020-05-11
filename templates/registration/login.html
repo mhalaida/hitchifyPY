@@ -2,7 +2,7 @@
 
 {% block title %} <title>Authorization</title> {% endblock %}
 
-{% block mainframe %}
+{% block content %}
     <div class="sub-container">
         {% if user.is_authenticated %}
             <div class="sub-container-title"><span class="login-icon">🔓</span> Hi, <span class="username">{{ user.get_username }}</span></div>
@@ -30,6 +30,10 @@
                 </div>
                 <button type="submit" class="button-style">Log in</button>
             </form>
+{#            <form method="post" action="signup">#}
+{#                <p>New to Hitchify? Create an account!</p>#}
+{#                <button type="submit" class="button-style">Sign up</button>#}
+{#            </form>#}
         {% endif %}
         </div>
 

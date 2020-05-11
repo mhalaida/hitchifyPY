@@ -97,6 +97,29 @@ class Country(models.Model):
     national_currency = models.CharField(max_length=255)
     hitchrating = models.FloatField()
 
+    @property
+    def languages(self):
+        res_languages = Language.objects.raw('SELECT language_id, language_name '
+                                             'FROM language '
+                                             'WHERE language_id IN (SELECT language_id '
+                                                                   'FROM language_to_country '
+                                                                   'WHERE country_id = %s)', [self.country_id])
+        res_languages_list = []
+        for lang in res_languages:
+            res_languages_list.append(lang.language_name)
+
+        return res_languages_list
+
+    @property
+    def hitchspots(self):
+        res_hitchspots = Hitchspot.objects.raw('SELECT * '
+                                               'FROM hitchspot '
+                                               'WHERE country_id = %s', [self.country_id])
+        res_hitchspots_list = []
+        for spot in res_hitchspots:
+            res_hitchspots_list.append(spot)
+        return res_hitchspots_list
+
     class Meta:
         managed = False
         db_table = 'country'

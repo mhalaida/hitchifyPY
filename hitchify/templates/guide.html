@@ -1,0 +1,38 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="sub-container">
+    <div class="sub-container-title">Guide</div>
+
+    <div class="properties-holder">
+
+        <div class="property">
+            <div class="property-name"><span class="property-icon">🔖</span>Title</div>
+            <div id="title" contenteditable="true" spellcheck="false" class="property-value text-property"></div>
+        </div>
+
+        <div class="property">
+            <div class="property-name"><span class="property-icon">📆</span>Creation Date</div>
+            <div id="created" class="property-value"></div>
+        </div>
+
+        <div class="property">
+            <div class="property-name"><span class="property-icon">📆</span>Last Update Date</div>
+            <div id="updated" class="property-value"></div>
+        </div>
+
+        <div class="ticket-content-holder">
+            <span spellcheck="false" contenteditable="true" id="short_summary" class="highlight"></span>
+        </div>
+
+
+        <div class="ticket-content-holder">
+            <span spellcheck="false" contenteditable="true" id="body_text" class="highlight"></span>
+        </div>
+
+        <button class=" button-style" style="margin-top: 10px;" id="save">Save</button>
+
+    </div>
+
+</div>
+{% endblock %}
