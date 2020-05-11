@@ -6,14 +6,15 @@
                 <span class="countryname">{{ country.country_name }}</span>
             </div>
             <br>
-            <div>{{ country.short_description }}</div>
+            <div>ℹ️ {{ country.short_description }}</div>
             <br>
-            <div>Languages:
+            <div>🗣️ Languages:
                 {% for lang in country.languages %}
                     {{ lang }},
                 {% endfor %}
             </div>
-            <div>National currency: {{ country.national_currency }}</div>
+            <div>💶 Currency: {{ country.national_currency }}</div>
+            <div>⭐ Hitchrating: {{ country.hitchrating }}</div>
 
             <div class="tab">
                 <button class="tablinks active" onclick="openTab(event,'country-hitchspots')">Hitchspots</button>
@@ -47,6 +48,7 @@
                     </thead>
                     <tbody id="hitchspots-grid">
                     {% for spot in country.hitchspots %}
+                        <tr>
                         <td>{{ spot.latitude }};
                         {{ spot.longitude }}</td>
                         <td>{{ spot.description }}</td>
@@ -55,6 +57,7 @@
                         <td>{{ spot.creation_date }}</td>
                         <td>{{ spot.last_update }}</td>
                         <td><button class="button-style">Open</button></td>
+                        </tr>
                     {% endfor %}
                     </tbody>
                 </table>

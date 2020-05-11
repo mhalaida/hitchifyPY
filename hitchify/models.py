@@ -6,6 +6,7 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from django.db import connection
 
 
 class AuthGroup(models.Model):
@@ -80,7 +81,8 @@ class Comment(models.Model):
     likes = models.IntegerField()
     creation_date = models.DateField()
     last_update = models.DateField(blank=True, null=True)
-    parent_comment_id = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True, related_name='child_comment')
+    parent_comment_id = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True,
+                                          related_name='child_comment')
     spot = models.ForeignKey('Hitchspot', models.DO_NOTHING, blank=True, null=True)
     post = models.ForeignKey('ForumPost', models.DO_NOTHING, blank=True, null=True)
     user = models.ForeignKey(AuthUser, models.DO_NOTHING)
@@ -95,15 +97,32 @@ class Country(models.Model):
     country_name = models.CharField(max_length=255)
     short_description = models.CharField(max_length=255)
     national_currency = models.CharField(max_length=255)
-    hitchrating = models.FloatField()
+
+    @property
+    def hitchrating(self):
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT COUNT(*) AS spot_count '
+                           'FROM hitchspot '
+                           'GROUP BY country_id '
+                           'HAVING country_id = %s', [self.country_id])
+            spots_num = cursor.fetchone()
+
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT SUM(avg_hitchability) AS spot_hitchability_sum '
+                           'FROM hitchspot '
+                           'GROUP BY country_id '
+                           'HAVING country_id = %s', [self.country_id])
+            spots_hitchability_sum = cursor.fetchone()
+
+        return spots_hitchability_sum[0] / spots_num[0]
 
     @property
     def languages(self):
         res_languages = Language.objects.raw('SELECT language_id, language_name '
                                              'FROM language '
                                              'WHERE language_id IN (SELECT language_id '
-                                                                   'FROM language_to_country '
-                                                                   'WHERE country_id = %s)', [self.country_id])
+                                             'FROM language_to_country '
+                                             'WHERE country_id = %s)', [self.country_id])
         res_languages_list = []
         for lang in res_languages:
             res_languages_list.append(lang.language_name)
