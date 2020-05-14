@@ -1,10 +1,13 @@
 <?xml version='1.0' ?>
 	<markers>
 		<hs>
-			{% for marker in hitchspot %}
+			{% for marker in hitchspots %}
 				<marker lat="{{ marker.latitude }}" 
 					lng="{{ marker.longitude }}" 
+					av_h="{{ marker.avg_hitchability }}" 
+					av_wt="{{ marker.avg_waiting_time }}" 
 					desc="{{ marker.description }}" />
+					
 			{% endfor %}
 		</hs>
 	</markers>

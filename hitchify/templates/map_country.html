@@ -1,0 +1,142 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="sub-container">
+    <div class="sub-container-title">🗺️ Map</div>
+	
+	<div style="margin-top:10px" id="map"></div>
+
+</div>
+
+<script>
+
+	$(document).ready(function () {
+
+		let ww = $('.frame').width()-120;
+		let hh = $(window).height()-200;
+
+		$('#map').height(hh);
+		$('#map').width(ww);
+
+	});
+
+	let xml_url = "{% url 'map_xml_country' country.country_id %}";
+	let flat = 48;
+	let flng = 17;
+
+	let customIcon = '/static/hotpoint_orange.png';
+
+	let map;
+
+	let markers = [];
+
+	function downloadUrl(url, callback) {
+		let request = window.ActiveXObject ?
+			new ActiveXObject('Microsoft.XMLHTTP') :
+			new XMLHttpRequest;
+
+		request.onreadystatechange = function() {
+			if (request.readyState == 4) {
+				request.onreadystatechange = doNothing;
+				callback(request, request.status);
+			}
+		};
+
+		request.open('GET', url, true);
+		request.send(null);
+	}
+
+	function doNothing() {}
+
+	function initMap() {
+		map = new google.maps.Map(document.getElementById('map'), {
+			center: new google.maps.LatLng(flat, flng),
+			zoom: 7,
+			mapTypeControl: false,
+			streetViewControl: false,
+			gestureHandling: 'greedy'
+		});
+
+        map.addListener('click', function(mapsMouseEvent) {
+          infoWindow = new google.maps.InfoWindow({position: mapsMouseEvent.latLng});
+		  
+		  let coord = mapsMouseEvent.latLng.toString();
+		  
+		  let result = coord.match(/(\d+\.\d+),\s+(\d+\.\d+)/);
+		  
+		  let content = '<div class="text_on_map">' +
+							'<b>Add point to {{ country.country_name }}</b>' +
+							'<br><form action="{% url 'add_point' %}" method="post">{% csrf_token %}' +
+							'Coord: ' + result[1] + ', ' + result[2] + 							
+							'<br><br>Hitchability (1-5)<br><input name="avg_hitchability" type="text">' +
+							'<br>Waiting time (min)<br><input name="avg_waiting_time" type="text">' +							
+							'<br>Description<br><textarea name="description" cols="50" rows="3"></textarea>' +
+							'<br><input name="lt" type="hidden" value="' + result[1] + '">' +
+							'<br><input name="ln" type="hidden" value="' + result[2] + '">' +
+							'<br><input name="country_id" type="hidden" value="{{ country.country_id }}">' +
+							'<br><input name="user_id" type="hidden" value="{{ user.id }}">' +
+							'<br><button class="button-style" type="submit">Add this point</button><form></div>'
+
+          infoWindow.setContent(content);
+          infoWindow.open(map);
+        });
+		
+		downloadUrl(xml_url, function(data) {
+			let xml = data.responseXML;
+
+			let marker = xml.documentElement.getElementsByTagName('marker');
+			
+			let av_lt = 0;
+			let av_ln = 0;
+			let count = 0;
+			
+			Array.prototype.forEach.call(marker, function(markerElem) {
+
+				let desc = markerElem.getAttribute('desc');
+				let av_h = parseFloat(markerElem.getAttribute('av_h'));
+				let av_wt = parseFloat(markerElem.getAttribute('av_wt'));
+
+				let lt = parseFloat(markerElem.getAttribute('lat'));
+				let ln = parseFloat(markerElem.getAttribute('lng'));
+				
+				
+				av_lt += lt;
+				av_ln += ln;
+				
+				count++;				
+
+				let point = new google.maps.LatLng( lt, ln);
+
+				let img = customIcon;
+
+				let marker = new google.maps.Marker({
+					map: map,
+					position: point,
+					icon: img,
+					zIndex: 1
+				});
+
+				let infoWindow = new google.maps.InfoWindow({
+					content: '<div class="text_on_map">Average hitchability (1-5): '+av_h +'<br>Average waiting time: '+av_wt+' min<br>Description: ' +desc+'</div>'
+				});
+
+				marker.addListener('click', function() {
+					infoWindow.open(map, marker);
+				});
+				
+				markers.push(marker);
+			});
+			
+			av_ln = av_ln/count;
+			av_lt = av_lt/count;
+			
+			map.setCenter(new google.maps.LatLng(av_lt, av_ln));
+			
+		});
+	}
+
+</script>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyALYpitR1YqY3DPBTR8T1IjWEQAmZ_yKPQ&language=en&callback=initMap"></script>
+	
+{% endblock %}

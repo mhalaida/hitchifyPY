@@ -26,12 +26,45 @@ def signup(request):
         form = UserCreationForm()
     return render(request, os.path.join(BASE_DIR, 'templates/registration/signup.html'), {'form': form})
 
+def add_point(request):
+
+    if request.method == 'POST':
+        from django.db import connection
+        
+        description = request.POST['description']
+        avg_hitchability = request.POST['avg_hitchability']
+        avg_waiting_time = request.POST['avg_waiting_time']
+        ln = request.POST['ln']
+        lt = request.POST['lt']
+        country_id = request.POST['country_id']
+        user_id = request.POST['user_id']
+        
+        if description == '':
+            description = '-'
+
+        if avg_hitchability == '':
+            avg_hitchability = '1'
+            
+        if avg_waiting_time == '':
+            avg_waiting_time = '1'
+        
+    with connection.cursor() as cursor:
+        cursor.execute("INSERT INTO hitchspot (spot_id, latitude, longitude, description, avg_hitchability, avg_waiting_time, creation_date, last_update, country_id,user_id)"
+                        " VALUES (nextval('spot_sequence'), %s, %s, %s, %s, %s, now(), now(), %s, %s)", [lt, ln, description, avg_hitchability, avg_waiting_time, country_id, user_id])
+
+    country = Country.objects.get(country_id=country_id)
+
+    context = {
+        'country': country,
+        'choose': 'map',
+    }
+
+    return render(request, 'map_country.html', context = context)
+
 
 def login(request):
 
-    context = {
-
-    }
+    context = {}
 
     return render(request, os.path.join(BASE_DIR, 'templates/registration/login.html'), context = context)
 
@@ -41,6 +74,7 @@ def countries(request):
     country = Country.objects.all()    
     
     context = {
+        'choose': 'country',
         'country': country,
     }
 
@@ -52,6 +86,7 @@ def country(request, country_id):
     country = Country.objects.get(country_id=country_id)
     
     context = {
+        'choose': 'country',
         'country': country        
     }
 
@@ -111,13 +146,37 @@ def guide(request):
 
 def hitchify_map(request):
 
-    context = {}
+    context = {
+        'choose': 'map',
+    }
 
     return render(request, 'map.html', context = context)
 
+def hitchify_map_country(request, country_id):
+
+    country = Country.objects.get(country_id=country_id)
+
+    context = {
+        'country': country,
+        'choose': 'map',
+    }
+
+    return render(request, 'map_country.html', context = context)
+
 def hitchify_xml(request):
 
-    hitchspot = Hitchspot.objects.all()
-    context = {'hitchspot': hitchspot}
+    hitchspots = Hitchspot.objects.all()
+    
+    context = {'hitchspots': hitchspots}
+    
+    return render(request, 'map_xml.html', context = context, content_type="application/xhtml+xml")
+
+def hitchify_xml_country(request, country_id):
+
+    hitchspots = Hitchspot.objects.raw('SELECT * '
+                                       'FROM hitchspot '
+                                       'WHERE country_id = %s', [country_id])
+    
+    context = {'hitchspots': hitchspots}
     
     return render(request, 'map_xml.html', context = context, content_type="application/xhtml+xml")
