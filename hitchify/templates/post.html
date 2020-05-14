@@ -8,19 +8,12 @@
 
         <div class="property">
             <div class="property-name"><span class="property-icon">🔖</span>Title</div>
-            <div id="title" contenteditable="true" spellcheck="false" class="property-value text-property"></div>
+            <div id="title" contenteditable="true" spellcheck="false" class="property-value text-property">{{ post.title }}</div>
         </div>
 
         <div class="property">
             <div class="property-name"><span class="property-icon">🌐</span>Country</div>
-            <div class="property-value select-property">
-                <select id="countryname">
-                    <option >Ukraine</option>
-                    <option >Portugal</option>
-                    <option >Germany</option>
-                    <option >USA</option>
-                </select>
-            </div>
+            <div class="property-value select-property">{{ post.country.country_name }}</div>
         </div>
 
         <div class="property">

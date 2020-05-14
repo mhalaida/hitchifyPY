@@ -98,7 +98,11 @@
                         <td>{{ post.creation_date }}</td>
                         <td>{{ post.last_update }}</td>
                         <td>{{ post.likes }}</td>
-                        <td><button class="button-style">Open</button></td>
+                        <td>
+                            <form action="{% url 'post' post.post_id %}">
+                                <button type="submit" class="button-style">Open</button>
+                            </form>
+                        </td>
                         </tr>
                     {% endfor %}
                     </tbody>

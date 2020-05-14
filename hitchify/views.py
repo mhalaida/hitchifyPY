@@ -80,9 +80,12 @@ def forum(request):
     return render(request, 'forum.html', context = context)
 
 
-def post(request):
+def post(request, post_id):
+
+    post = ForumPost.objects.get(post_id=post_id)
 
     context = {
+        'post': post
     }
 
     return render(request, 'post.html', context = context)
