@@ -2,19 +2,33 @@
 
 {% block content %}
         <div class="sub-container">
-            <div class="sub-container-title">
-                <span class="countryname">{{ country.country_name }}</span>
-            </div>
-            <br>
-            <div>ℹ️ {{ country.short_description }}</div>
-            <br>
-            <div>🗣️ Languages:
-                {% for lang in country.languages %}
-                    {{ lang }},
-                {% endfor %}
-            </div>
-            <div>💶 Currency: {{ country.national_currency }}</div>
-            <div>⭐ Hitchrating: {{ country.hitchrating }}</div>
+			
+			<table style="width:auto">
+			<tr>
+				<td style="border-color:rgb(47, 52, 55)">
+					<div class="sub-container-title">
+						<span class="countryname">{{ country.country_name }}</span>
+					</div>
+				</td>
+				<td style="border-color:rgb(47, 52, 55)" valign="top">
+					<div style="margin:16px 0 0 0px">
+						<a href="{% url 'map_country' country.country_id %}"><button class="button-style">Show on Map</button></a>
+					</div>	
+				</td>
+			</tr>
+			</table>
+			
+			<br>
+			<div>ℹ️ {{ country.short_description }}</div>
+			<br>
+			<div>🗣️ Languages:
+				{% for lang in country.languages %}
+					{{ lang }},
+				{% endfor %}
+			</div>
+			<div>💶 Currency: {{ country.national_currency }}</div>
+			<div>⭐ Hitchrating: {{ country.hitchrating }}</div>				
+			
 
             <div class="tab">
                 <button class="tablinks active" onclick="openTab(event,'country-hitchspots')">Hitchspots</button>
@@ -32,8 +46,7 @@
                             <option >Waiting time</option>
                         </select>
                         <button type="submit" class="button-style">Filter</button>
-                    </form>
-					&nbsp;&nbsp;&nbsp;<a href="{% url 'map_country' country.country_id %}"><button class="button-style">Show on Map</button></a>
+                    </form>					
                 </div>
                 <table class="table">
                     <thead>
