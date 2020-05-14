@@ -64,6 +64,8 @@
 			Array.prototype.forEach.call(marker, function(markerElem) {
 
 				let desc = markerElem.getAttribute('desc');
+				let av_h = parseFloat(markerElem.getAttribute('av_h'));
+				let av_wt = parseFloat(markerElem.getAttribute('av_wt'));
 
 				let lt = parseFloat(markerElem.getAttribute('lat'));
 				let ln = parseFloat(markerElem.getAttribute('lng'));
@@ -80,7 +82,7 @@
 				});
 
 				let infoWindow = new google.maps.InfoWindow({
-					content: '<div class="text_on_map">'+desc+'</div>'
+					content: '<div class="text_on_map">Average hitchability (1-5): '+av_h +'<br>Average waiting time: '+av_wt+' min<br>Description: ' +desc+'</div>'
 				});
 
 				marker.addListener('click', function() {
