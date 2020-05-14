@@ -17,21 +17,23 @@
           </div>
       {% if user.is_authenticated %}
           <a href="{% url 'map' %}">
-            <div class="sidebar-member" >
+            <div class="sidebar-member {% if choose == 'map' %}chosen{% endif %}">
                 <span class="sidebar-member-icon">🗺️</span>
                 <span class="sidebar-member-label">Map</span>
             </div>
           </a>
           <a href="{% url 'countries' %}">
-            <div class="sidebar-member" >
+            <div class="sidebar-member {% if choose == 'country' %}chosen{% endif %}">
                 <span class="sidebar-member-icon">🌐</span>
                 <span class="sidebar-member-label">Countries</span>
             </div>
           </a>
       {% endif %}
           <a href="{% url 'login' %}">
-            <div class="sidebar-member chosen"><span class="sidebar-member-icon">🔑</span><span
-                    class="sidebar-member-label">Login</span></div>
+            <div class="sidebar-member">
+				<span class="sidebar-member-icon">🔑</span>
+				<span class="sidebar-member-label">{% if user.is_authenticated %}Logout{% else %}Login{% endif %}</span>
+			</div>
           </a>
           <div class="sidebar-user-label">
             <div class="sidebar-member"><span class="sidebar-member-icon">👋</span><span

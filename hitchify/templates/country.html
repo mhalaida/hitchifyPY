@@ -25,14 +25,15 @@
             <div id="country-hitchspots" class="tabcontent">
                 <div class="top-toolbar">
                     <form id="filter-hitchspot">
-                        <input name="query" placeholder="Query">
-                        <select name="select">
+                        <input class="input_black" name="query" placeholder="Query">
+                        <select class="select_black" name="select">
                             <option >Date</option>
                             <option selected  >Hitchability</option>
                             <option >Waiting time</option>
                         </select>
                         <button type="submit" class="button-style">Filter</button>
                     </form>
+					&nbsp;&nbsp;&nbsp;<a href="{% url 'map_country' country.country_id %}"><button class="button-style">Show on Map</button></a>
                 </div>
                 <table class="table">
                     <thead>
@@ -70,8 +71,8 @@
             <div id="country-posts" class="tabcontent">
                 <div class="top-toolbar">
                     <form id="filter-posts">
-                        <input name="query" placeholder="Query">
-                        <select name="select">
+                        <input class="input_black" name="query" placeholder="Query">
+                        <select class="select_black" name="select">
                             <option selected >Title</option>
                             <option >Author</option>
                         </select>

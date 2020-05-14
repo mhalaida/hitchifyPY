@@ -223,7 +223,7 @@ table td, table th {
     background: rgba(89, 65, 65, 0.3);
 }
 
-input {
+.input_black {
     align-items: center;
     font-size: 14px;
     line-height: 20px;
@@ -241,12 +241,12 @@ input {
     cursor: pointer;
 }
 
-textarea:focus,
-input:focus {
+.textarea_black:focus,
+.input_black:focus {
     outline: none;
 }
 
-select {
+.select_black {
     cursor: pointer;
     background: #2F3437;
     box-shadow: rgba(15, 15, 15, 0.2) 0 0 0 1px inset, rgba(15, 15, 15, 0.2) 0 1px 1px inset;
@@ -259,7 +259,7 @@ select {
     font-weight: 500;
 }
 
-select:hover {
+.select_black:hover {
     transition: background 120ms ease-in 0s;
     background: rgb(71, 76, 80);
 }
