@@ -114,7 +114,7 @@ class Country(models.Model):
                            'HAVING country_id = %s', [self.country_id])
             spots_hitchability_sum = cursor.fetchone()
 
-        return spots_hitchability_sum[0] / spots_num[0]
+        return round((spots_hitchability_sum[0] / spots_num[0]), 2)
 
     @property
     def languages(self):

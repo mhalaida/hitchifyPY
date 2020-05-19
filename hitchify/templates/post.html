@@ -18,16 +18,16 @@
 
         <div class="property">
             <div class="property-name"><span class="property-icon">📆</span>Creation Date</div>
-            <div id="created" class="property-value"></div>
+            <div id="created" class="property-value">{{ post.creation_date }}</div>
         </div>
 
         <div class="property">
             <div class="property-name"><span class="property-icon">📆</span>Last Update Date</div>
-            <div id="updated" class="property-value"></div>
+            <div id="updated" class="property-value">{{ post.last_update }}</div>
         </div>
 
         <div class="ticket-content-holder">
-            <span spellcheck="false" contenteditable="true" id="body-text" class="highlight"></span>
+            <span spellcheck="false" contenteditable="true" id="body-text" class="highlight">{{ post.body_text }}</span>
         </div>
 
         <button class=" button-style" style="margin-top: 10px;" id="save">Save</button>
