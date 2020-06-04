@@ -87,6 +87,15 @@ class Comment(models.Model):
     post = models.ForeignKey('ForumPost', models.DO_NOTHING, blank=True, null=True)
     user = models.ForeignKey(AuthUser, models.DO_NOTHING)
 
+    @property
+    def author_username(self):
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT username '
+                           'FROM auth_user '
+                           'WHERE id = %s', [self.user_id])
+            author_usn = cursor.fetchone()
+        return author_usn
+
     class Meta:
         managed = False
         db_table = 'comment'
@@ -207,6 +216,15 @@ class ForumPost(models.Model):
     user = models.ForeignKey(AuthUser, models.DO_NOTHING)
     country = models.ForeignKey(Country, models.DO_NOTHING)
 
+    @property
+    def comments(self):
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT * '
+                           'FROM comment '
+                           'WHERE post_id = %s ', [self.post_id])
+            comments = cursor.fetchall()
+            return comments
+
     class Meta:
         managed = False
         db_table = 'forum_post'
@@ -320,17 +338,18 @@ class UserLikedForumPost(models.Model):
 
 class Users(models.Model):
     user_id = models.IntegerField(primary_key=True)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    login = models.CharField(max_length=255)
-    password = models.CharField(max_length=255)
-    email_address = models.CharField(max_length=255)
-    role = models.SmallIntegerField()
+    authUser = models.OneToOneField(AuthUser, on_delete=models.CASCADE)
+    # first_name = models.CharField(max_length=255)
+    # last_name = models.CharField(max_length=255)
+    # login = models.CharField(max_length=255)
+    # password = models.CharField(max_length=255)
+    # email_address = models.CharField(max_length=255)
+    # role = models.SmallIntegerField()
     gender = models.SmallIntegerField()
     birth_date = models.DateTimeField()
     country = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
-    date_of_reg = models.DateTimeField()
+    # date_of_reg = models.DateTimeField()
 
     class Meta:
         managed = False

@@ -5,37 +5,39 @@
 {% block content %}
     <div class="sub-container">
         {% if user.is_authenticated %}
-            <div class="sub-container-title"><span class="login-icon">🔓</span> Hi, <span class="username">{{ user.get_username }}</span></div>
+            <div class="sub-container-title"><span class="login-icon">🔓</span> Hi, <span
+                    class="username">{{ user.get_username }}</span></div>
         {% else %}
-            <div class="sub-container-title"><span class="login-icon">🔐</span> Hi, <span class="username">Stranger</span></div>
+            <div class="sub-container-title"><span class="login-icon">🔐</span> Hi, <span
+                    class="username">Stranger</span></div>
         {% endif %}
 
 
         <div class="login-container">
-        {% if user.is_authenticated %}
-            <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button type="submit" class="button-style">Log out</button>
-            </form>
-        {% else %}
-            <form method="post" action="{% url 'login' %}">
-                {% csrf_token %}
-                <div>
-                    <div>{{ form.username.label_tag }}</div>
-                    <div>{{ form.username }}</div>
-                </div>
-                <div>
-                    <div>{{ form.password.label_tag }}</div>
-                    <div>{{ form.password }}</div>
-                </div>
-                <button type="submit" class="button-style">Log in</button>
-            </form>
-            <form method="post" action="{% url 'signup' %}">
-                {% csrf_token %}
-                <p>New to Hitchify? <br>Create an account!</p>
-                <button type="submit" class="button-style">Sign up</button>
-            </form>
-        {% endif %}
+            {% if user.is_authenticated %}
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="button-style">Log out</button>
+                </form>
+            {% else %}
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <div>
+                        <div>{{ form.username.label_tag }}</div>
+                        <div>{{ form.username }}</div>
+                    </div>
+                    <div>
+                        <div>{{ form.password.label_tag }}</div>
+                        <div>{{ form.password }}</div>
+                    </div>
+                    <button type="submit" class="button-style">Log in</button>
+                </form>
+                <form method="post" action="{% url 'signup' %}">
+                    {% csrf_token %}
+                    <p>New to Hitchify? <br>Create an account!</p>
+                    <button type="submit" class="button-style">Sign up</button>
+                </form>
+            {% endif %}
         </div>
 
     </div>
