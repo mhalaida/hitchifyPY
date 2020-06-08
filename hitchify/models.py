@@ -79,7 +79,7 @@ class Comment(models.Model):
     comment_id = models.IntegerField(primary_key=True)
     body_text = models.TextField()
     likes = models.IntegerField()
-    creation_date = models.DateField()
+    creation_date = models.DateField(auto_now_add=True)
     last_update = models.DateField(blank=True, null=True)
     parent_comment_id = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True,
                                           related_name='child_comment')
@@ -123,7 +123,17 @@ class Country(models.Model):
                            'HAVING country_id = %s', [self.country_id])
             spots_hitchability_sum = cursor.fetchone()
 
-        return round((spots_hitchability_sum[0] / spots_num[0]), 2)
+        if spots_num is not None and spots_hitchability_sum is not None:
+            res = round((spots_hitchability_sum[0] / spots_num[0]), 2)
+        else:
+            res = 0
+
+        with connection.cursor() as cursor:
+            cursor.execute('UPDATE country '
+                           'SET hitchrating = %s '
+                           'WHERE country_id = %s', [res, self.country_id])
+
+        return res
 
     @property
     def languages(self):
@@ -150,10 +160,11 @@ class Country(models.Model):
 
     @property
     def forum_posts(self):
-        res_forum_posts = ForumPost.objects.raw('SELECT post_id, title, username AS author, creation_date, last_update, likes '
-                                                'FROM forum_post '
-                                                'INNER JOIN auth_user ON forum_post.user_id = auth_user.id '
-                                                'WHERE country_id = %s', [self.country_id])
+        res_forum_posts = ForumPost.objects.raw(
+            'SELECT post_id, title, username AS author, creation_date, last_update, likes '
+            'FROM forum_post '
+            'INNER JOIN auth_user ON forum_post.user_id = auth_user.id '
+            'WHERE country_id = %s', [self.country_id])
         res_forum_posts = list(res_forum_posts)
         return res_forum_posts
 
@@ -207,11 +218,11 @@ class DjangoSession(models.Model):
 
 
 class ForumPost(models.Model):
-    post_id = models.IntegerField(primary_key=True)
+    # post_id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=255)
     body_text = models.TextField()
     likes = models.IntegerField(blank=True, null=True)
-    creation_date = models.DateField()
+    creation_date = models.DateField(auto_now_add=True)
     last_update = models.DateField(blank=True, null=True)
     user = models.ForeignKey(AuthUser, models.DO_NOTHING)
     country = models.ForeignKey(Country, models.DO_NOTHING)
@@ -349,6 +360,7 @@ class Users(models.Model):
     birth_date = models.DateTimeField()
     country = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
+
     # date_of_reg = models.DateTimeField()
 
     class Meta:

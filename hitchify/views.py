@@ -8,12 +8,36 @@ from hitchify.models import Comment, Country, ForumPost, Guide, \
     LanguageToCountry, Photo, SpotFeedback, \
     UserLikedComment, UserLikedForumPost
 
+from . import forms
+
 # Create your views here.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-# def add_comment(request):
-#     if request.method == 'POST':
+def add_post(request, country_id):
+    country = Country.objects.get(country_id=country_id)
+    if request.method == 'POST':
+        form = forms.AddPostForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('add_post')
+
+        else:
+            form = forms.AddPostForm()
+        return render(request, 'country.html', {'form': form, 'country': country})
+
+
+def add_comment_to_post(request, post_id):
+    post = ForumPost.objects.get(post_id=post_id)
+    if request.method == 'POST':
+        form = forms.CommentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('add_comment_to_post')
+
+        else:
+            form = forms.CommentForm()
+        return render(request, 'post.html', {'form': form, 'post': post})
 
 
 def signup(request):
