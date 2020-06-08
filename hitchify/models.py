@@ -5,78 +5,100 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+from django.contrib.auth.models import User
 from django.db import models
 from django.db import connection
 
 
-class AuthGroup(models.Model):
-    name = models.CharField(unique=True, max_length=150)
+# class AuthGroup(models.Model):
+#     name = models.CharField(unique=True, max_length=150)
+#
+#     class Meta:
+#         managed = False
+#         db_table = 'auth_group'
+
+
+# class AuthGroupPermissions(models.Model):
+#     group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+#     permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
+#
+#     class Meta:
+#         managed = False
+#         db_table = 'auth_group_permissions'
+#         unique_together = (('group', 'permission'),)
+
+
+# class AuthPermission(models.Model):
+#     name = models.CharField(max_length=255)
+#     content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
+#     codename = models.CharField(max_length=100)
+#
+#     class Meta:
+#         managed = False
+#         db_table = 'auth_permission'
+#         unique_together = (('content_type', 'codename'),)
+
+
+# class AuthUser(models.Model):
+#     password = models.CharField(max_length=128)
+#     last_login = models.DateTimeField(blank=True, null=True)
+#     is_superuser = models.BooleanField()
+#     username = models.CharField(unique=True, max_length=150)
+#     first_name = models.CharField(max_length=30)
+#     last_name = models.CharField(max_length=150)
+#     email = models.CharField(max_length=254)
+#     is_staff = models.BooleanField()
+#     is_active = models.BooleanField()
+#     date_joined = models.DateTimeField()
+#
+#     class Meta:
+#         managed = False
+#         db_table = 'auth_user'
+
+
+# class AuthUserGroups(models.Model):
+#     user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+#     group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+#
+#     class Meta:
+#         managed = False
+#         db_table = 'auth_user_groups'
+#         unique_together = (('user', 'group'),)
+
+
+# class AuthUserUserPermissions(models.Model):
+#     user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+#     permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
+#
+#     class Meta:
+#         managed = False
+#         db_table = 'auth_user_user_permissions'
+#         unique_together = (('user', 'permission'),)
+
+class MyUser(models.Model):
+    # user_id = models.IntegerField(primary_key=True)
+    authUser = models.OneToOneField(User, on_delete=models.CASCADE)
+    # first_name = models.CharField(max_length=255)
+    # last_name = models.CharField(max_length=255)
+    # login = models.CharField(max_length=255)
+    # password = models.CharField(max_length=255)
+    # email_address = models.CharField(max_length=255)
+    # role = models.SmallIntegerField()
+    gender = models.SmallIntegerField()
+    birth_date = models.DateTimeField()
+    country = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+
+    # date_of_reg = models.DateTimeField()
 
     class Meta:
         managed = False
-        db_table = 'auth_group'
-
-
-class AuthGroupPermissions(models.Model):
-    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
-    permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'auth_group_permissions'
-        unique_together = (('group', 'permission'),)
-
-
-class AuthPermission(models.Model):
-    name = models.CharField(max_length=255)
-    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
-    codename = models.CharField(max_length=100)
-
-    class Meta:
-        managed = False
-        db_table = 'auth_permission'
-        unique_together = (('content_type', 'codename'),)
-
-
-class AuthUser(models.Model):
-    password = models.CharField(max_length=128)
-    last_login = models.DateTimeField(blank=True, null=True)
-    is_superuser = models.BooleanField()
-    username = models.CharField(unique=True, max_length=150)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=150)
-    email = models.CharField(max_length=254)
-    is_staff = models.BooleanField()
-    is_active = models.BooleanField()
-    date_joined = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'auth_user'
-
-
-class AuthUserGroups(models.Model):
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
-    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'auth_user_groups'
-        unique_together = (('user', 'group'),)
-
-
-class AuthUserUserPermissions(models.Model):
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
-    permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'auth_user_user_permissions'
-        unique_together = (('user', 'permission'),)
+        db_table = 'users'
 
 
 class Comment(models.Model):
-    comment_id = models.IntegerField(primary_key=True)
+    # comment_id = models.AutoField(primary_key=True)
+    # comment_id = models.IntegerField(primary_key=True)
     body_text = models.TextField()
     likes = models.IntegerField()
     creation_date = models.DateField(auto_now_add=True)
@@ -85,7 +107,7 @@ class Comment(models.Model):
                                           related_name='child_comment')
     spot = models.ForeignKey('Hitchspot', models.DO_NOTHING, blank=True, null=True)
     post = models.ForeignKey('ForumPost', models.DO_NOTHING, blank=True, null=True)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    user = models.ForeignKey(MyUser, models.DO_NOTHING)
 
     @property
     def author_username(self):
@@ -102,7 +124,8 @@ class Comment(models.Model):
 
 
 class Country(models.Model):
-    country_id = models.IntegerField(primary_key=True)
+    # country_id = models.AutoField(primary_key=True)
+    # country_id = models.IntegerField(primary_key=True)
     country_name = models.CharField(max_length=255)
     short_description = models.CharField(max_length=255)
     national_currency = models.CharField(max_length=255)
@@ -161,9 +184,9 @@ class Country(models.Model):
     @property
     def forum_posts(self):
         res_forum_posts = ForumPost.objects.raw(
-            'SELECT post_id, title, username AS author, creation_date, last_update, likes '
+            'SELECT id, title, username AS author, creation_date, last_update, likes '
             'FROM forum_post '
-            'INNER JOIN auth_user ON forum_post.user_id = auth_user.id '
+            'INNER JOIN my_user ON forum_post.user = my_user.id '
             'WHERE country_id = %s', [self.country_id])
         res_forum_posts = list(res_forum_posts)
         return res_forum_posts
@@ -173,58 +196,59 @@ class Country(models.Model):
         db_table = 'country'
 
 
-class DjangoAdminLog(models.Model):
-    action_time = models.DateTimeField()
-    object_id = models.TextField(blank=True, null=True)
-    object_repr = models.CharField(max_length=200)
-    action_flag = models.SmallIntegerField()
-    change_message = models.TextField()
-    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'django_admin_log'
-
-
-class DjangoContentType(models.Model):
-    app_label = models.CharField(max_length=100)
-    model = models.CharField(max_length=100)
-
-    class Meta:
-        managed = False
-        db_table = 'django_content_type'
-        unique_together = (('app_label', 'model'),)
+# class DjangoAdminLog(models.Model):
+#     action_time = models.DateTimeField()
+#     object_id = models.TextField(blank=True, null=True)
+#     object_repr = models.CharField(max_length=200)
+#     action_flag = models.SmallIntegerField()
+#     change_message = models.TextField()
+#     content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
+#     user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+#
+#     class Meta:
+#         managed = False
+#         db_table = 'django_admin_log'
 
 
-class DjangoMigrations(models.Model):
-    app = models.CharField(max_length=255)
-    name = models.CharField(max_length=255)
-    applied = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'django_migrations'
-
-
-class DjangoSession(models.Model):
-    session_key = models.CharField(primary_key=True, max_length=40)
-    session_data = models.TextField()
-    expire_date = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'django_session'
+# class DjangoContentType(models.Model):
+#     app_label = models.CharField(max_length=100)
+#     model = models.CharField(max_length=100)
+#
+#     class Meta:
+#         managed = False
+#         db_table = 'django_content_type'
+#         unique_together = (('app_label', 'model'),)
+#
+#
+# class DjangoMigrations(models.Model):
+#     app = models.CharField(max_length=255)
+#     name = models.CharField(max_length=255)
+#     applied = models.DateTimeField()
+#
+#     class Meta:
+#         managed = False
+#         db_table = 'django_migrations'
+#
+#
+# class DjangoSession(models.Model):
+#     session_key = models.CharField(primary_key=True, max_length=40)
+#     session_data = models.TextField()
+#     expire_date = models.DateTimeField()
+#
+#     class Meta:
+#         managed = False
+#         db_table = 'django_session'
 
 
 class ForumPost(models.Model):
+    # post_id = models.AutoField(primary_key=True)
     # post_id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=255)
     body_text = models.TextField()
     likes = models.IntegerField(blank=True, null=True)
     creation_date = models.DateField(auto_now_add=True)
     last_update = models.DateField(blank=True, null=True)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    user = models.ForeignKey(MyUser, models.DO_NOTHING)
     country = models.ForeignKey(Country, models.DO_NOTHING)
 
     @property
@@ -242,13 +266,14 @@ class ForumPost(models.Model):
 
 
 class Guide(models.Model):
-    guide_id = models.IntegerField(primary_key=True)
+    # guide_id = models.AutoField(primary_key=True)
+    # guide_id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=255)
     body_text = models.TextField()
     short_summary = models.TextField(blank=True, null=True)
     creation_date = models.DateField()
     update_date = models.DateField(blank=True, null=True)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    user = models.ForeignKey(MyUser, models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -256,11 +281,12 @@ class Guide(models.Model):
 
 
 class GuideFeedback(models.Model):
-    gf_id = models.IntegerField(primary_key=True)
+    # gf_id = models.AutoField(primary_key=True)
+    # gf_id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=255)
     suggestion_text = models.TextField()
     guide = models.ForeignKey(Guide, models.DO_NOTHING)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    user = models.ForeignKey(MyUser, models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -268,7 +294,8 @@ class GuideFeedback(models.Model):
 
 
 class Hitchspot(models.Model):
-    spot_id = models.IntegerField(primary_key=True)
+    # spot_id = models.AutoField(primary_key=True)
+    # spot_id = models.IntegerField(primary_key=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
     description = models.TextField(blank=True, null=True)
@@ -277,7 +304,7 @@ class Hitchspot(models.Model):
     creation_date = models.DateField()
     last_update = models.DateField(blank=True, null=True)
     country = models.ForeignKey(Country, models.DO_NOTHING)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    user = models.ForeignKey(MyUser, models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -285,7 +312,8 @@ class Hitchspot(models.Model):
 
 
 class Language(models.Model):
-    language_id = models.IntegerField(primary_key=True)
+    # language_id = models.AutoField(primary_key=True)
+    # language_id = models.IntegerField(primary_key=True)
     language_name = models.CharField(max_length=255)
 
     class Meta:
@@ -304,7 +332,8 @@ class LanguageToCountry(models.Model):
 
 
 class Photo(models.Model):
-    photo_id = models.IntegerField(primary_key=True)
+    # photo_id = models.AutoField(primary_key=True)
+    # photo_id = models.IntegerField(primary_key=True)
     url = models.CharField(max_length=255)
     post = models.ForeignKey(ForumPost, models.DO_NOTHING, blank=True, null=True)
     spot = models.ForeignKey(Hitchspot, models.DO_NOTHING, blank=True, null=True)
@@ -316,11 +345,12 @@ class Photo(models.Model):
 
 
 class SpotFeedback(models.Model):
-    sf_id = models.IntegerField(primary_key=True)
+    # sf_id = models.AutoField(primary_key=True)
+    # sf_id = models.IntegerField(primary_key=True)
     hitchability = models.IntegerField()
     waiting_time = models.IntegerField()
     spot = models.ForeignKey(Hitchspot, models.DO_NOTHING)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    user = models.ForeignKey(MyUser, models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -328,7 +358,7 @@ class SpotFeedback(models.Model):
 
 
 class UserLikedComment(models.Model):
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING, primary_key=True)
+    user = models.ForeignKey(MyUser, models.DO_NOTHING, primary_key=True)
     comment = models.ForeignKey(Comment, models.DO_NOTHING)
 
     class Meta:
@@ -338,31 +368,10 @@ class UserLikedComment(models.Model):
 
 
 class UserLikedForumPost(models.Model):
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING, primary_key=True)
+    user = models.ForeignKey(MyUser, models.DO_NOTHING, primary_key=True)
     post = models.ForeignKey(ForumPost, models.DO_NOTHING)
 
     class Meta:
         managed = False
         db_table = 'user_liked_forum_post'
         unique_together = (('user', 'post'),)
-
-
-class Users(models.Model):
-    user_id = models.IntegerField(primary_key=True)
-    authUser = models.OneToOneField(AuthUser, on_delete=models.CASCADE)
-    # first_name = models.CharField(max_length=255)
-    # last_name = models.CharField(max_length=255)
-    # login = models.CharField(max_length=255)
-    # password = models.CharField(max_length=255)
-    # email_address = models.CharField(max_length=255)
-    # role = models.SmallIntegerField()
-    gender = models.SmallIntegerField()
-    birth_date = models.DateTimeField()
-    country = models.CharField(max_length=255)
-    city = models.CharField(max_length=255)
-
-    # date_of_reg = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'users'
