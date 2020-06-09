@@ -84,7 +84,6 @@ class Country(models.Model):
                            'WHERE creation_date > current_date - interval \'7 days\' '
                            'GROUP BY user_id) AS auxTable );', [self.id])
             most_active_user = cursor.fetchall()
-            print(most_active_user)
         return most_active_user
 
     @property

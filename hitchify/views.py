@@ -15,16 +15,20 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def add_post(request, country_id):
-    country = Country.objects.get(country_id=country_id)
+    country = Country.objects.get(id=country_id)
+
     if request.method == 'POST':
         form = forms.AddPostForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('add_post')
+            new_post = form.save(commit=False)
+            new_post.country = country
+            new_post.user = request.user
+            new_post.save()
+            return redirect('country', country_id)
 
-        else:
-            form = forms.AddPostForm()
-        return render(request, 'country.html', {'form': form, 'country': country})
+        # else:
+        #     form = forms.AddPostForm()
+        return render(request, 'post.html', {'form': form, 'country': country})
 
 
 def add_comment_to_post(request, post_id):
