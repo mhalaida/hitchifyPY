@@ -78,11 +78,35 @@ def add_point(request):
 
     with connection.cursor() as cursor:
         cursor.execute(
-            "INSERT INTO hitchspot (spot_id, latitude, longitude, description, avg_hitchability, avg_waiting_time, creation_date, last_update, country_id,user_id)"
+            "INSERT INTO hitchspot (id, latitude, longitude, description, avg_hitchability, avg_waiting_time, creation_date, last_update, country_id,user_id)"
             " VALUES (nextval('spot_sequence'), %s, %s, %s, %s, %s, now(), now(), %s, %s)",
             [lt, ln, description, avg_hitchability, avg_waiting_time, country_id, user_id])
 
-    country = Country.objects.get(country_id=country_id)
+    # down
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT COUNT(*) AS spot_count '
+                       'FROM hitchspot '
+                       'GROUP BY country_id '
+                       'HAVING country_id = %s', [country_id])
+        spots_num = cursor.fetchone()
+
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT SUM(avg_hitchability) AS spot_hitchability_sum '
+                       'FROM hitchspot '
+                       'GROUP BY country_id '
+                       'HAVING country_id = %s', [country_id])
+        spots_hitchability_sum = cursor.fetchone()
+
+    res = round((spots_hitchability_sum[0] / spots_num[0]), 2)
+
+    with connection.cursor() as cursor:
+        cursor.execute('UPDATE country '
+                       'SET hitchrating = %s '
+                       'WHERE id = %s', [res, country_id])
+
+    # up
+
+    country = Country.objects.get(id=country_id)
 
     context = {
         'country': country,
@@ -99,18 +123,18 @@ def login(request):
 
 
 def countries(request):
-    country = Country.objects.all()
+    countries = Country.objects.all()
 
     context = {
         'choose': 'country',
-        'country': country,
+        'countries': countries
     }
 
     return render(request, 'countries.html', context=context)
 
 
 def country(request, country_id):
-    country = Country.objects.get(country_id=country_id)
+    country = Country.objects.get(id=country_id)
 
     context = {
         'choose': 'country',
@@ -141,7 +165,7 @@ def forum(request):
 
 
 def post(request, post_id):
-    post = ForumPost.objects.get(post_id=post_id)
+    post = ForumPost.objects.get(id=post_id)
 
     context = {
         'post': post
@@ -175,7 +199,7 @@ def hitchify_map(request):
 
 
 def hitchify_map_country(request, country_id):
-    country = Country.objects.get(country_id=country_id)
+    country = Country.objects.get(id=country_id)
 
     context = {
         'country': country,

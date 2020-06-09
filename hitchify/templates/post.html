@@ -31,14 +31,14 @@
                 Comments:
                 <div id="comment-subholder"></div>
 
-                <div class="predefined-comment">
-                    <form action="{% url 'add_comment_to_post' post.post_id %}"
-                          method="post">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="button-style">Add comment</button>
-                    </form>
-                </div>
+{#                <div class="predefined-comment">#}
+{#                    <form action="{% url 'add_comment_to_post' post.post_id %}"#}
+{#                          method="post">#}
+{#                        {% csrf_token %}#}
+{#                        {{ form.as_p }}#}
+{#                        <button type="submit" class="button-style">Add comment</button>#}
+{#                    </form>#}
+{#                </div>#}
 
                 {#                <div class="comment predefined-comment">#}
                 {#                    <form action="{% url 'comment' %}" method="post">#}

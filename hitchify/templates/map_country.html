@@ -20,7 +20,7 @@
 
 	});
 
-	let xml_url = "{% url 'map_xml_country' country.country_id %}";
+	let xml_url = "{% url 'map_xml_country' country.id %}";
 	let flat = 48;
 	let flng = 17;
 
@@ -73,7 +73,7 @@
 							'<br>Description<br><textarea name="description" cols="50" rows="3"></textarea>' +
 							'<input name="lt" type="hidden" value="' + result[1] + '">' +
 							'<input name="ln" type="hidden" value="' + result[2] + '">' +
-							'<input name="country_id" type="hidden" value="{{ country.country_id }}">' +
+							'<input name="country_id" type="hidden" value="{{ country.id }}">' +
 							'<input name="user_id" type="hidden" value="{{ user.id }}">' +
 							'<br><button class="button-style" type="submit">Add this point</button><form></div>'
 

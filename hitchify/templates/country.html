@@ -12,7 +12,7 @@
                 </td>
                 <td style="border-color:rgb(47, 52, 55)" valign="top">
                     <div style="margin:16px 0 0 0px">
-                        <a href="{% url 'map_country' country.country_id %}">
+                        <a href="{% url 'map_country' country.id %}">
                             <button class="button-style">Show on Map</button>
                         </a>
                     </div>
@@ -37,6 +37,19 @@
             {% endif %}
         </div>
 
+        <br>
+        🦸🏾 Experts: <br>
+        {% for expert in country.expert_users %}
+        {{ expert.0 }} <br>
+        {% endfor %}
+
+        <br><br>
+        🦈 Most active users: <br>
+        {% for mau in country.most_active_user %}
+        {{ mau.0 }} <br>
+        {% endfor %}
+
+{#        {{ country.most_active_user.0 }}#}
 
         <div class="tab">
             <button class="tablinks active" onclick="openTab(event,'country-hitchspots')">Hitchspots</button>
@@ -79,7 +92,7 @@
                         <td>{{ spot.creation_date }}</td>
                         <td>{{ spot.last_update }}</td>
                         <td>
-                            <a href="{% url 'map_country' country.country_id %}">
+                            <a href="{% url 'map_country' country.id %}">
                                 <button id="add-hitchspot" class="button-style">Open</button>
                             </a>
                         </td>
@@ -89,7 +102,7 @@
             </table>
 
             <div class="bottom-toolbar">
-                <a href="{% url 'map_country' country.country_id %}">
+                <a href="{% url 'map_country' country.id %}">
                     <button id="add-hitchspot" class="button-style">Add</button>
                 </a>
             </div>
@@ -122,7 +135,7 @@
                 {% for post in country.forum_posts %}
                     <tr>
                         <td>{{ post.title }}</td>
-                        <td>{{ post.author }}</td>
+                        <td>{{ post.username }}</td>
                         <td>{{ post.creation_date }}</td>
                         <td>
                             {% if post.last_update is not None %}
@@ -139,7 +152,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <form action="{% url 'post' post.post_id %}">
+                            <form action="{% url 'post' post.id %}">
                                 <button type="submit" class="button-style">Open</button>
                             </form>
                         </td>
@@ -149,7 +162,7 @@
             </table>
 
             <div class="bottom-toolbar">
-                <form action="{% url 'add_post' country.country_id %}"
+                <form action="{% url 'add_post' country.id %}"
                       method="post">
                     {% csrf_token %}
                     {{ form.as_p }}
