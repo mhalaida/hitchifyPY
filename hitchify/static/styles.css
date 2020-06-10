@@ -282,8 +282,9 @@ table td, table th {
 }
 
 .highlight {
-    background: rgba(255, 220, 73, 0.5);
-    color: #2f3437;
+    /*background: rgba(255, 220, 73, 0.5);*/
+    /*color: #2f3437;*/
+    color: #FFFFFF;
     font-weight: 600;
     border: none;
     display: inline-block;
@@ -462,4 +463,8 @@ ul>li {
 
 .text_on_map {
 	color:gray
+}
+
+.table_color_none td {
+    border-color:rgb(47, 52, 55);
 }

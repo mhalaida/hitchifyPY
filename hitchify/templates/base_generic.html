@@ -1,58 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  {% block title %}<title>Hitchify</title>{% endblock %}
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  {% load static %}
-  <link rel="stylesheet" href="{% static 'styles.css' %}">
-  <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon" />
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    {% block title %}<title>Hitchify</title>{% endblock %}
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon"/>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 </head>
 <body>
-  <div class="container">
-      {% block sidebar %}
-      <div class="sidebar">
-          <div class="sidebar-member workspace-label" >
-            <img src="{% static 'logo.png' %}" width="30px" /><span style="margin-left: 5px; margin-top: 4px; font-size: 21px">Hitchify</span>
-          </div>
-      {% if user.is_authenticated %}
-          <a href="{% url 'map' %}">
-            <div class="sidebar-member {% if choose == 'map' %}chosen{% endif %}">
-                <span class="sidebar-member-icon">🗺️</span>
-                <span class="sidebar-member-label">Map</span>
+<div class="container">
+    {% block sidebar %}
+        <div class="sidebar">
+            <div class="sidebar-member workspace-label">
+                <img src="{% static 'logo.png' %}" width="30px"/><span
+                    style="margin-left: 5px; margin-top: 4px; font-size: 21px">Hitchify</span>
             </div>
-          </a>
-          <a href="{% url 'countries' %}">
-            <div class="sidebar-member {% if choose == 'country' %}chosen{% endif %}">
-                <span class="sidebar-member-icon">🌐</span>
-                <span class="sidebar-member-label">Countries</span>
+            {% if user.is_authenticated %}
+                <a href="{% url 'map' %}">
+                    <div class="sidebar-member {% if choose == 'map' %}chosen{% endif %}">
+                        <span class="sidebar-member-icon">🗺️</span>
+                        <span class="sidebar-member-label">Map</span>
+                    </div>
+                </a>
+                <a href="{% url 'countries' %}">
+                    <div class="sidebar-member {% if choose == 'country' %}chosen{% endif %}">
+                        <span class="sidebar-member-icon">🌐</span>
+                        <span class="sidebar-member-label">Countries</span>
+                    </div>
+                </a>
+            {% endif %}
+            <a href="{% url 'login' %}">
+                <div class="sidebar-member">
+                    <span class="sidebar-member-icon">🔑</span>
+                    <span class="sidebar-member-label">{% if user.is_authenticated %}Logout{% else %}
+                        Login{% endif %}</span>
+                </div>
+            </a>
+            <div class="sidebar-user-label">
+                <div class="sidebar-member"><span class="sidebar-member-icon">👋</span><span
+                        class="sidebar-member-label">Hi,
+                    {% if user.is_authenticated %}
+                        {{ user.get_username }}
+                    {% else %}
+                        Stranger
+                    {% endif %}
+                    <span class="username"></span></span></div>
             </div>
-          </a>
-      {% endif %}
-          <a href="{% url 'login' %}">
-            <div class="sidebar-member">
-				<span class="sidebar-member-icon">🔑</span>
-				<span class="sidebar-member-label">{% if user.is_authenticated %}Logout{% else %}Login{% endif %}</span>
-			</div>
-          </a>
-          <div class="sidebar-user-label">
-            <div class="sidebar-member"><span class="sidebar-member-icon">👋</span><span
-                    class="sidebar-member-label">Hi,
-                        {% if user.is_authenticated %}
-							{{ user.get_username }}
-                        {% else %}
-							Stranger
-                        {% endif %}
-                <span class="username"></span></span></div>
-          </div>
-      </div>
-      {% endblock %}
+        </div>
+    {% endblock %}
 
-      <div class="frame">
-          {% block content %}{% endblock %}
-      </div>
-	  
-  </div>
-  
+    <div class="frame">
+        {% block content %}{% endblock %}
+    </div>
+
+</div>
+
 </body>
 </html>

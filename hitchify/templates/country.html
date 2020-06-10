@@ -1,161 +1,211 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-        <div class="sub-container">
-			
-			<table style="width:auto">
-			<tr>
-				<td style="border-color:rgb(47, 52, 55)">
-					<div class="sub-container-title">
-						<span class="countryname">{{ country.country_name }}</span>
-					</div>
-				</td>
-				<td style="border-color:rgb(47, 52, 55)" valign="top">
-					<div style="margin:16px 0 0 0px">
-						<a href="{% url 'map_country' country.country_id %}"><button class="button-style">Show on Map</button></a>
-					</div>	
-				</td>
-			</tr>
-			</table>
-			
-			<br>
-			<div>ℹ️ {{ country.short_description }}</div>
-			<br>
-			<div>🗣️ Languages:
-				{% for lang in country.languages %}
-					{{ lang }},
-				{% endfor %}
-			</div>
-			<div>💶 Currency: {{ country.national_currency }}</div>
-			<div>⭐ Hitchrating: {{ country.hitchrating }}</div>				
-			
+    <div class="sub-container">
 
-            <div class="tab">
-                <button class="tablinks active" onclick="openTab(event,'country-hitchspots')">Hitchspots</button>
-                <button class="tablinks" onclick="openTab(event, 'country-posts')">Posts</button>
-                <button class="tablinks" onclick="openTab(event, 'guides')">Guides</button>
+        <table style="width:auto">
+            <tr>
+                <td style="border-color:rgb(47, 52, 55)">
+                    <div class="sub-container-title">
+                        <span class="countryname">{{ country.country_name }}</span>
+                    </div>
+                </td>
+                <td style="border-color:rgb(47, 52, 55)" valign="top">
+                    <div style="margin:16px 0 0 0px">
+                        <a href="{% url 'map_country' country.id %}">
+                            <button class="button-style">Show on Map</button>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <br>
+        <div>ℹ️ {{ country.short_description }}</div>
+        <br>
+        <div>🗣️ Languages:
+            {% for lang in country.languages %}
+                {{ lang }};
+            {% endfor %}
+        </div>
+        <div>💶 Currency: {{ country.national_currency }}</div>
+        <div>⭐ Hitchrating:
+            {% if country.hitchrating == 0 %}
+                No rating yet! Contribute by adding your hitchspots.
+            {% else %}
+                {{ country.hitchrating }}
+            {% endif %}
+        </div>
+
+        <br>
+        🦸🏾 Experts: <br>
+        {% for expert in country.expert_users %}
+        {{ expert.0 }} <br>
+        {% endfor %}
+
+        <br><br>
+        🦈 Most active users: <br>
+        {% for mau in country.most_active_user %}
+        {{ mau.0 }} <br>
+        {% endfor %}
+
+        <div class="tab">
+            <button id="button_1" class="tablinks active" onclick="openTab(1,'country-hitchspots')">Hitchspots</button>
+            <button id="button_2" class="tablinks" onclick="openTab(2, 'country-posts')">Posts</button>
+            <button id="button_3" class="tablinks" onclick="openTab(3, 'guides')">Guides</button>
+        </div>
+
+        <div id="country-hitchspots" class="tabcontent">
+            <div class="top-toolbar">
+                <form id="filter-hitchspot">
+                    <input class="input_black" name="query" placeholder="Query">
+                    <select class="select_black" name="select">
+                        <option>Date</option>
+                        <option selected>Hitchability</option>
+                        <option>Waiting time</option>
+                    </select>
+                    <button type="submit" class="button-style">Filter</button>
+                </form>
             </div>
-
-            <div id="country-hitchspots" class="tabcontent">
-                <div class="top-toolbar">
-                    <form id="filter-hitchspot">
-                        <input class="input_black" name="query" placeholder="Query">
-                        <select class="select_black" name="select">
-                            <option >Date</option>
-                            <option selected  >Hitchability</option>
-                            <option >Waiting time</option>
-                        </select>
-                        <button type="submit" class="button-style">Filter</button>
-                    </form>					
-                </div>
-                <table class="table">
-                    <thead>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>🧭 Coordinates</th>
+                    <th>🔍 Description</th>
+                    <th>👍 Hitchability</th>
+                    <th>🕑 Waiting time</th>
+                    <th>📆 Created</th>
+                    <th>📆 Updated</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="hitchspots-grid">
+                {% for spot in country.hitchspots %}
                     <tr>
-                        <th>🧭 Coordinates</th>
-                        <th>🔍 Description</th>
-                        <th>👍 Hitchability</th>
-                        <th>🕑 Waiting time</th>
-                        <th>📆 Created</th>
-                        <th>📆 Updated</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody id="hitchspots-grid">
-                    {% for spot in country.hitchspots %}
-                        <tr>
                         <td>{{ spot.latitude }};
-                        {{ spot.longitude }}</td>
+                            {{ spot.longitude }}</td>
                         <td>{{ spot.description }}</td>
                         <td>{{ spot.avg_hitchability }}</td>
                         <td>{{ spot.avg_waiting_time }}</td>
                         <td>{{ spot.creation_date }}</td>
                         <td>{{ spot.last_update }}</td>
-                        <td><button class="button-style">Open</button></td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                        <td>
+                            <a href="{% url 'map_country' country.id %}">
+                                <button id="add-hitchspot" class="button-style">Open</button>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
 
-                <div class="bottom-toolbar" >
-                    <a href="{% url 'map_country' country.country_id %}"><button id="add-hitchspot" class="button-style">Add</button></a>
-                </div>
+            <div class="bottom-toolbar">
+                <a href="{% url 'map_country' country.id %}">
+                    <button id="add-hitchspot" class="button-style">Add</button>
+                </a>
+            </div>
+        </div>
+
+        <div id="country-posts" class="tabcontent">
+            <div class="top-toolbar">
+                <form id="filter-posts">
+                    <input class="input_black" name="query" placeholder="Query">
+                    <select class="select_black" name="select">
+                        <option selected>Title</option>
+                        <option>Author</option>
+                    </select>
+                    <button type="submit" class="button-style">Filter</button>
+                </form>
             </div>
 
-            <div id="country-posts" class="tabcontent">
-                <div class="top-toolbar">
-                    <form id="filter-posts">
-                        <input class="input_black" name="query" placeholder="Query">
-                        <select class="select_black" name="select">
-                            <option selected >Title</option>
-                            <option >Author</option>
-                        </select>
-                        <button type="submit" class="button-style">Filter</button>
-                    </form>
-                </div>
-
-                <table class="table">
-                    <thead>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>🔖 Title</th>
+                    <th>👤 Author</th>
+                    <th>📆 Created</th>
+                    <th>📆 Updated</th>
+                    <th>❤ Likes</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="posts-grid">
+                {% for post in country.forum_posts %}
                     <tr>
-                        <th>🔖 Title</th>
-                        <th>👤 Author</th>
-                        <th>📆 Created</th>
-                        <th>📆 Updated</th>
-                        <th>❤ Likes</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody id="posts-grid">
-                    {% for post in country.forum_posts %}
-                        <tr>
                         <td>{{ post.title }}</td>
-                        <td>{{ post.author }}</td>
+                        <td>{{ post.username }}</td>
                         <td>{{ post.creation_date }}</td>
-                        <td>{{ post.last_update }}</td>
-                        <td>{{ post.likes }}</td>
                         <td>
-                            <form action="{% url 'post' post.post_id %}">
+                            {% if post.last_update is not None %}
+                                {{ post.last_update }}
+                            {% else %}
+                                -/-
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if post.likes is not None %}
+                                {{ post.likes }}
+                            {% else %}
+                                0
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="{% url 'post' post.id %}">
                                 <button type="submit" class="button-style">Open</button>
                             </form>
                         </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
 
-                <div class="bottom-toolbar" >
-                    <button id="add-post" class="button-style">Add</button>
-                </div>
-
+            <div class="bottom-toolbar">
+                <form action="{% url 'add_post' country.id %}"
+                      method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="button-style">Add</button>
+                </form>
             </div>
 
-            <div id="guides" class="tabcontent">
-                <p>guides</p>
-            </div>
         </div>
-		
-		<script>
-			function openTab(evt, tabName) {
-				let i, tabcontent, tablinks;
-				tabcontent = document.getElementsByClassName("tabcontent");
-				for (i = 0; i < tabcontent.length; i++) {
-					tabcontent[i].style.display = "none";
-				}
-				tablinks = document.getElementsByClassName("tablinks");
-				
-				let ii = 0;
-				if (evt == 1) {
-					ii = 1;
-				}
-				
-				for (i = ii; i < tablinks.length; i++) {
-					
-					tablinks[i].className = tablinks[i].className.replace(" active", "");
-				}
-				document.getElementById(tabName).style.display = "block";
-				if (evt != 1) evt.currentTarget.className += " active";
-			}
-			openTab(1,'country-hitchspots');
-		</script>
+
+        <div id="guides" class="tabcontent">
+            <p>guides</p>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            let i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+
+            let ii = 0;
+            if (evt == 1) {
+                ii = 1;
+            }
+
+            for (i = ii; i < tablinks.length; i++) {
+
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            if (evt != 1) $('#button_'+evt).addClass('active');
+        }
+
+        let doc_url = document.location.href+'';
+
+        if (doc_url.match(/posts$/) != null) {
+            openTab(2, 'country-posts');
+        } else {
+            openTab(1, 'country-hitchspots');
+        }
+
+    </script>
 
 {% endblock %}
 

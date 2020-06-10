@@ -1,49 +1,93 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<div class="sub-container">
-    <div class="sub-container-title">Post</div>
+    <div class="sub-container">
 
-    <div class="properties-holder">
+        <div class="sub-container-title">{{ post.title }}</div>
+        <div class="properties-holder">
 
-        <div class="property">
-            <div class="property-name"><span class="property-icon">🔖</span>Title</div>
-            <div id="title" contenteditable="true" spellcheck="false" class="property-value text-property">{{ post.title }}</div>
-        </div>
-
-        <div class="property">
-            <div class="property-name"><span class="property-icon">🌐</span>Country</div>
-            <div class="property-value select-property">{{ post.country.country_name }}</div>
-        </div>
-
-        <div class="property">
-            <div class="property-name"><span class="property-icon">📆</span>Creation Date</div>
-            <div id="created" class="property-value">{{ post.creation_date }}</div>
-        </div>
-
-        <div class="property">
-            <div class="property-name"><span class="property-icon">📆</span>Last Update Date</div>
-            <div id="updated" class="property-value">{{ post.last_update }}</div>
-        </div>
-
-        <div class="ticket-content-holder">
-            <span spellcheck="false" contenteditable="true" id="body-text" class="highlight">{{ post.body_text }}</span>
-        </div>
-
-        <button class=" button-style" style="margin-top: 10px;" id="save">Save</button>
-
-        <div id="comments-holder" class="comments-holder">
-
-            <div id="comment-subholder"></div>
-
-            <div class="comment predefined-comment">
-                <textarea spellcheck="false" id="newCommentInput" class="new-comment-textarea"></textarea>
-                <button id="addComment" class= "button-style" style="margin-top: 10px;">Add Comment</button>
+            <div class="property">
+                <div class="property-name"><span class="property-icon">🌐</span>Country</div>
+                <div class="property-value select-property">{{ post.country.country_name }}</div>
             </div>
+
+            <div class="property">
+                <div class="property-name"><span class="property-icon">👤</span>Author</div>
+                <div class="property-value select-property">{{ post.user.username }}</div>
+            </div>
+
+            <div class="property">
+                <div class="property-name"><span class="property-icon">📆</span>Creation Date</div>
+                <div id="created" class="property-value">{{ post.creation_date }}</div>
+            </div>
+
+            {% if post.last_update != null %}
+                <div class="property">
+                    <div class="property-name"><span class="property-icon">📆</span>Last Update Date</div>
+                    <div id="updated" class="property-value">{{ post.last_update }}</div>
+                </div>
+            {% endif %}
+
+            <div class="ticket-content-holder">
+                <span spellcheck="false" contenteditable="true" id="body-text"
+                      class="highlight">{{ post.body_text }}</span>
+            </div>
+
+            {% if user.id == post.user.id %}
+                <button class=" button-style" style="margin-top: 10px;" id="save">Save</button>
+            {% endif %}
+
+            {% if post.id is not Null %}
+            <a href="{% url 'like_post' post.id %}" class="button-style" style="margin-top: 10px">❤️</a> :
+            {{ post.likes }}
+            {% endif %}
+{#            <button id="addLike" class="button-style" style="margin-top: 10px;">❤️ Like</button>#}
+
+            {% if post.comments.length > 0 %}
+                <div id="comments-holder" class="comments-holder">
+
+                    Comments:
+                    <div id="comment-subholder"></div>
+
+                    {#                <div class="predefined-comment">#}
+                    {#                    <form action="{% url 'add_comment_to_post' post.post_id %}"#}
+                    {#                          method="post">#}
+                    {#                        {% csrf_token %}#}
+                    {#                        {{ form.as_p }}#}
+                    {#                        <button type="submit" class="button-style">Add comment</button>#}
+                    {#                    </form>#}
+                    {#                </div>#}
+
+                    {#                <div class="comment predefined-comment">#}
+                    {#                    <form action="{% url 'comment' %}" method="post">#}
+                    {#                        <input type="text" id="newCommentInput" spellcheck="false" class="new-comment-textarea">#}
+                    {#                        <button type="submit" class="button-style" style="margin-top: 10px;"> Add comment</button>#}
+                    {#                    </form>#}
+                    {#                </div>#}
+
+                    {% for comment in post.comments %}
+                        <div class="comment">
+                            <div class="comment-timestamp">{{ comment.creation_date }}</div>
+                            <div class="comment-author">{{ comment.author_username }}</div>
+                            <div class="comment-content">{{ comment.body_text }}</div>
+                        </div>
+                    {% endfor %}
+
+                    {#                <div class="comment">#}
+                    {#                    <div class="comment-timestamp">11/02/2020 13:12</div>#}
+                    {#                    <div class="comment-author">mhalaida</div>#}
+                    {#                    <div class="comment-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod#}
+                    {#                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud#}
+                    {#                        exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in#}
+                    {#                        reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint#}
+                    {#                        occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.#}
+                    {#                    </div>#}
+                    {#                </div>#}
+
+                </div>
+            {% endif %}
 
         </div>
 
     </div>
-
-</div>
 {% endblock %}

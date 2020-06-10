@@ -4,6 +4,15 @@
 
 {% block content %}
     <div class="sub-container">
+        {% if user.is_authenticated %}
+            <div class="sub-container-title"><span class="login-icon">🔓</span> Hi, <span
+                    class="username">{{ user.get_username }}</span></div>
+        {% else %}
+            <div class="sub-container-title"><span class="login-icon">🔐</span> Hi, <span
+                    class="username">Stranger</span></div>
+        {% endif %}
+
+
         <div class="login-container">
             <form method="post">
                 {% csrf_token %}
