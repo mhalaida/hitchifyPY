@@ -109,7 +109,7 @@ def add_point(request):
     with connection.cursor() as cursor:
         cursor.execute(
             "INSERT INTO hitchspot (id, latitude, longitude, description, avg_hitchability, avg_waiting_time, creation_date, last_update, country_id,user_id)"
-            " VALUES (nextval('spot_sequence'), %s, %s, %s, %s, %s, now(), now(), %s, %s)",
+            " VALUES (nextval('hitchspot_id_seq'), %s, %s, %s, %s, %s, now(), now(), %s, %s)",
             [lt, ln, description, avg_hitchability, avg_waiting_time, country_id, user_id])
 
     with connection.cursor() as cursor:
