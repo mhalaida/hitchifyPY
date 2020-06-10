@@ -211,8 +211,12 @@ def guides(request):
     return render(request, 'guides.html', context=context)
 
 
-def guide(request):
-    context = {}
+def guide(request, guide_id):
+    guide = Guide.objects.get(id=guide_id)
+
+    context = {
+        'guide': guide
+    }
 
     return render(request, 'guide.html', context=context)
 
