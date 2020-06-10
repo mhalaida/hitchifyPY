@@ -9,12 +9,35 @@ from hitchify.models import Comment, Country, ForumPost, Guide, \
     UserLikedComment, UserLikedForumPost
 
 from . import forms
+from django.db import connection
 
 # Create your views here.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+def like_post(request, post_id):
+
+    post = ForumPost.objects.get(id = post_id)
+    user = request.user
+
+    # if request.method == 'POST':
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "INSERT INTO user_liked_forum_post (user_id, post_id) "
+            "VALUES (%s, %s)",
+            [user.id, post.id])
+
+    with connection.cursor() as cursor:
+        cursor.execute('UPDATE forum_post '
+                       'SET likes = likes + 1 '
+                       'WHERE id = %s', [post_id])
+
+    return redirect('post', post_id)
+
+
 def add_post(request, country_id):
+
     country = Country.objects.get(id=country_id)
 
     if request.method == 'POST':
@@ -26,9 +49,10 @@ def add_post(request, country_id):
             new_post.save()
             return redirect('country', country_id)
 
-        # else:
-        #     form = forms.AddPostForm()
-        return render(request, 'post.html', {'form': form, 'country': country})
+        else:
+            form = forms.AddPostForm()
+
+        return render(request, 'country.html', {'form': form, 'country': country})
 
 
 def add_comment_to_post(request, post_id):
@@ -86,7 +110,6 @@ def add_point(request):
             " VALUES (nextval('spot_sequence'), %s, %s, %s, %s, %s, now(), now(), %s, %s)",
             [lt, ln, description, avg_hitchability, avg_waiting_time, country_id, user_id])
 
-    # down
     with connection.cursor() as cursor:
         cursor.execute('SELECT COUNT(*) AS spot_count '
                        'FROM hitchspot '
@@ -107,8 +130,6 @@ def add_point(request):
         cursor.execute('UPDATE country '
                        'SET hitchrating = %s '
                        'WHERE id = %s', [res, country_id])
-
-    # up
 
     country = Country.objects.get(id=country_id)
 

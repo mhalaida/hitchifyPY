@@ -32,7 +32,11 @@
                 <button class=" button-style" style="margin-top: 10px;" id="save">Save</button>
             {% endif %}
 
-            <button id="addLike" class="button-style" style="margin-top: 10px;">❤️ Like</button>
+            {% if post.id is not Null %}
+            <a href="{% url 'like_post' post.id %}" class="button-style" style="margin-top: 10px">❤️</a> :
+            {{ post.likes }}
+            {% endif %}
+{#            <button id="addLike" class="button-style" style="margin-top: 10px;">❤️ Like</button>#}
 
             {% if post.comments.length > 0 %}
                 <div id="comments-holder" class="comments-holder">

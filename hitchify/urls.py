@@ -15,6 +15,7 @@ urlpatterns = [
     path('forum/', views.forum, name='forum'),
     path('post/<post_id>', views.post, name='post'),
     path('country/<country_id>/add_post/', views.add_post, name='add_post'),
+    path('post/<post_id>/like', views.like_post, name='like_post'),
     path('post/<post_id>/add_comment/', views.add_comment_to_post, name='add_comment_to_post'),
     path('guides/', views.guides, name='guides'),
     path('guide/', views.guide, name='guide'),

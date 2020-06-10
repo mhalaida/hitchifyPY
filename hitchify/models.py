@@ -127,7 +127,7 @@ class Country(models.Model):
 class ForumPost(models.Model):
     title = models.CharField(max_length=255)
     body_text = models.TextField()
-    likes = models.IntegerField(blank=True, null=True)
+    likes = models.IntegerField(blank=True, null=True, default=0)
     creation_date = models.DateField(auto_now_add=True)
     last_update = models.DateField(blank=True, null=True)
     user = models.ForeignKey(User, models.DO_NOTHING)
@@ -197,7 +197,7 @@ class Language(models.Model):
 
 
 class LanguageToCountry(models.Model):
-    language = models.ForeignKey(Language, models.DO_NOTHING, primary_key=True)
+    language = models.ForeignKey(Language, models.DO_NOTHING)
     country = models.ForeignKey(Country, models.DO_NOTHING)
 
     class Meta:
@@ -231,7 +231,7 @@ class SpotFeedback(models.Model):
 
 class UserLikedComment(models.Model):
     # user = models.ForeignKey(MyUser, models.DO_NOTHING, primary_key=True)
-    user = models.ForeignKey(User, models.DO_NOTHING, primary_key=True)
+    user = models.ForeignKey(User, models.DO_NOTHING)
     comment = models.ForeignKey(Comment, models.DO_NOTHING)
 
     class Meta:
@@ -242,7 +242,7 @@ class UserLikedComment(models.Model):
 
 class UserLikedForumPost(models.Model):
     # user = models.ForeignKey(MyUser, models.DO_NOTHING, primary_key=True)
-    user = models.ForeignKey(User, models.DO_NOTHING, primary_key=True)
+    user = models.ForeignKey(User, models.DO_NOTHING)
     post = models.ForeignKey(ForumPost, models.DO_NOTHING)
 
     class Meta:

@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'hitchifyPY.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'hitchifypg2',
+        'NAME': 'hitchifypg3',
         'USER': 'postgres',
         'PASSWORD': 'root',
         'HOST': '127.0.0.1',
