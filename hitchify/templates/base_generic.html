@@ -29,6 +29,12 @@
                         <span class="sidebar-member-label">Countries</span>
                     </div>
                 </a>
+                <a href="{% url 'guides' %}">
+                    <div class="sidebar-member {% if choose == 'guide' %}chosen{% endif %}">
+                        <span class="sidebar-member-icon">📜</span>
+                        <span class="sidebar-member-label">Guides</span>
+                    </div>
+                </a>
             {% endif %}
             <a href="{% url 'login' %}">
                 <div class="sidebar-member">
