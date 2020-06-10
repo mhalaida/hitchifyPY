@@ -47,7 +47,7 @@ def add_post(request, country_id):
             new_post.country = country
             new_post.user = request.user
             new_post.save()
-            return redirect('country', country_id)
+            return redirect('country_post', country_id)
             # return render(request, 'new_post.html', {'form': form, 'country': country})
 
         else:

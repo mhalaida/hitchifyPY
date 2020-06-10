@@ -68,7 +68,7 @@
 							'<b>Add point to {{ country.country_name }}</b>' +
 							'<br><form action="{% url 'add_point' %}" method="post">{% csrf_token %}' +
 							'Coord: ' + result[1] + ', ' + result[2] + 							
-							'<br><br>Hitchability (1-5)<br><input name="avg_hitchability" type="text">' +
+							'<br><br>Hitchability (1-5)<br><input name="avg_hitchability" type="text" style="padding:0">' +
 							'<br>Waiting time (min)<br><input name="avg_waiting_time" type="text">' +							
 							'<br>Description<br><textarea name="description" cols="50" rows="3"></textarea>' +
 							'<input name="lt" type="hidden" value="' + result[1] + '">' +

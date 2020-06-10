@@ -464,3 +464,7 @@ ul>li {
 .text_on_map {
 	color:gray
 }
+
+.table_color_none td {
+    border-color:rgb(47, 52, 55);
+}

@@ -11,6 +11,7 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('countries/', views.countries, name='countries'),
     path('country/<country_id>', views.country, name='country'),
+    path('country/<country_id>/?posts', views.country, name='country_post'),
     path('hitchspots/', views.hitchspots, name='hitchspots'),
     path('forum/', views.forum, name='forum'),
     path('post/<post_id>', views.post, name='post'),

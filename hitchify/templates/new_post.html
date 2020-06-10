@@ -1,10 +1,46 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <form action="{% url 'add_post' country.id %}"
-          method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="button-style">Add</button>
-    </form>
+
+     <div class="sub-container">
+        <form action="{% url 'add_post' country.id %}"
+              method="post">
+            {% csrf_token %}
+
+            <table class="table_color_none">
+            <tr>
+                <td colspan="2">
+                    Add post about <b>{{ country.country_name }}</b>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Title
+                </td>
+                <td>
+                    <input name="title" style="width: 500px" value="">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Text
+                </td>
+                <td>
+                    <textarea name="body_text" style="width: 500px; height: 200px"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    <button type="submit" class="button-style">Add</button>
+                </td>
+            </tr>
+
+            </table>
+
+        </form>
+
+     </div>
+
 {% endblock %}
