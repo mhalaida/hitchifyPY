@@ -1,0 +1,10 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <form action="{% url 'add_post' country.id %}"
+          method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="button-style">Add</button>
+    </form>
+{% endblock %}

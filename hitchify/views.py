@@ -48,11 +48,13 @@ def add_post(request, country_id):
             new_post.user = request.user
             new_post.save()
             return redirect('country', country_id)
+            # return render(request, 'new_post.html', {'form': form, 'country': country})
 
         else:
             form = forms.AddPostForm()
 
-        return render(request, 'country.html', {'form': form, 'country': country})
+        # return render(request, 'country.html', {'form': form, 'country': country})
+        return render(request, 'new_post.html', {'form': form, 'country': country})
 
 
 def add_comment_to_post(request, post_id):
