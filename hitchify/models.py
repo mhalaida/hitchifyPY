@@ -26,31 +26,6 @@ class MyUser(models.Model):
         db_table = 'myuser'
 
 
-class Comment(models.Model):
-    body_text = models.TextField()
-    likes = models.IntegerField()
-    creation_date = models.DateField(auto_now_add=True)
-    last_update = models.DateField(blank=True, null=True)
-    parent_comment = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True,
-                                          related_name='child_comment')
-    spot = models.ForeignKey('Hitchspot', models.DO_NOTHING, blank=True, null=True)
-    post = models.ForeignKey('ForumPost', models.DO_NOTHING, blank=True, null=True)
-    user = models.ForeignKey(User, models.DO_NOTHING)
-
-    @property
-    def author_username(self):
-        with connection.cursor() as cursor:
-            cursor.execute('SELECT username '
-                           'FROM auth_user '
-                           'WHERE id = %s', [self.user_id])
-            author_usn = cursor.fetchone()
-        return author_usn
-
-    class Meta:
-        managed = True
-        db_table = 'comment'
-
-
 class Country(models.Model):
     country_name = models.CharField(max_length=255)
     short_description = models.CharField(max_length=255)
@@ -135,12 +110,22 @@ class ForumPost(models.Model):
 
     @property
     def comments(self):
-        with connection.cursor() as cursor:
-            cursor.execute('SELECT * '
-                           'FROM comment '
-                           'WHERE post_id = %s ', [self.id])
-            comments = cursor.fetchall()
-            return comments
+        res_comments = Comment.objects.raw('SELECT * '
+                                           'FROM comment '
+                                           'WHERE post_id = %s', [self.id])
+        res_comments_list = []
+        for comment in res_comments:
+            res_comments_list.append(comment)
+
+        return res_comments_list
+
+        # with connection.cursor() as cursor:
+        #     cursor.execute('SELECT * '
+        #                    'FROM comment '
+        #                    'WHERE post_id = %s ', [self.id])
+        #     comments = cursor.fetchall()
+        #     print(comments)
+        #     return comments
 
     class Meta:
         managed = True
@@ -227,6 +212,50 @@ class SpotFeedback(models.Model):
     class Meta:
         managed = True
         db_table = 'spot_feedback'
+
+
+class Comment(models.Model):
+    body_text = models.TextField()
+    likes = models.IntegerField(blank=True, null=True, default=0)
+    creation_date = models.DateField(auto_now_add=True)
+    last_update = models.DateField(blank=True, null=True)
+    parent_comment = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True,
+                                          related_name='child_comment')
+    spot = models.ForeignKey(Hitchspot, models.DO_NOTHING, blank=True, null=True)
+    post = models.ForeignKey(ForumPost, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(User, models.DO_NOTHING)
+
+    @property
+    def sub_comments(self):
+        res_subcomments = Comment.objects.raw('SELECT * '
+                                              'FROM comment '
+                                              'WHERE parent_comment_id = %s', [self.id])
+        res_subcomments_list = []
+        for subcomment in res_subcomments:
+            res_subcomments_list.append(subcomment)
+
+        return res_subcomments_list
+
+        # with connection.cursor() as cursor:
+        #     cursor.execute('SELECT * '
+        #                    'FROM comment '
+        #                    'WHERE parent_comment_id = %s', [self.id])
+        #     sub_comments = cursor.fetchall()
+        # return sub_comments
+
+    @property
+    def author_username(self):
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT username '
+                           'FROM auth_user '
+                           'WHERE id = %s', [self.user.id])
+            author_usn = cursor.fetchone()
+            # print(author_usn)
+            return author_usn
+
+    class Meta:
+        managed = True
+        db_table = 'comment'
 
 
 class UserLikedComment(models.Model):

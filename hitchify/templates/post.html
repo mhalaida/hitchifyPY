@@ -43,7 +43,7 @@
             {% endif %}
 {#            <button id="addLike" class="button-style" style="margin-top: 10px;">❤️ Like</button>#}
 
-            {% if post.comments.length > 0 %}
+{#            {% if post.comments.length > 0 %}#}
                 <div id="comments-holder" class="comments-holder">
 
                     Comments:
@@ -67,9 +67,15 @@
 
                     {% for comment in post.comments %}
                         <div class="comment">
-                            <div class="comment-timestamp">{{ comment.creation_date }}</div>
-                            <div class="comment-author">{{ comment.author_username }}</div>
-                            <div class="comment-content">{{ comment.body_text }}</div>
+                            <div class="comment-timestamp">{{ comment.creation_date }} – {{ comment.user.username }}</div>
+{#                            <div class="comment-author">{{ comment.user.username }}</div>#}
+                            <div class="comment-content">{{ comment.body_text}}</div>
+                            {% for subcomment in comment.sub_comments %}
+                                <div class="comment" style="padding-left: 50px">
+                                    <div class="comment-timestamp">{{ subcomment.creation_date }} – {{ subcomment.user.username }}</div>
+                                    <div class="comment-content">{{ subcomment.body_text}}</div>
+                                </div>
+                            {% endfor %}
                         </div>
                     {% endfor %}
 
@@ -85,7 +91,7 @@
                     {#                </div>#}
 
                 </div>
-            {% endif %}
+{#            {% endif %}#}
 
         </div>
 
