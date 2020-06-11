@@ -58,12 +58,15 @@ def add_post(request, country_id):
 
 
 def add_comment_to_post(request, post_id):
-    post = ForumPost.objects.get(post_id=post_id)
+    post = ForumPost.objects.get(id=post_id)
     if request.method == 'POST':
         form = forms.CommentForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('add_comment_to_post')
+            new_comment = form.save(commit=False)
+            new_comment.post = post
+            new_comment.user = request.user
+            new_comment.save()
+            return redirect('/post/'+post_id+'#new_comment')
 
         else:
             form = forms.CommentForm()

@@ -33,14 +33,18 @@
                       class="highlight">{{ post.body_text }}</span>
             </div>
 
-            {% if user.id == post.user.id %}
-                <button class=" button-style" style="margin-top: 10px;" id="save">Save</button>
-            {% endif %}
+            {#  {% if user.id == post.user.id %} #}
+            {#      <button class=" button-style" style="margin-top: 10px;" id="save">Save</button> #}
+            {#  {% endif %} #}
+
 
             {% if post.id is not Null %}
-            <a href="{% url 'like_post' post.id %}" class="button-style" style="margin-top: 10px">❤️</a> :
-            {{ post.likes }}
+                <a href="{% url 'like_post' post.id %}" class="button-style" style="margin-top: 10px">❤️</a> :
+                {{ post.likes }}
             {% endif %}
+
+            <a href="#new_comment" onclick="$('#title_comment').html('Add new comment:'); $('#parent_comment').val('');">Add comment</a>
+
 {#            <button id="addLike" class="button-style" style="margin-top: 10px;">❤️ Like</button>#}
 
 {#            {% if post.comments.length > 0 %}#}
@@ -67,7 +71,9 @@
 
                     {% for comment in post.comments %}
                         <div class="comment">
-                            <div class="comment-timestamp">{{ comment.creation_date }} – {{ comment.user.username }}</div>
+                            <div class="comment-timestamp">
+                                {{ comment.creation_date }} – {{ comment.user.username }} <a href="#new_comment" onclick="$('#title_comment').html('Add reply to comment {{ comment.creation_date }} – {{ comment.user.username }}:'); $('#parent_comment').val({{ comment.id }});">Reply</a>
+                            </div>
 {#                            <div class="comment-author">{{ comment.user.username }}</div>#}
                             <div class="comment-content">{{ comment.body_text}}</div>
                             {% for subcomment in comment.sub_comments %}
@@ -78,6 +84,18 @@
                             {% endfor %}
                         </div>
                     {% endfor %}
+
+                    <br>
+                    <div id="new_comment" class="predefined-comment">
+                        <form action="{% url 'add_comment_to_post' post.id %}" method="post">
+                            {% csrf_token %}
+                            <div id="title_comment">Add new comment:</div>
+                            <input id="parent_comment" type="hidden" name="parent_comment" value="">
+                            <textarea name="body_text" rows="7" cols="60"></textarea>
+                            <br>
+                            <button type="submit" class="button-style">Add comment</button>
+                        </form>
+                    </div>
 
                     {#                <div class="comment">#}
                     {#                    <div class="comment-timestamp">11/02/2020 13:12</div>#}

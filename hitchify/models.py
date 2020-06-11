@@ -112,7 +112,7 @@ class ForumPost(models.Model):
     def comments(self):
         res_comments = Comment.objects.raw('SELECT * '
                                            'FROM comment '
-                                           'WHERE post_id = %s', [self.id])
+                                           'WHERE parent_comment_id IS NULL AND post_id = %s', [self.id])
         res_comments_list = []
         for comment in res_comments:
             res_comments_list.append(comment)
