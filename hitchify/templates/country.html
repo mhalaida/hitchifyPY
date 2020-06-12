@@ -55,18 +55,18 @@
         </div>
 
         <div id="country-hitchspots" class="tabcontent">
-{#            <div clas s="top-toolbar">#}
+            <div class="top-toolbar" style="margin-top: 0">
 {#                <form id="filter-hitchspot">#}
-{#                    <input class="input_black" name="query" placeholder="Query">#}
-{#                    <select class="select_black" name="select">#}
-{#                        <option>Date</option>#}
-{#                        <option selected>Hitchability</option>#}
-{#                        <option>Waiting time</option>#}
-{#                    </select>#}
-{#                    <button type="submit" class="button-style">Filter</button>#}
+                    <input class="input_black" id="filter_query_hs" name="query" placeholder="Query">
+                    <select class="select_black" id="filter_select_hs" name="select">
+                        {# <option>Date</option> #}
+                        <option value="1" selected>Hitchability</option>
+                        <option value="2">Waiting time</option>
+                    </select>
+                    <button onclick="filter_hs()" type="submit" class="button-style">Filter</button>
 {#                </form>#}
-{#            </div>#}
-            <table class="table">
+            </div>
+            <table class="table" id="table_hs">
                 <thead>
                 <tr>
                     <th>🧭 Coordinates</th>
@@ -80,12 +80,12 @@
                 </thead>
                 <tbody id="hitchspots-grid">
                 {% for spot in country.hitchspots %}
-                    <tr>
+                    <tr id="hs_{{ spot.id }}">
                         <td>{{ spot.latitude }};
                             {{ spot.longitude }}</td>
                         <td>{{ spot.description }}</td>
-                        <td>{{ spot.avg_hitchability }}</td>
-                        <td>{{ spot.avg_waiting_time }}</td>
+                        <td attr_ah="{{ spot.id }}">{{ spot.avg_hitchability }}</td>
+                        <td attr_aw="{{ spot.id }}">{{ spot.avg_waiting_time }}</td>
                         <td>{{ spot.creation_date }}</td>
                         <td>{{ spot.last_update }}</td>
                         <td>
@@ -106,18 +106,18 @@
         </div>
 
         <div id="country-posts" class="tabcontent">
-{#            <div class="top-toolbar">#}
-{#                <form id="filter-posts">#}
-{#                    <input class="input_black" name="query" placeholder="Query">#}
-{#                    <select class="select_black" name="select">#}
-{#                        <option selected>Title</option>#}
-{#                        <option>Author</option>#}
-{#                    </select>#}
-{#                    <button type="submit" class="button-style">Filter</button>#}
-{#                </form>#}
-{#            </div>#}
+            <div class="top-toolbar" style="margin-top: 0">
+                {# <form id="filter-posts"> #}
+                    <input class="input_black" id="filter_query" name="query" placeholder="Query">
+                    <select class="select_black" id="filter_select" name="select">
+                        <option value="1" selected>Title</option>
+                        <option value="2">Author</option>
+                    </select>
+                    <button onclick="filter()" type="submit" class="button-style">Filter</button>
+                {# </form> #}
+            </div>
 
-            <table class="table">
+            <table id="table_post" class="table">
                 <thead>
                 <tr>
                     <th>🔖 Title</th>
@@ -130,9 +130,9 @@
                 </thead>
                 <tbody id="posts-grid">
                 {% for post in country.forum_posts %}
-                    <tr>
-                        <td>{{ post.title }}</td>
-                        <td>{{ post.username }}</td>
+                    <tr id="post_{{ post.id }}">
+                        <td attr_title="{{ post.id }}">{{ post.title }}</td>
+                        <td attr_user="{{ post.id }}">{{ post.username }}</td>
                         <td>{{ post.creation_date }}</td>
                         <td>
                             {% if post.last_update is not None %}
@@ -171,6 +171,60 @@
     </div>
 
     <script>
+        function filter() {
+            let filter = $('#filter_select').val();
+            let filter_query = $('#filter_query').val();
+
+            if (filter == 1) {
+                $('#table_post td[attr_title]').each(function (index, element) {
+                    let str = $(element).html();
+
+                    if (!str.match(filter_query)) {
+                        $('#post_'+$(element).attr('attr_title')).hide();
+                    } else {
+                        $('#post_'+$(element).attr('attr_title')).show();
+                    }
+                });
+            } else {
+                $('#table_post td[attr_user]').each(function (index, element) {
+                    let str = $(element).html();
+
+                    if (!str.match(filter_query)) {
+                        $('#post_'+$(element).attr('attr_user')).hide();
+                    } else {
+                        $('#post_'+$(element).attr('attr_user')).show();
+                    }
+                });
+            }
+        }
+
+        function filter_hs() {
+            let filter = $('#filter_select_hs').val();
+            let filter_query = $('#filter_query_hs').val();
+
+            if (filter == 1) {
+                $('#table_hs td[attr_ah]').each(function (index, element) {
+                    let str = $(element).html();
+
+                    if (!str.match(filter_query)) {
+                        $('#hs_'+$(element).attr('attr_ah')).hide();
+                    } else {
+                        $('#hs_'+$(element).attr('attr_ah')).show();
+                    }
+                });
+            } else {
+                $('#table_hs td[attr_aw]').each(function (index, element) {
+                    let str = $(element).html();
+
+                    if (!str.match(filter_query)) {
+                        $('#hs_'+$(element).attr('attr_aw')).hide();
+                    } else {
+                        $('#hs_'+$(element).attr('attr_aw')).show();
+                    }
+                });
+            }
+        }
+
         function openTab(evt, tabName) {
             let i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");
