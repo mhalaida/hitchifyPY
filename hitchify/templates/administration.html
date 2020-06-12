@@ -1,0 +1,91 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <div class="sub-container">
+        <div class="sub-container-title">✏ Administration</div>
+
+        <br>
+        <table id="main_table" class="table_color_none" style="width: auto">
+            <tr>
+                <td>
+                    Countries
+                </td>
+                <td>
+                    <a href="#" class="addlink" onclick="add('country'); return false;">Add</a>
+                </td>
+                <td>
+                    {# <a href="#" class="changelink">Change</a> #}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Guides
+                </td>
+                <td>
+                    <a href="#" class="addlink" onclick="add('guide'); return false;">Add</a>
+                </td>
+                <td>
+                    {# <a href="#" class="changelink">Change</a> #}
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+    <div id="dialog" style="display: none">
+    </div>
+
+    <script>
+
+        let form_country = '<form action="/add_country/" method="post">' +
+            '{% csrf_token %}' +
+            'Country name:<br>' +
+            '<input name="country_name">' +
+            '<br>Short description:<br>' +
+            '<textarea name="short_description" style="width:400px; height:100px"></textarea>' +
+            '<br>National currency:<br>' +
+            '<input name="national_currency">' +
+            '<br><br>' +
+            '<button type="submit" class="button-style">Add</button>' +
+            '</form>';
+
+        let form_guide = '<form action="/add_guide/" method="post">' +
+            '{% csrf_token %}' +
+            'Title:<br>' +
+            '<input name="title">' +
+            '<br>Text:<br>' +
+            '<textarea name="body_text" style="width:400px; height:100px"></textarea>' +
+            '<br>Short summary:<br>' +
+            '<textarea name="short_summary" style="width:400px; height:100px"></textarea>' +
+            '<br>' +
+            '<button type="submit" class="button-style">Add</button>' +
+            '</form>';
+
+        function add(to) {
+            switch (to) {
+                case "country":
+                        $('#dialog').prop('title', 'Add new country');
+                        $('#dialog').html(form_country);
+
+                        $("#dialog").dialog({
+                            width: 550,
+                            position: { my: "center", at: "top+300", of: window }
+                        });
+
+                    break;
+
+                case "guide":
+                        $('#dialog').prop('title', 'Add new guide');
+                        $('#dialog').html(form_guide);
+
+                        $("#dialog").dialog({
+                            width: 550,
+                            position: { my: "center", at: "top+300", of: window }
+                        });
+
+                    break;
+            }
+        }
+    </script>
+{% endblock %}
+

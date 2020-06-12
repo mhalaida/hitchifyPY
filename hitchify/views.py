@@ -73,6 +73,52 @@ def add_comment_to_post(request, post_id):
         return render(request, 'post.html', {'form': form, 'post': post})
 
 
+def add_country(request):
+
+    if request.method == 'POST':
+        form = forms.AddCountryForm(request.POST)
+        if form.is_valid():
+
+            country_name = request.POST['country_name']
+            short_description = request.POST['short_description']
+            national_currency = request.POST['national_currency']
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO country (id, country_name, short_description, national_currency)"
+                    " VALUES (nextval('country_id_seq'), %s, %s, %s)",
+                    [country_name, short_description, national_currency])
+
+            last_id = Country.objects.latest('id').id
+
+            return redirect('country', last_id)
+
+        return redirect('administration')
+
+def add_guide(request):
+
+    if request.method == 'POST':
+        form = forms.AddGuideForm(request.POST)
+        if form.is_valid():
+
+            title = request.POST['title']
+            body_text = request.POST['body_text']
+            short_summary = request.POST['short_summary']
+            user = request.user
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO guide (id, title, body_text, short_summary, creation_date, user_id)"
+                    " VALUES (nextval('guide_id_seq'), %s, %s, %s, now(), %s)",
+                    [title, body_text, short_summary, user.id])
+
+            last_id = Guide.objects.latest('id').id
+
+            return redirect('guide', last_id)
+
+        return redirect('administration')
+
+
 def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -208,7 +254,8 @@ def guides(request):
     guides = Guide.objects.all()
 
     context = {
-        'guides': guides
+        'guides': guides,
+        'choose': 'guide'
     }
 
     return render(request, 'guides.html', context=context)
@@ -218,10 +265,18 @@ def guide(request, guide_id):
     guide = Guide.objects.get(id=guide_id)
 
     context = {
-        'guide': guide
+        'guide': guide,
     }
 
     return render(request, 'guide.html', context=context)
+
+
+def administration(request):
+    context = {
+        'choose': 'administration',
+    }
+
+    return render(request, 'administration.html', context=context)
 
 
 def hitchify_map(request):

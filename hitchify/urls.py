@@ -19,12 +19,15 @@ urlpatterns = [
     path('post/<post_id>/like', views.like_post, name='like_post'),
     path('post/<post_id>/add_comment/', views.add_comment_to_post, name='add_comment_to_post'),
     path('guides/', views.guides, name='guides'),
+    path('administration/', views.administration, name='administration'),
     path('guide/<guide_id>', views.guide, name='guide'),
     path('map/', views.hitchify_map, name='map'),
     path('map/<country_id>', views.hitchify_map_country, name='map_country'),
     path('map_xml/', views.hitchify_xml, name='map_xml'),
     path('map_xml/<country_id>', views.hitchify_xml_country, name='map_xml_country'),
     path('add_point/', views.add_point, name='add_point'),
+    path('add_guide/', views.add_guide, name='add_guide'),
+    path('add_country/', views.add_country, name='add_country'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()

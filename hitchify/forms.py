@@ -21,3 +21,9 @@ class AddGuideForm(forms.ModelForm):
     class Meta:
         model = models.Guide
         fields = ['title', 'body_text', 'short_summary']
+
+
+class AddCountryForm(forms.ModelForm):
+    class Meta:
+        model = models.Country
+        fields = ['country_name', 'short_description', 'national_currency']
