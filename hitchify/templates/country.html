@@ -30,7 +30,7 @@
         </div>
         <div>💶 Currency: {{ country.national_currency }}</div>
         <div>⭐ Hitchrating:
-            {% if country.hitchrating == 0 %}
+            {% if country.hitchrating == None %}
                 No rating yet! Contribute by adding your hitchspots.
             {% else %}
                 {{ country.hitchrating }}
@@ -55,17 +55,17 @@
         </div>
 
         <div id="country-hitchspots" class="tabcontent">
-            <div class="top-toolbar">
-                <form id="filter-hitchspot">
-                    <input class="input_black" name="query" placeholder="Query">
-                    <select class="select_black" name="select">
-                        <option>Date</option>
-                        <option selected>Hitchability</option>
-                        <option>Waiting time</option>
-                    </select>
-                    <button type="submit" class="button-style">Filter</button>
-                </form>
-            </div>
+{#            <div clas s="top-toolbar">#}
+{#                <form id="filter-hitchspot">#}
+{#                    <input class="input_black" name="query" placeholder="Query">#}
+{#                    <select class="select_black" name="select">#}
+{#                        <option>Date</option>#}
+{#                        <option selected>Hitchability</option>#}
+{#                        <option>Waiting time</option>#}
+{#                    </select>#}
+{#                    <button type="submit" class="button-style">Filter</button>#}
+{#                </form>#}
+{#            </div>#}
             <table class="table">
                 <thead>
                 <tr>
@@ -106,16 +106,16 @@
         </div>
 
         <div id="country-posts" class="tabcontent">
-            <div class="top-toolbar">
-                <form id="filter-posts">
-                    <input class="input_black" name="query" placeholder="Query">
-                    <select class="select_black" name="select">
-                        <option selected>Title</option>
-                        <option>Author</option>
-                    </select>
-                    <button type="submit" class="button-style">Filter</button>
-                </form>
-            </div>
+{#            <div class="top-toolbar">#}
+{#                <form id="filter-posts">#}
+{#                    <input class="input_black" name="query" placeholder="Query">#}
+{#                    <select class="select_black" name="select">#}
+{#                        <option selected>Title</option>#}
+{#                        <option>Author</option>#}
+{#                    </select>#}
+{#                    <button type="submit" class="button-style">Filter</button>#}
+{#                </form>#}
+{#            </div>#}
 
             <table class="table">
                 <thead>

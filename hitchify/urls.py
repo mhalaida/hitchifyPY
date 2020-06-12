@@ -3,7 +3,7 @@ from hitchifyPY import settings
 from . import views
 from django.contrib.auth import views as authviews
 from django.conf.urls.static import static
-
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('', authviews.LoginView.as_view(), name='index'),
@@ -26,3 +26,6 @@ urlpatterns = [
     path('map_xml/<country_id>', views.hitchify_xml_country, name='map_xml_country'),
     path('add_point/', views.add_point, name='add_point'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

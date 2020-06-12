@@ -33,6 +33,14 @@
                       class="highlight">{{ post.body_text }}</span>
             </div>
 
+            {% if post.photos is not Null %}
+                Photos:<br>
+                {% for photo in post.photos %}
+                    <img src="/media/{{ photo.4 }}">
+                {% endfor %}
+                <br>
+            {% endif %}
+
             {#  {% if user.id == post.user.id %} #}
             {#      <button class=" button-style" style="margin-top: 10px;" id="save">Save</button> #}
             {#  {% endif %} #}

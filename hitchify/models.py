@@ -28,7 +28,7 @@ class MyUser(models.Model):
 
 class Country(models.Model):
     country_name = models.CharField(max_length=255)
-    short_description = models.CharField(max_length=255)
+    short_description = models.CharField(max_length=1500)
     national_currency = models.CharField(max_length=255)
     hitchrating = models.FloatField(blank=True, null=True)
 
@@ -107,6 +107,15 @@ class ForumPost(models.Model):
     last_update = models.DateField(blank=True, null=True)
     user = models.ForeignKey(User, models.DO_NOTHING)
     country = models.ForeignKey(Country, models.DO_NOTHING)
+
+    @property
+    def photos(self):
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT * '
+                           'FROM photo '
+                           'WHERE post_id = %s', [self.id])
+            photos = cursor.fetchall()
+            return photos
 
     @property
     def comments(self):
@@ -192,7 +201,8 @@ class LanguageToCountry(models.Model):
 
 
 class Photo(models.Model):
-    url = models.CharField(max_length=255)
+    # url = models.CharField(max_length=255)
+    src_file = models.ImageField(upload_to='photos/', default='default.jpg')
     post = models.ForeignKey(ForumPost, models.DO_NOTHING, blank=True, null=True)
     spot = models.ForeignKey(Hitchspot, models.DO_NOTHING, blank=True, null=True)
     guide = models.ForeignKey(Guide, models.DO_NOTHING, blank=True, null=True)
