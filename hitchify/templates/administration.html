@@ -32,7 +32,10 @@
 
     </div>
 
-    <div id="dialog" style="display: none">
+    <div id="dialog_c" style="display: none">
+    </div>
+
+    <div id="dialog_g" style="display: none">
     </div>
 
     <script>
@@ -53,10 +56,10 @@
             '{% csrf_token %}' +
             'Title:<br>' +
             '<input name="title">' +
-            '<br>Text:<br>' +
-            '<textarea name="body_text" style="width:400px; height:100px"></textarea>' +
             '<br>Short summary:<br>' +
             '<textarea name="short_summary" style="width:400px; height:100px"></textarea>' +
+            '<br>Text:<br>' +
+            '<textarea name="body_text" style="width:400px; height:300px"></textarea>' +
             '<br>' +
             '<button type="submit" class="button-style">Add</button>' +
             '</form>';
@@ -64,10 +67,10 @@
         function add(to) {
             switch (to) {
                 case "country":
-                        $('#dialog').prop('title', 'Add new country');
-                        $('#dialog').html(form_country);
+                        $('#dialog_c').prop('title', 'Add new country');
+                        $('#dialog_c').html(form_country);
 
-                        $("#dialog").dialog({
+                        $("#dialog_c").dialog({
                             width: 550,
                             position: { my: "center", at: "top+300", of: window }
                         });
@@ -75,12 +78,12 @@
                     break;
 
                 case "guide":
-                        $('#dialog').prop('title', 'Add new guide');
-                        $('#dialog').html(form_guide);
+                        $('#dialog_g').prop('title', 'Add new guide');
+                        $('#dialog_g').html(form_guide);
 
-                        $("#dialog").dialog({
+                        $("#dialog_g").dialog({
                             width: 550,
-                            position: { my: "center", at: "top+300", of: window }
+                            position: { my: "center", at: "top+400", of: window }
                         });
 
                     break;
