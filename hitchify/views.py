@@ -48,13 +48,28 @@ def add_post(request, country_id):
             new_post.user = request.user
             new_post.save()
             return redirect('country_post', country_id)
-            # return render(request, 'new_post.html', {'form': form, 'country': country})
 
         else:
             form = forms.AddPostForm()
 
-        # return render(request, 'country.html', {'form': form, 'country': country})
         return render(request, 'new_post.html', {'form': form, 'country': country})
+
+
+def edit_post(request, post_id):
+
+    if request.method == 'POST':
+        form = forms.AddPostForm(request.POST)
+        if form.is_valid():
+
+            title = request.POST['title']
+            body_text = request.POST['body_text']
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE forum_post SET body_text = %s, title = %s, last_update = now() WHERE id = %s",
+                    [body_text, title, post_id])
+
+        return redirect('post', post_id)
 
 
 def add_comment_to_post(request, post_id):
