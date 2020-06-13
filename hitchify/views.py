@@ -144,7 +144,6 @@ def add_comment_to_post(request, post_id):
     return redirect('post', post_id)
 
 
-@permission_required('hitchify.change_comment')
 def edit_comment_post(request, post_id):
 
     if request.method == 'POST':
@@ -164,7 +163,6 @@ def edit_comment_post(request, post_id):
     return redirect('post', post_id)
 
 
-@permission_required('hitchify.delete_comment')
 def del_comment_post(request, post_id):
 
     if request.method == 'POST':
