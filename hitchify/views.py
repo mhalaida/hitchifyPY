@@ -97,6 +97,25 @@ def edit_guide(request, guide_id):
     return redirect('guide', guide_id)
 
 
+def edit_country(request, country_id):
+
+    if request.method == 'POST':
+        form = forms.AddCountryForm(request.POST)
+        if form.is_valid():
+
+            country_name = request.POST['country_name']
+            short_description = request.POST['short_description']
+            national_currency = request.POST['national_currency']
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE country SET country_name = %s, short_description = %s, national_currency = %s "
+                    "WHERE id = %s",
+                    [country_name, short_description, national_currency, country_id])
+
+    return redirect('country', country_id)
+
+
 def add_comment_to_post(request, post_id):
 
     if request.method == 'POST':
@@ -249,7 +268,9 @@ def login(request):
 
 
 def countries(request):
-    countries = Country.objects.all()
+    countries = Country.objects.raw('SELECT * '
+                                    'FROM country '
+                                    'ORDER BY country_name ASC')
 
     context = {
         'choose': 'country',
@@ -260,11 +281,13 @@ def countries(request):
 
 
 def country(request, country_id):
-    country = Country.objects.get(id=country_id)
+    country = Country.objects.raw('SELECT * '
+                                  'FROM country '
+                                  'WHERE id = %s', [country_id])
 
     context = {
         'choose': 'country',
-        'country': country
+        'country': country[0]
     }
 
     return render(request, 'country.html', context=context)

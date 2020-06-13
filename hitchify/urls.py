@@ -14,6 +14,7 @@ urlpatterns = [
     path('country/<country_id>', views.country, name='country'),
     path('country/<country_id>/posts', views.country, name='country_post'),
     path('country/<country_id>/add_post/', views.add_post, name='add_post'),
+    path('country/<country_id>/edit', views.edit_country, name='edit_country'),
     path('add_country/', views.add_country, name='add_country'),
 
     path('hitchspots/', views.hitchspots, name='hitchspots'),
