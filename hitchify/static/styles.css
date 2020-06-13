@@ -478,3 +478,8 @@ ul>li {
     padding-left: 16px;
     background: url(icon-changelink.svg) 0 1px no-repeat;
 }
+
+.deletelink {
+    padding-left: 16px;
+    background: url(icon-no.svg) 0 1px no-repeat;
+}

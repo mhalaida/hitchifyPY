@@ -15,7 +15,7 @@
 
             <div class="property">
                 <div class="property-name"><span class="property-icon">🌐</span>Country</div>
-                <div class="property-value select-property">{{ post.country.country_name }}</div>
+                <div class="property-value select-property"><a href="{% url 'country' post.country.id %}">{{ post.country.country_name }}</a></div>
             </div>
 
             <div class="property">
@@ -88,13 +88,34 @@
                         <div class="comment">
                             <div class="comment-timestamp">
                                 {{ comment.creation_date }} – {{ comment.user.username }} <a href="#new_comment" onclick="$('#title_comment').html('Add reply to comment {{ comment.creation_date }} – {{ comment.user.username }}:'); $('#parent_comment').val({{ comment.id }});">Reply</a>
+
+                                {% if perms.hitchify.change_comment or comment.user_id == user.id %}
+                                    <a href="#" class="changelink" style="margin-left: 10px" onclick="edit_comment({{ comment.id }}); return false;">Edit</a>
+
+                                    {% if not comment.sub_comments %}
+                                        <a href="#" class="deletelink" style="margin-left: 10px" onclick="del_comment({{ comment.id }}); return false;">Delete</a>
+                                    {% endif %}
+
+                                {% endif %}
+
                             </div>
+
 {#                            <div class="comment-author">{{ comment.user.username }}</div>#}
-                            <div class="comment-content">{{ comment.body_text}}</div>
+                            <div class="comment-content" id="comment_text_{{ comment.id }}">{{ comment.body_text}}</div>
+
                             {% for subcomment in comment.sub_comments %}
                                 <div class="comment" style="padding-left: 50px">
-                                    <div class="comment-timestamp">{{ subcomment.creation_date }} – {{ subcomment.user.username }}</div>
-                                    <div class="comment-content">{{ subcomment.body_text}}</div>
+                                    <div class="comment-timestamp">
+                                        {{ subcomment.creation_date }} – {{ subcomment.user.username }}
+
+                                        {% if perms.hitchify.change_comment or subcomment.user_id == user.id %}
+                                            <a href="#" class="changelink" style="margin-left: 10px" onclick="edit_comment({{ subcomment.id }}); return false;">Edit</a>
+                                            <a href="#" class="deletelink" style="margin-left: 10px" onclick="del_comment({{ subcomment.id }}); return false;">Delete</a>
+                                        {% endif %}
+
+                                    </div>
+
+                                    <div class="comment-content" id="comment_text_{{ subcomment.id }}">{{ subcomment.body_text}}</div>
                                 </div>
                             {% endfor %}
                         </div>
@@ -133,6 +154,12 @@
     <div id="dialog" style="display: none">
     </div>
 
+    <div id="dialog_e" style="display: none">
+    </div>
+
+    <div id="dialog_d" style="display: none">
+    </div>
+
     <script>
 
         let form_post = '<form action="/post/{{ post.id }}/edit" method="post">' +
@@ -154,9 +181,57 @@
 
             $("#dialog").dialog({
                 width: 550,
+                modal: true,
                 position: { my: "center", at: "top+300", of: window }
             });
         }
+
+        let form_comment = '<form action="/post/{{ post.id }}/edit_comment/" method="post">' +
+            '{% csrf_token %}' +
+            '<input id="comment_id" name="comment_id" type="hidden">' +
+            '<br>Text:<br>' +
+            '<textarea id="edit_body_text" name="body_text" style="width:400px; height:300px"></textarea>' +
+            '<br>' +
+            '<button type="submit" class="button-style">Edit</button>' +
+            '</form>';
+
+        function edit_comment(id) {
+            $('#dialog_e').prop('title', 'Edit comment');
+            $('#dialog_e').html(form_comment);
+
+            $('#comment_id').val(id);
+            $('#edit_body_text').val($('#comment_text_'+id).html());
+
+            $("#dialog_e").dialog({
+                width: 550,
+                modal: true,
+                position: { my: "center", at: "top+300", of: window }
+            });
+        }
+
+        let form_comment_del = '<form action="/post/{{ post.id }}/del_comment/" method="post">' +
+            '{% csrf_token %}' +
+            '<input id="comment_del_id" name="comment_id" type="hidden">' +
+            '<br>Text: ' +
+            '<span id="edit_body_text_del"></span>' +
+            '<br><br>' +
+            '<button type="submit" class="button-style">Delete</button>' +
+            '</form>';
+
+        function del_comment(id) {
+            $('#dialog_d').prop('title', 'Delete comment');
+            $('#dialog_d').html(form_comment_del);
+
+            $('#comment_del_id').val(id);
+            $('#edit_body_text_del').html($('#comment_text_'+id).html());
+
+            $("#dialog_d").dialog({
+                width: 550,
+                modal: true,
+                position: { my: "center", at: "top+300", of: window }
+            });
+        }
+
     </script>
 
 

@@ -1,6 +1,7 @@
 import os
 
 from django.contrib.auth import login as my_login, authenticate
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from hitchify.models import Comment, Country, ForumPost, Guide, \
@@ -62,6 +63,7 @@ def add_post(request, country_id):
     return render(request, 'new_post.html', {'form': form, 'country': country})
 
 
+@permission_required('hitchify.change_forumpost')
 def edit_post(request, post_id):
 
     if request.method == 'POST':
@@ -79,6 +81,7 @@ def edit_post(request, post_id):
     return redirect('post', post_id)
 
 
+@permission_required('hitchify.change_guide')
 def edit_guide(request, guide_id):
 
     if request.method == 'POST':
@@ -97,6 +100,7 @@ def edit_guide(request, guide_id):
     return redirect('guide', guide_id)
 
 
+@permission_required('hitchify.change_country')
 def edit_country(request, country_id):
 
     if request.method == 'POST':
@@ -140,6 +144,44 @@ def add_comment_to_post(request, post_id):
     return redirect('post', post_id)
 
 
+@permission_required('hitchify.change_comment')
+def edit_comment_post(request, post_id):
+
+    if request.method == 'POST':
+        form = forms.CommentForm(request.POST)
+        if form.is_valid():
+
+            body_text = request.POST['body_text']
+            comment_id = request.POST['comment_id']
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE comment SET body_text = %s WHERE id = %s",
+                    [body_text, comment_id])
+
+            return redirect('/post/'+post_id+'#new_comment')
+
+    return redirect('post', post_id)
+
+
+@permission_required('hitchify.delete_comment')
+def del_comment_post(request, post_id):
+
+    if request.method == 'POST':
+
+            comment_id = request.POST['comment_id']
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM comment WHERE id = %s",
+                    [comment_id])
+
+            return redirect('/post/'+post_id+'#new_comment')
+
+    return redirect('post', post_id)
+
+
+@permission_required('hitchify.add_country')
 def add_country(request):
 
     if request.method == 'POST':
@@ -160,8 +202,10 @@ def add_country(request):
 
             return redirect('country', last_id)
 
-        return redirect('administration')
+    return redirect('administration')
 
+
+@permission_required('hitchify.add_guide')
 def add_guide(request):
 
     if request.method == 'POST':
@@ -183,7 +227,7 @@ def add_guide(request):
 
             return redirect('guide', last_id)
 
-        return redirect('administration')
+    return redirect('administration')
 
 
 def signup(request):
@@ -344,6 +388,7 @@ def guide(request, guide_id):
     return render(request, 'guide.html', context=context)
 
 
+@permission_required('hitchify.add_country')
 def administration(request):
     context = {
         'choose': 'administration',

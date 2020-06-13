@@ -24,6 +24,8 @@ urlpatterns = [
     path('post/<post_id>/like', views.like_post, name='like_post'),
     path('post/<post_id>/edit', views.edit_post, name='edit_post'),
     path('post/<post_id>/add_comment/', views.add_comment_to_post, name='add_comment_to_post'),
+    path('post/<post_id>/edit_comment/', views.edit_comment_post, name='edit_comment_post'),
+    path('post/<post_id>/del_comment/', views.del_comment_post, name='del_comment_post'),
 
     path('guides/', views.guides, name='guides'),
     path('guide/<guide_id>', views.guide, name='guide'),

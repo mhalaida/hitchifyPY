@@ -271,7 +271,7 @@
             '<textarea name="short_description" style="width:400px; height:100px" id="edit_short_description"></textarea>' +
             '<br>National currency:<br>' +
             '<input id="edit_national_currency" name="national_currency">' +
-            '<br>' +
+            '<br><br>' +
             '<button type="submit" class="button-style">Edit</button>' +
             '</form>';
 
@@ -286,6 +286,7 @@
 
             $("#dialog").dialog({
                 width: 550,
+                modal: true,
                 position: { my: "center", at: "top+450", of: window }
             });
         }
