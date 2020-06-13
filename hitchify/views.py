@@ -12,6 +12,8 @@ from hitchify.models import Comment, Country, ForumPost, Guide, \
 from . import forms
 from django.db import connection
 
+from .forms import CustomSignUpForm
+
 # Create your views here.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -230,9 +232,31 @@ def add_guide(request):
 
 def signup(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        # form = UserCreationForm(request.POST)
+        form = CustomSignUpForm(request.POST)
         if form.is_valid():
             form.save()
+
+            # base_user_id = request.user.id
+            created_user_username = form.cleaned_data['username']
+
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT id '
+                               'FROM auth_user '
+                               'WHERE username = %s', [created_user_username])
+                created_user_id = cursor.fetchone()
+                # return photos
+
+            gender = request.POST['gender']
+            birth_date = request.POST.get('birth_date')
+            res_country = request.POST['res_country']
+            res_city = request.POST['res_city']
+
+            with connection.cursor() as cursor:
+                cursor.execute('INSERT INTO myuser (id, base_user_id, gender, birth_date, country, city) '
+                               'VALUES (nextval(\'myuser_id_seq\'), %s, %s, %s, %s, %s)',
+                               [created_user_id, gender, birth_date, res_country, res_city])
+
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=raw_password)

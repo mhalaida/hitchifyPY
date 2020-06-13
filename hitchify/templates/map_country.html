@@ -7,19 +7,7 @@
 	<div style="margin-top:10px" id="map"></div>
 
 </div>
-<style>
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-
-input[type=number] {
-  -moz-appearance: textfield;
-}
-</style>
 <script>
 
 	$(document).ready(function () {
@@ -71,11 +59,11 @@ input[type=number] {
 
         map.addListener('click', function(mapsMouseEvent) {
           infoWindow = new google.maps.InfoWindow({position: mapsMouseEvent.latLng});
-		  
+
 		  let coord = mapsMouseEvent.latLng.toString();
-		  
+
 		  let result = coord.match(/(\d+\.\d+),\s+(\d+\.\d+)/);
-		  
+
 		  let content = '<div class="text_on_map">' +
 							'<b>Add point to {{ country.country_name }}</b>' +
 							'<br><form action="{% url 'add_point' %}" method="post">{% csrf_token %}' +
@@ -84,26 +72,36 @@ input[type=number] {
 							'<br><br>Hitchability (1-5)<br><input style="padding:0" name="avg_hitchability" type="digit" required pattern=[0-5]>' +
 							'<br>Waiting time (min)<br><input name="avg_waiting_time" type="number" min="0" >' +							
 							'<br>Description<br><textarea name="description" cols="50" rows="3"></textarea>' +
+							'Coord: ' + result[1] + ', ' + result[2] +
+							'<br><br>Hitchability (1-5): ' +
+                            '<select name="avg_hitchability" style="padding:0">' +
+                            '<option value="1">1</option>' +
+                            '<option value="2">2</option>' +
+                            '<option value="3">3</option>' +
+                            '<option value="4">4</option>' +
+                            '<option value="5">5</option>' +
+                            '</select>'+
+							'<br><br>Waiting time (min): <input style="width:40px" name="avg_waiting_time" type="number" min="0">' +
+							'<br><br>Description:<br><textarea name="description" cols="50" rows="5"></textarea>' +
 							'<input name="lt" type="hidden" value="' + result[1] + '">' +
 							'<input name="ln" type="hidden" value="' + result[2] + '">' +
 							'<input name="country_id" type="hidden" value="{{ country.id }}">' +
 							'<input name="user_id" type="hidden" value="{{ user.id }}">' +
-							
-							'<br><button class="button-style" type="submit">Add this point</button><form></div>'
+							'<br><br><button class="button-style" type="submit">Add this point</button><form></div>'
 
           infoWindow.setContent(content);
           infoWindow.open(map);
         });
-		
+
 		downloadUrl(xml_url, function(data) {
 			let xml = data.responseXML;
 
 			let marker = xml.documentElement.getElementsByTagName('marker');
-			
+
 			let av_lt = 0;
 			let av_ln = 0;
 			let count = 0;
-			
+
 			Array.prototype.forEach.call(marker, function(markerElem) {
 
 				let desc = markerElem.getAttribute('desc');
@@ -112,12 +110,12 @@ input[type=number] {
 
 				let lt = parseFloat(markerElem.getAttribute('lat'));
 				let ln = parseFloat(markerElem.getAttribute('lng'));
-				
-				
+
+
 				av_lt += lt;
 				av_ln += ln;
-				
-				count++;				
+
+				count++;
 
 				let point = new google.maps.LatLng( lt, ln);
 
@@ -137,20 +135,20 @@ input[type=number] {
 				marker.addListener('click', function() {
 					infoWindow.open(map, marker);
 				});
-				
+
 				markers.push(marker);
 			});
-			
+
 			av_ln = av_ln/count;
 			av_lt = av_lt/count;
-			
+
 			map.setCenter(new google.maps.LatLng(av_lt, av_ln));
-			
+
 		});
 	}
 
 </script>
 
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyALYpitR1YqY3DPBTR8T1IjWEQAmZ_yKPQ&language=en&callback=initMap"></script>
-	
+
 {% endblock %}

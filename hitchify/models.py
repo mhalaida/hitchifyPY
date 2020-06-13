@@ -7,7 +7,9 @@ from django.dispatch import receiver
 
 class MyUser(models.Model):
     # user = models.OneToOneField(User, on_delete=models.CASCADE)
-    gender = models.SmallIntegerField()
+    # base_user = models.IntegerField(default=-1)
+    base_user = models.OneToOneField(User, on_delete=models.CASCADE)
+    gender = models.CharField(max_length=20)
     birth_date = models.DateField()
     country = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
