@@ -7,7 +7,7 @@
             <tr>
                 <td style="border-color:rgb(47, 52, 55)">
                     <div class="sub-container-title">
-                        <span class="countryname">{{ country.country_name }}</span>
+                        <span class="countryname" id="country_title">{{ country.country_name }}</span>
                     </div>
                 </td>
                 <td style="border-color:rgb(47, 52, 55)" valign="top">
@@ -20,15 +20,21 @@
             </tr>
         </table>
 
+        {% if perms.hitchify.change_country %}
+            <div>
+                <a href="#" class="changelink" onclick="edit(); return false;">Edit</a>
+            </div>
+        {% endif %}
+
         <br>
-        <div>ℹ️ {{ country.short_description }}</div>
+        <div>ℹ️ <span id="country_short_description">{{ country.short_description }}</span></div>
         <br>
         <div>🗣️ Languages:
             {% for lang in country.languages %}
                 {{ lang }};
             {% endfor %}
         </div>
-        <div>💶 Currency: {{ country.national_currency }}</div>
+        <div>💶 Currency: <span id="country_national_currency">{{ country.national_currency }}</span></div>
         <div>⭐ Hitchrating:
             {% if country.hitchrating == None %}
                 No rating yet! Contribute by adding your hitchspots.
@@ -170,6 +176,9 @@
         </div>
     </div>
 
+    <div id="dialog" style="display: none">
+    </div>
+
     <script>
         function filter() {
             let filter = $('#filter_select').val();
@@ -253,6 +262,35 @@
         } else {
             openTab(1, 'country-hitchspots');
         }
+
+        let form_country = '<form action="/country/{{ country.id }}/edit" method="post">' +
+            '{% csrf_token %}' +
+            'Country name:<br>' +
+            '<input name="country_name" id="edit_title">' +
+            '<br>Short description:<br>' +
+            '<textarea name="short_description" style="width:400px; height:100px" id="edit_short_description"></textarea>' +
+            '<br>National currency:<br>' +
+            '<input id="edit_national_currency" name="national_currency">' +
+            '<br><br>' +
+            '<button type="submit" class="button-style">Edit</button>' +
+            '</form>';
+
+        function edit() {
+            $('#dialog').prop('title', 'Edit country');
+            $('#dialog').html(form_country);
+
+            $('#edit_title').val($('#country_title').html());
+            $('#edit_short_description').val($('#country_short_description').html());
+            $('#edit_national_currency').val($('#country_national_currency').html());
+
+
+            $("#dialog").dialog({
+                width: 550,
+                modal: true,
+                position: { my: "center", at: "top+450", of: window }
+            });
+        }
+
 
     </script>
 

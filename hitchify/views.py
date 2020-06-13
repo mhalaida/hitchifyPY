@@ -1,6 +1,7 @@
 import os
 
 from django.contrib.auth import login as my_login, authenticate
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from hitchify.models import Comment, Country, ForumPost, Guide, \
@@ -45,18 +46,26 @@ def add_post(request, country_id):
     if request.method == 'POST':
         form = forms.AddPostForm(request.POST)
         if form.is_valid():
-            new_post = form.save(commit=False)
-            new_post.country = country
-            new_post.user = request.user
-            new_post.save()
+
+            user = request.user
+            body_text = request.POST['body_text']
+            title = request.POST['title']
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO forum_post (id, body_text, creation_date, title, country_id, user_id) "
+                    "VALUES (nextval('forum_post_id_seq'), %s, now(), %s, %s, %s)",
+                    [body_text, title, country_id, user.id])
+
             return redirect('country_post', country_id)
 
-        else:
-            form = forms.AddPostForm()
+    else:
+        form = forms.AddPostForm()
 
-        return render(request, 'new_post.html', {'form': form, 'country': country})
+    return render(request, 'new_post.html', {'form': form, 'country': country})
 
 
+@permission_required('hitchify.change_forumpost')
 def edit_post(request, post_id):
 
     if request.method == 'POST':
@@ -71,25 +80,108 @@ def edit_post(request, post_id):
                     "UPDATE forum_post SET body_text = %s, title = %s, last_update = now() WHERE id = %s",
                     [body_text, title, post_id])
 
-        return redirect('post', post_id)
+    return redirect('post', post_id)
+
+
+@permission_required('hitchify.change_guide')
+def edit_guide(request, guide_id):
+
+    if request.method == 'POST':
+        form = forms.AddGuideForm(request.POST)
+        if form.is_valid():
+
+            title = request.POST['title']
+            body_text = request.POST['body_text']
+            short_summary = request.POST['short_summary']
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE guide SET body_text = %s, short_summary = %s, title = %s, update_date = now() WHERE id = %s",
+                    [body_text, short_summary, title, guide_id])
+
+    return redirect('guide', guide_id)
+
+
+@permission_required('hitchify.change_country')
+def edit_country(request, country_id):
+
+    if request.method == 'POST':
+        form = forms.AddCountryForm(request.POST)
+        if form.is_valid():
+
+            country_name = request.POST['country_name']
+            short_description = request.POST['short_description']
+            national_currency = request.POST['national_currency']
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE country SET country_name = %s, short_description = %s, national_currency = %s "
+                    "WHERE id = %s",
+                    [country_name, short_description, national_currency, country_id])
+
+    return redirect('country', country_id)
 
 
 def add_comment_to_post(request, post_id):
-    post = ForumPost.objects.get(id=post_id)
+
     if request.method == 'POST':
         form = forms.CommentForm(request.POST)
         if form.is_valid():
-            new_comment = form.save(commit=False)
-            new_comment.post = post
-            new_comment.user = request.user
-            new_comment.save()
+
+            user = request.user
+            body_text = request.POST['body_text']
+            parent_comment_id = request.POST['parent_comment']
+
+            if parent_comment_id == '':
+                parent_comment_id = None
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO comment (id, body_text, creation_date, parent_comment_id, post_id, user_id) "
+                    "VALUES (nextval('comment_id_seq'), %s, now(), %s, %s, %s)",
+                    [body_text, parent_comment_id, post_id, user.id])
+
             return redirect('/post/'+post_id+'#new_comment')
 
-        else:
-            form = forms.CommentForm()
-        return render(request, 'post.html', {'form': form, 'post': post})
+    return redirect('post', post_id)
 
 
+def edit_comment_post(request, post_id):
+
+    if request.method == 'POST':
+        form = forms.CommentForm(request.POST)
+        if form.is_valid():
+
+            body_text = request.POST['body_text']
+            comment_id = request.POST['comment_id']
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE comment SET body_text = %s WHERE id = %s",
+                    [body_text, comment_id])
+
+            return redirect('/post/'+post_id+'#new_comment')
+
+    return redirect('post', post_id)
+
+
+def del_comment_post(request, post_id):
+
+    if request.method == 'POST':
+
+            comment_id = request.POST['comment_id']
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM comment WHERE id = %s",
+                    [comment_id])
+
+            return redirect('/post/'+post_id+'#new_comment')
+
+    return redirect('post', post_id)
+
+
+@permission_required('hitchify.add_country')
 def add_country(request):
 
     if request.method == 'POST':
@@ -110,8 +202,10 @@ def add_country(request):
 
             return redirect('country', last_id)
 
-        return redirect('administration')
+    return redirect('administration')
 
+
+@permission_required('hitchify.add_guide')
 def add_guide(request):
 
     if request.method == 'POST':
@@ -133,7 +227,7 @@ def add_guide(request):
 
             return redirect('guide', last_id)
 
-        return redirect('administration')
+    return redirect('administration')
 
 
 def signup(request):
@@ -193,6 +287,8 @@ def add_point(request):
 
         if avg_waiting_time == '':
             avg_waiting_time = '1'
+    else:
+        return redirect('map')
 
     with connection.cursor() as cursor:
         cursor.execute(
@@ -238,7 +334,9 @@ def login(request):
 
 
 def countries(request):
-    countries = Country.objects.all()
+    countries = Country.objects.raw('SELECT * '
+                                    'FROM country '
+                                    'ORDER BY country_name ASC')
 
     context = {
         'choose': 'country',
@@ -249,11 +347,13 @@ def countries(request):
 
 
 def country(request, country_id):
-    country = Country.objects.get(id=country_id)
+    country = Country.objects.raw('SELECT * '
+                                  'FROM country '
+                                  'WHERE id = %s', [country_id])
 
     context = {
         'choose': 'country',
-        'country': country
+        'country': country[0]
     }
 
     return render(request, 'country.html', context=context)
@@ -310,6 +410,7 @@ def guide(request, guide_id):
     return render(request, 'guide.html', context=context)
 
 
+@permission_required('hitchify.add_country')
 def administration(request):
     context = {
         'choose': 'administration',
