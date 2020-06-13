@@ -43,16 +43,23 @@ def add_post(request, country_id):
     if request.method == 'POST':
         form = forms.AddPostForm(request.POST)
         if form.is_valid():
-            new_post = form.save(commit=False)
-            new_post.country = country
-            new_post.user = request.user
-            new_post.save()
+
+            user = request.user
+            body_text = request.POST['body_text']
+            title = request.POST['title']
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO forum_post (id, body_text, creation_date, title, country_id, user_id) "
+                    "VALUES (nextval('forum_post_id_seq'), %s, now(), %s, %s, %s)",
+                    [body_text, title, country_id, user.id])
+
             return redirect('country_post', country_id)
 
-        else:
-            form = forms.AddPostForm()
+    else:
+        form = forms.AddPostForm()
 
-        return render(request, 'new_post.html', {'form': form, 'country': country})
+    return render(request, 'new_post.html', {'form': form, 'country': country})
 
 
 def edit_post(request, post_id):
@@ -69,23 +76,49 @@ def edit_post(request, post_id):
                     "UPDATE forum_post SET body_text = %s, title = %s, last_update = now() WHERE id = %s",
                     [body_text, title, post_id])
 
-        return redirect('post', post_id)
+    return redirect('post', post_id)
+
+
+def edit_guide(request, guide_id):
+
+    if request.method == 'POST':
+        form = forms.AddGuideForm(request.POST)
+        if form.is_valid():
+
+            title = request.POST['title']
+            body_text = request.POST['body_text']
+            short_summary = request.POST['short_summary']
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE guide SET body_text = %s, short_summary = %s, title = %s, update_date = now() WHERE id = %s",
+                    [body_text, short_summary, title, guide_id])
+
+    return redirect('guide', guide_id)
 
 
 def add_comment_to_post(request, post_id):
-    post = ForumPost.objects.get(id=post_id)
+
     if request.method == 'POST':
         form = forms.CommentForm(request.POST)
         if form.is_valid():
-            new_comment = form.save(commit=False)
-            new_comment.post = post
-            new_comment.user = request.user
-            new_comment.save()
+
+            user = request.user
+            body_text = request.POST['body_text']
+            parent_comment_id = request.POST['parent_comment']
+
+            if parent_comment_id == '':
+                parent_comment_id = None
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO comment (id, body_text, creation_date, parent_comment_id, post_id, user_id) "
+                    "VALUES (nextval('comment_id_seq'), %s, now(), %s, %s, %s)",
+                    [body_text, parent_comment_id, post_id, user.id])
+
             return redirect('/post/'+post_id+'#new_comment')
 
-        else:
-            form = forms.CommentForm()
-        return render(request, 'post.html', {'form': form, 'post': post})
+    return redirect('post', post_id)
 
 
 def add_country(request):
@@ -169,6 +202,8 @@ def add_point(request):
 
         if avg_waiting_time == '':
             avg_waiting_time = '1'
+    else:
+        return redirect('map')
 
     with connection.cursor() as cursor:
         cursor.execute(

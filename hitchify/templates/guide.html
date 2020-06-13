@@ -2,7 +2,13 @@
 
 {% block content %}
 <div class="sub-container">
-    <div class="sub-container-title">Guide: {{ guide.title }}</div>
+    <div class="sub-container-title">Guide: <span id="guide_title">{{ guide.title }}</span></div>
+
+    {% if perms.hitchify.change_guide or guide.user_id == user.id %}
+        <div>
+            <a href="#" class="changelink" onclick="edit(); return false;">Edit</a>
+        </div>
+    {% endif %}
 
     <div class="properties-holder">
 
@@ -22,15 +28,11 @@
         </div>
 
         <div class="ticket-content-holder">
-            <span spellcheck="false" contenteditable="true" id="short_summary" class="highlight">
-                {{ guide.short_summary }}
-            </span>
+            <span spellcheck="false" contenteditable="true" id="short_summary" class="highlight">{{ guide.short_summary }}</span>
         </div>
 
         <div class="ticket-content-holder">
-            <span spellcheck="false" contenteditable="true" id="body_text" class="highlight">
-                {{ guide.body_text }}
-            </span>
+            <span spellcheck="false" contenteditable="true" id="body_text" class="highlight">{{ guide.body_text }}</span>
         </div>
 
 {#        <button class=" button-style" style="margin-top: 10px;" id="save">Save</button>#}
@@ -38,4 +40,38 @@
     </div>
 
 </div>
+
+    <div id="dialog" style="display: none">
+    </div>
+
+    <script>
+
+        let form_post = '<form action="/guide/{{ guide.id }}/edit" method="post">' +
+            '{% csrf_token %}' +
+            'Title:<br>' +
+            '<input id="edit_title" name="title">' +
+            '<br>Short summary:<br>' +
+            '<textarea id="edit_short_summary" name="short_summary" style="width:400px; height:100px"></textarea>' +
+            '<br>Text:<br>' +
+            '<textarea id="edit_body_text" name="body_text" style="width:400px; height:300px"></textarea>' +
+            '<br>' +
+            '<button type="submit" class="button-style">Edit</button>' +
+            '</form>';
+
+        function edit() {
+            $('#dialog').prop('title', 'Edit guide');
+            $('#dialog').html(form_post);
+
+            $('#edit_title').val($('#guide_title').html());
+            $('#edit_body_text').val($('#body_text').html());
+            $('#edit_short_summary').val($('#short_summary').html());
+
+
+            $("#dialog").dialog({
+                width: 550,
+                position: { my: "center", at: "top+450", of: window }
+            });
+        }
+    </script>
+
 {% endblock %}

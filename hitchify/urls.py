@@ -26,6 +26,7 @@ urlpatterns = [
 
     path('guides/', views.guides, name='guides'),
     path('guide/<guide_id>', views.guide, name='guide'),
+    path('guide/<guide_id>/edit', views.edit_guide, name='edit_guide'),
     path('add_guide/', views.add_guide, name='add_guide'),
 
     path('administration/', views.administration, name='administration'),

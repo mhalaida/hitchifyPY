@@ -3,9 +3,9 @@
 {% block content %}
     <div class="sub-container">
 
-        <div id="post_title" class="sub-container-title">{{ post.title }}</div>
+        <div class="sub-container-title">Post: <span id="post_title">{{ post.title }}</span></div>
 
-        {% if perms.hitchify.change_forumpost %}
+        {% if perms.hitchify.change_forumpost or post.user_id == user.id %}
             <div>
                 <a href="#" class="changelink" onclick="edit(); return false;">Edit</a>
             </div>
