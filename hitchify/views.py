@@ -65,7 +65,6 @@ def add_post(request, country_id):
     return render(request, 'new_post.html', {'form': form, 'country': country})
 
 
-@permission_required('hitchify.change_forumpost')
 def edit_post(request, post_id):
 
     if request.method == 'POST':
