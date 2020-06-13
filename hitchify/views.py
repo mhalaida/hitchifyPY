@@ -48,13 +48,28 @@ def add_post(request, country_id):
             new_post.user = request.user
             new_post.save()
             return redirect('country_post', country_id)
-            # return render(request, 'new_post.html', {'form': form, 'country': country})
 
         else:
             form = forms.AddPostForm()
 
-        # return render(request, 'country.html', {'form': form, 'country': country})
         return render(request, 'new_post.html', {'form': form, 'country': country})
+
+
+def edit_post(request, post_id):
+
+    if request.method == 'POST':
+        form = forms.AddPostForm(request.POST)
+        if form.is_valid():
+
+            title = request.POST['title']
+            body_text = request.POST['body_text']
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE forum_post SET body_text = %s, title = %s, last_update = now() WHERE id = %s",
+                    [body_text, title, post_id])
+
+        return redirect('post', post_id)
 
 
 def add_comment_to_post(request, post_id):
@@ -71,6 +86,52 @@ def add_comment_to_post(request, post_id):
         else:
             form = forms.CommentForm()
         return render(request, 'post.html', {'form': form, 'post': post})
+
+
+def add_country(request):
+
+    if request.method == 'POST':
+        form = forms.AddCountryForm(request.POST)
+        if form.is_valid():
+
+            country_name = request.POST['country_name']
+            short_description = request.POST['short_description']
+            national_currency = request.POST['national_currency']
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO country (id, country_name, short_description, national_currency)"
+                    " VALUES (nextval('country_id_seq'), %s, %s, %s)",
+                    [country_name, short_description, national_currency])
+
+            last_id = Country.objects.latest('id').id
+
+            return redirect('country', last_id)
+
+        return redirect('administration')
+
+def add_guide(request):
+
+    if request.method == 'POST':
+        form = forms.AddGuideForm(request.POST)
+        if form.is_valid():
+
+            title = request.POST['title']
+            body_text = request.POST['body_text']
+            short_summary = request.POST['short_summary']
+            user = request.user
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO guide (id, title, body_text, short_summary, creation_date, user_id)"
+                    " VALUES (nextval('guide_id_seq'), %s, %s, %s, now(), %s)",
+                    [title, body_text, short_summary, user.id])
+
+            last_id = Guide.objects.latest('id').id
+
+            return redirect('guide', last_id)
+
+        return redirect('administration')
 
 
 def signup(request):
@@ -208,7 +269,8 @@ def guides(request):
     guides = Guide.objects.all()
 
     context = {
-        'guides': guides
+        'guides': guides,
+        'choose': 'guide'
     }
 
     return render(request, 'guides.html', context=context)
@@ -218,10 +280,18 @@ def guide(request, guide_id):
     guide = Guide.objects.get(id=guide_id)
 
     context = {
-        'guide': guide
+        'guide': guide,
     }
 
     return render(request, 'guide.html', context=context)
+
+
+def administration(request):
+    context = {
+        'choose': 'administration',
+    }
+
+    return render(request, 'administration.html', context=context)
 
 
 def hitchify_map(request):

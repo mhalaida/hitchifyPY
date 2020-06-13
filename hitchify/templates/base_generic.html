@@ -6,7 +6,9 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'styles.css' %}">
     <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon"/>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 <body>
 <div class="container">
@@ -35,6 +37,16 @@
                         <span class="sidebar-member-label">Guides</span>
                     </div>
                 </a>
+
+                {% if perms.hitchify.add_country %}
+                    <a href="{% url 'administration' %}">
+                        <div class="sidebar-member {% if choose == 'administration' %}chosen{% endif %}">
+                            <span class="sidebar-member-icon">✏️</span>
+                            <span class="sidebar-member-label">Administration</span>
+                        </div>
+                    </a>
+                {% endif %}
+
             {% endif %}
             <a href="{% url 'login' %}">
                 <div class="sidebar-member">

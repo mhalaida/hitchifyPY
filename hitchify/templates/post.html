@@ -3,7 +3,14 @@
 {% block content %}
     <div class="sub-container">
 
-        <div class="sub-container-title">{{ post.title }}</div>
+        <div id="post_title" class="sub-container-title">{{ post.title }}</div>
+
+        {% if perms.hitchify.change_forumpost %}
+            <div>
+                <a href="#" class="changelink" onclick="edit(); return false;">Edit</a>
+            </div>
+        {% endif %}
+
         <div class="properties-holder">
 
             <div class="property">
@@ -122,4 +129,35 @@
         </div>
 
     </div>
+
+    <div id="dialog" style="display: none">
+    </div>
+
+    <script>
+
+        let form_post = '<form action="/post/{{ post.id }}/edit" method="post">' +
+            '{% csrf_token %}' +
+            'Title:<br>' +
+            '<input id="edit_title" name="title">' +
+            '<br>Text:<br>' +
+            '<textarea id="edit_body_text" name="body_text" style="width:400px; height:300px"></textarea>' +
+            '<br>' +
+            '<button type="submit" class="button-style">Edit</button>' +
+            '</form>';
+
+        function edit() {
+            $('#dialog').prop('title', 'Edit post');
+            $('#dialog').html(form_post);
+
+            $('#edit_title').val($('#post_title').html());
+            $('#edit_body_text').val($('#body-text').html());
+
+            $("#dialog").dialog({
+                width: 550,
+                position: { my: "center", at: "top+300", of: window }
+            });
+        }
+    </script>
+
+
 {% endblock %}

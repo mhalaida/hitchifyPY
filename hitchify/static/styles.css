@@ -468,3 +468,13 @@ ul>li {
 .table_color_none td {
     border-color:rgb(47, 52, 55);
 }
+
+.addlink {
+    padding-left: 16px;
+    background: url(icon-addlink.svg) 0 1px no-repeat;
+}
+
+.changelink {
+    padding-left: 16px;
+    background: url(icon-changelink.svg) 0 1px no-repeat;
+}
