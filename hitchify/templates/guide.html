@@ -26,6 +26,11 @@
             </div>
         {% endif %}
 
+        {# TODO VISUAL PART #}
+        {% for tc in guide.top_contributors %}
+            {{ tc }}
+        {% endfor %}
+
         <div class="properties-holder">
             {#        <div class="property">#}
             {#            <div class="property-name"><span class="property-icon">🔖</span>Title</div>#}

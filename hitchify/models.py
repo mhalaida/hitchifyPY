@@ -35,6 +35,23 @@ class Country(models.Model):
     hitchrating = models.FloatField(blank=True, null=True)
 
     @property
+    def loyal_users(self):
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT username '
+                           'FROM auth_user '
+                           'WHERE NOT EXISTS (SELECT * '
+                                             'FROM country INNER JOIN '
+                                             'forum_post ON country.id = forum_post.country_id '
+                                             'WHERE country.id = %s '
+                                             'AND NOT EXISTS (SELECT * '
+                                                             'FROM comment '
+                                                             'WHERE comment.user_id = auth_user.id AND comment.post_id = forum_post.id ))',
+                           [self.id])
+
+            loyalists = cursor.fetchall()
+            return loyalists
+
+    @property
     def expert_users(self):
         with connection.cursor() as cursor:
             cursor.execute('SELECT auth_user.username, country.country_name, COUNT(hitchspot.id) AS spots ' 
@@ -150,6 +167,22 @@ class Guide(models.Model):
     creation_date = models.DateField(auto_now_add=True)
     update_date = models.DateField(blank=True, null=True)
     user = models.ForeignKey(User, models.DO_NOTHING)
+
+    @property
+    def top_contributors(self):
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT auth_user.username '
+                           'FROM guide_feedback INNER JOIN auth_user on auth_user.id = guide_feedback.user_id '
+                           'GROUP BY guide_feedback.user_id, auth_user.username '
+                           'HAVING COUNT(guide_feedback.user_id) = (SELECT MAX(mycount)'
+                           'FROM (SELECT guide_feedback.user_id, COUNT(guide_feedback.user_id) AS mycount '
+                           'FROM guide_feedback '
+                           'WHERE guide_id = %s '
+                           'GROUP BY guide_feedback.user_id) AS bruh1)',
+                           [self.id])
+            top_contributor = cursor.fetchall()
+            print(top_contributor)
+            return top_contributor
 
     class Meta:
         managed = True
