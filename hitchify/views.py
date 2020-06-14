@@ -629,7 +629,7 @@ def hitchify_map_country(request, country_id):
                                   'WHERE id = %s', [country_id])
 
     context = {
-        'country': country,
+        'country': country[0],
         'choose': 'map',
     }
 

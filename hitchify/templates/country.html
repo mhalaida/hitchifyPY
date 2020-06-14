@@ -101,7 +101,7 @@
                         <td>{{ spot.creation_date }}</td>
                         <td>{{ spot.last_update }}</td>
                         <td>
-                            <a href="{% url 'map_country' country.id %}">
+                             <a href="{% url 'hitchspot' spot.id %}">
                                 <button id="add-hitchspot" class="button-style">Open</button>
                             </a>
                         </td>
