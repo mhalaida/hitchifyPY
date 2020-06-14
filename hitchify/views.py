@@ -70,14 +70,22 @@ def edit_post(request, post_id):
     if request.method == 'POST':
         form = forms.AddPostForm(request.POST)
         if form.is_valid():
+            user = request.user
+
+            posts = ForumPost.objects.raw("SELECT * "
+                                          "FROM forum_post "
+                                          "WHERE id = %s AND user_id = %s",
+                                          [post_id, user.id])
 
             title = request.POST['title']
             body_text = request.POST['body_text']
 
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "UPDATE forum_post SET body_text = %s, title = %s, last_update = now() WHERE id = %s",
-                    [body_text, title, post_id])
+            # перевіряємо дозволи - адмін/модератор або власник коментаря
+            if user.has_perm("hitchify.change_forumpost") or user.id == posts[0].user_id:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "UPDATE forum_post SET body_text = %s, title = %s, last_update = now() WHERE id = %s",
+                        [body_text, title, post_id])
 
     return redirect('post', post_id)
 
@@ -154,12 +162,20 @@ def edit_comment_post(request, post_id):
             body_text = request.POST['body_text']
             comment_id = request.POST['comment_id']
 
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "UPDATE comment SET body_text = %s WHERE id = %s",
-                    [body_text, comment_id])
+            user = request.user
 
-            return redirect('/post/'+post_id+'#new_comment')
+            comment = Comment.objects.raw('SELECT * '
+                                          'FROM comment '
+                                          'WHERE id = %s AND user_id = %s', [comment_id, user.id])[0]
+
+            # перевіряємо дозволи - адмін/модератор або власник коментаря
+            if user.has_perm('hitchify.change_comment') or comment.user_id == user.id:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "UPDATE comment SET body_text = %s WHERE id = %s",
+                        [body_text, comment_id])
+
+                return redirect('/post/'+post_id+'#new_comment')
 
     return redirect('post', post_id)
 
@@ -167,9 +183,15 @@ def edit_comment_post(request, post_id):
 def del_comment_post(request, post_id):
 
     if request.method == 'POST':
+        comment_id = request.POST['comment_id']
+        user = request.user
 
-            comment_id = request.POST['comment_id']
+        comment = Comment.objects.raw('SELECT * '
+                                      'FROM comment '
+                                      'WHERE id = %s AND user_id = %s', [comment_id, user.id])[0]
 
+        # перевіряємо дозволи - адмін/модератор або власник коментаря
+        if user.has_perm('hitchify.delete_comment') or comment.user_id == user.id:
             with connection.cursor() as cursor:
                 cursor.execute(
                     "DELETE FROM comment WHERE id = %s",
@@ -193,8 +215,8 @@ def add_country(request):
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "INSERT INTO country (id, country_name, short_description, national_currency)"
-                    " VALUES (nextval('country_id_seq'), %s, %s, %s)",
+                    "INSERT INTO country (id, country_name, short_description, national_currency) "
+                    "VALUES (nextval('country_id_seq'), %s, %s, %s)",
                     [country_name, short_description, national_currency])
 
             last_id = Country.objects.latest('id').id
@@ -218,8 +240,8 @@ def add_guide(request):
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "INSERT INTO guide (id, title, body_text, short_summary, creation_date, user_id)"
-                    " VALUES (nextval('guide_id_seq'), %s, %s, %s, now(), %s)",
+                    "INSERT INTO guide (id, title, body_text, short_summary, creation_date, user_id) "
+                    "VALUES (nextval('guide_id_seq'), %s, %s, %s, now(), %s)",
                     [title, body_text, short_summary, user.id])
 
             last_id = Guide.objects.latest('id').id
