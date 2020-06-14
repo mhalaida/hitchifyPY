@@ -18,6 +18,16 @@ from .forms import CustomSignUpForm
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+def dictfetchall(cursor):
+
+    # Return all rows from a cursor as a dict
+    columns = [col[0] for col in cursor.description]
+    return [
+        dict(zip(columns, row))
+        for row in cursor.fetchall()
+    ]
+
+
 def delete_suggestion(request, gf_id):
 
     with connection.cursor() as cursor:
@@ -488,9 +498,12 @@ def login(request):
 
 
 def countries(request):
-    countries = Country.objects.raw('SELECT * '
-                                    'FROM country '
-                                    'ORDER BY country_name ASC')
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT id, country_name '
+                       'FROM country '
+                       'ORDER BY country_name ASC')
+
+        countries = dictfetchall(cursor)
 
     context = {
         'choose': 'country',
@@ -514,7 +527,16 @@ def country(request, country_id):
 
 
 def hitchspots(request):
-    hitchspots = Hitchspot.objects.all()
+
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT hs.id, hs.latitude, hs.longitude, hs.avg_hitchability, '
+                       'hs.avg_waiting_time, hs.creation_date, hs.last_update, '
+                       'c.country_name, au.username '
+                       'FROM hitchspot hs '
+                       'INNER JOIN country c on hs.country_id = c.id '
+                       'INNER JOIN auth_user au on hs.user_id = au.id')
+
+        hitchspots = dictfetchall(cursor)
 
     context = {
         'choose': 'hitchspots',

@@ -33,14 +33,14 @@
         <tbody id="hitchspots-grid">
             {% for hs in hitchspots %}
             <tr>
-                <td>{{ hs.country.country_name }}</td>
+                <td>{{ hs.country_name }}</td>
                 <td>{{ hs.latitude }};
                     {{ hs.longitude }}</td>
                 <td>{{ hs.avg_hitchability }}</td>
                 <td>{{ hs.avg_waiting_time }} min</td>
                 <td>{{ hs.creation_date }}</td>
                 <td>{{ hs.last_update }}</td>
-                <td>{{ hs.user }}</td>
+                <td>{{ hs.username }}</td>
                 <td>
                     <a href="{% url 'hitchspot' hs.id %}"><button class="button-style">Open</button></a>
                 </td>
