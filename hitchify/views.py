@@ -20,8 +20,20 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def delete_suggestion(request, gf_id):
 
-    gf = GuideFeedback.objects.get(id=gf_id)
-    guide = Guide.objects.get(id=gf.guide_id)
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT * '
+                       'FROM guide_feedback '
+                       'WHERE id = %s', [gf_id])
+        gf = cursor.fetchone()
+
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT * '
+                       'FROM guide '
+                       'WHERE id = %s', [gf[3]])
+        guide = cursor.fetchone()
+
+    # gf = GuideFeedback.objects.get(id=gf_id)
+    # guide = Guide.objects.get(id=gf.guide_id)
 
     with connection.cursor() as cursor:
         cursor.execute('DELETE FROM guide_feedback '
@@ -30,11 +42,11 @@ def delete_suggestion(request, gf_id):
     with connection.cursor() as cursor:
         cursor.execute('SELECT * '
                        'FROM guide_feedback '
-                       'WHERE guide_id = %s', [guide.id])
+                       'WHERE guide_id = %s', [guide[0]])
 
         suggestions = cursor.fetchall()
 
-    return render(request, 'guide_feedback.html', {'suggestions': suggestions, 'guide_id': guide.id})
+    return render(request, 'guide_feedback.html', {'suggestions': suggestions, 'guide_id': guide[0]})
 
 
 def see_suggestions(request, guide_id):
