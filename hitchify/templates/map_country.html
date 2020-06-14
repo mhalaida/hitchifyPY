@@ -1,149 +1,195 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<div class="sub-container">
-    <div class="sub-container-title">🗺️ Map</div>
-	
-	<div style="margin-top:10px" id="map"></div>
+    <div class="sub-container">
+        <div class="sub-container-title">🗺️ Map</div>
 
-</div>
+        <div>
+            <a href="#" onclick="printMap()">🖨️ Print</a>
+        </div>
 
-<script>
+        <div style="margin-top:10px" id="map"></div>
 
-	$(document).ready(function () {
+    </div>
 
-		let ww = $('.frame').width()-120;
-		let hh = $(window).height()-200;
+    <script>
 
-		$('#map').height(hh);
-		$('#map').width(ww);
+        function printMap() {
+            {#window.print()#}
 
-	});
+            const $body = $('body');
+            const $mapContainer = $('#map');
+            const $mapContainerParent = $mapContainer.parent();
+            const $printContainer = $('<div style="position:relative;">');
 
-	let xml_url = "{% url 'map_xml_country' country.id %}";
-	let flat = 48;
-	let flng = 17;
+            $printContainer
+                .height($mapContainer.height())
+                .append($mapContainer)
+                .prependTo($body);
 
-	let customIcon = '/static/hotpoint_orange.png';
+            const $content = $body
+                .children()
+                .not($printContainer)
+                .not('script')
+                .detach();
 
-	let map;
+            /**
+             * Needed for those who use Bootstrap 3.x, because some of
+             * its `@media print` styles ain't play nicely when printing.
+             */
+            const $patchedStyle = $('<style media="print">')
+                .text(`
+                      img { max-width: none !important; }
+                      a[href]:after { content: ""; }
+                    `)
+                .appendTo('head');
 
-	let markers = [];
+            window.print();
 
-	function downloadUrl(url, callback) {
-		let request = window.ActiveXObject ?
-			new ActiveXObject('Microsoft.XMLHTTP') :
-			new XMLHttpRequest;
+            $body.prepend($content);
+            $mapContainerParent.prepend($mapContainer);
 
-		request.onreadystatechange = function() {
-			if (request.readyState == 4) {
-				request.onreadystatechange = doNothing;
-				callback(request, request.status);
-			}
-		};
+            $printContainer.remove();
+            $patchedStyle.remove();
+            location.reload()
+        }
 
-		request.open('GET', url, true);
-		request.send(null);
-	}
+        $(document).ready(function () {
 
-	function doNothing() {}
+            let ww = $('.frame').width() - 120;
+            let hh = $(window).height() - 200;
 
-	function initMap() {
-		map = new google.maps.Map(document.getElementById('map'), {
-			center: new google.maps.LatLng(flat, flng),
-			zoom: 7,
-			mapTypeControl: false,
-			streetViewControl: false,
-			gestureHandling: 'greedy'
-		});
+            $('#map').height(hh);
+            $('#map').width(ww);
 
-        map.addListener('click', function(mapsMouseEvent) {
-          infoWindow = new google.maps.InfoWindow({position: mapsMouseEvent.latLng});
-
-		  let coord = mapsMouseEvent.latLng.toString();
-
-		  let result = coord.match(/(\d+\.\d+),\s+(\d+\.\d+)/);
-
-		  let content = '<div class="text_on_map">' +
-							'<b>Add point to {{ country.country_name }}</b>' +
-							'<br><form action="{% url 'add_point' %}" method="post">{% csrf_token %}' +
-							'Coord: ' + result[1] + ', ' + result[2] +
-							'<br><br>Hitchability (1-5): ' +
-                            '<select name="avg_hitchability" style="padding:0">' +
-                            '<option value="1">1</option>' +
-                            '<option value="2">2</option>' +
-                            '<option value="3">3</option>' +
-                            '<option value="4">4</option>' +
-                            '<option value="5">5</option>' +
-                            '</select>'+
-							'<br><br>Waiting time (min): <input style="width:40px" name="avg_waiting_time" type="number" min="0">' +
-							'<br><br>Description:<br><textarea name="description" cols="50" rows="5"></textarea>' +
-							'<input name="lt" type="hidden" value="' + result[1] + '">' +
-							'<input name="ln" type="hidden" value="' + result[2] + '">' +
-							'<input name="country_id" type="hidden" value="{{ country.id }}">' +
-							'<input name="user_id" type="hidden" value="{{ user.id }}">' +
-							'<br><br><button class="button-style" type="submit">Add this point</button><form></div>'
-
-          infoWindow.setContent(content);
-          infoWindow.open(map);
         });
 
-		downloadUrl(xml_url, function(data) {
-			let xml = data.responseXML;
+        let xml_url = "{% url 'map_xml_country' country.id %}";
+        let flat = 48;
+        let flng = 17;
 
-			let marker = xml.documentElement.getElementsByTagName('marker');
+        let customIcon = '/static/hotpoint_orange.png';
 
-			let av_lt = 0;
-			let av_ln = 0;
-			let count = 0;
+        let map;
 
-			Array.prototype.forEach.call(marker, function(markerElem) {
+        let markers = [];
 
-				let desc = markerElem.getAttribute('desc');
-				let av_h = parseFloat(markerElem.getAttribute('av_h'));
-				let av_wt = parseFloat(markerElem.getAttribute('av_wt'));
+        function downloadUrl(url, callback) {
+            let request = window.ActiveXObject ?
+                new ActiveXObject('Microsoft.XMLHTTP') :
+                new XMLHttpRequest;
 
-				let lt = parseFloat(markerElem.getAttribute('lat'));
-				let ln = parseFloat(markerElem.getAttribute('lng'));
+            request.onreadystatechange = function () {
+                if (request.readyState == 4) {
+                    request.onreadystatechange = doNothing;
+                    callback(request, request.status);
+                }
+            };
+
+            request.open('GET', url, true);
+            request.send(null);
+        }
+
+        function doNothing() {
+        }
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: new google.maps.LatLng(flat, flng),
+                zoom: 7,
+                mapTypeControl: false,
+                streetViewControl: false,
+                gestureHandling: 'greedy'
+            });
+
+            map.addListener('click', function (mapsMouseEvent) {
+                infoWindow = new google.maps.InfoWindow({position: mapsMouseEvent.latLng});
+
+                let coord = mapsMouseEvent.latLng.toString();
+
+                let result = coord.match(/(\d+\.\d+),\s+(\d+\.\d+)/);
+
+                let content = '<div class="text_on_map">' +
+                    '<b>Add point to {{ country.country_name }}</b>' +
+                    '<br><form action="{% url 'add_point' %}" method="post">{% csrf_token %}' +
+                    'Coord: ' + result[1] + ', ' + result[2] +
+                    '<br><br>Hitchability (1-5): ' +
+                    '<select name="avg_hitchability" style="padding:0">' +
+                    '<option value="1">1</option>' +
+                    '<option value="2">2</option>' +
+                    '<option value="3">3</option>' +
+                    '<option value="4">4</option>' +
+                    '<option value="5">5</option>' +
+                    '</select>' +
+                    '<br><br>Waiting time (min): <input style="width:40px" name="avg_waiting_time" type="number" min="0">' +
+                    '<br><br>Description:<br><textarea name="description" cols="50" rows="5"></textarea>' +
+                    '<input name="lt" type="hidden" value="' + result[1] + '">' +
+                    '<input name="ln" type="hidden" value="' + result[2] + '">' +
+                    '<input name="country_id" type="hidden" value="{{ country.id }}">' +
+                    '<input name="user_id" type="hidden" value="{{ user.id }}">' +
+                    '<br><br><button class="button-style" type="submit">Add this point</button><form></div>'
+
+                infoWindow.setContent(content);
+                infoWindow.open(map);
+            });
+
+            downloadUrl(xml_url, function (data) {
+                let xml = data.responseXML;
+
+                let marker = xml.documentElement.getElementsByTagName('marker');
+
+                let av_lt = 0;
+                let av_ln = 0;
+                let count = 0;
+
+                Array.prototype.forEach.call(marker, function (markerElem) {
+
+                    let desc = markerElem.getAttribute('desc');
+                    let av_h = parseFloat(markerElem.getAttribute('av_h'));
+                    let av_wt = parseFloat(markerElem.getAttribute('av_wt'));
+
+                    let lt = parseFloat(markerElem.getAttribute('lat'));
+                    let ln = parseFloat(markerElem.getAttribute('lng'));
 
 
-				av_lt += lt;
-				av_ln += ln;
+                    av_lt += lt;
+                    av_ln += ln;
 
-				count++;
+                    count++;
 
-				let point = new google.maps.LatLng( lt, ln);
+                    let point = new google.maps.LatLng(lt, ln);
 
-				let img = customIcon;
+                    let img = customIcon;
 
-				let marker = new google.maps.Marker({
-					map: map,
-					position: point,
-					icon: img,
-					zIndex: 1
-				});
+                    let marker = new google.maps.Marker({
+                        map: map,
+                        position: point,
+                        icon: img,
+                        zIndex: 1
+                    });
 
-				let infoWindow = new google.maps.InfoWindow({
-					content: '<div class="text_on_map">Average hitchability (1-5): '+av_h +'<br>Average waiting time: '+av_wt+' min<br>Description: ' +desc+'</div>'
-				});
+                    let infoWindow = new google.maps.InfoWindow({
+                        content: '<div class="text_on_map">Average hitchability (1-5): ' + av_h + '<br>Average waiting time: ' + av_wt + ' min<br>Description: ' + desc + '</div>'
+                    });
 
-				marker.addListener('click', function() {
-					infoWindow.open(map, marker);
-				});
+                    marker.addListener('click', function () {
+                        infoWindow.open(map, marker);
+                    });
 
-				markers.push(marker);
-			});
+                    markers.push(marker);
+                });
 
-			av_ln = av_ln/count;
-			av_lt = av_lt/count;
+                av_ln = av_ln / count;
+                av_lt = av_lt / count;
 
-			map.setCenter(new google.maps.LatLng(av_lt, av_ln));
+                map.setCenter(new google.maps.LatLng(av_lt, av_ln));
 
-		});
-	}
+            });
+        }
 
-</script>
+    </script>
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyALYpitR1YqY3DPBTR8T1IjWEQAmZ_yKPQ&language=en&callback=initMap"></script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyALYpitR1YqY3DPBTR8T1IjWEQAmZ_yKPQ&language=en&callback=initMap"></script>
 
 {% endblock %}
