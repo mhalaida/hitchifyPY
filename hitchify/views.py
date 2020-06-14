@@ -166,10 +166,10 @@ def edit_comment_post(request, post_id):
 
             comment = Comment.objects.raw('SELECT * '
                                           'FROM comment '
-                                          'WHERE id = %s AND user_id = %s', [comment_id, user.id])[0]
+                                          'WHERE id = %s AND user_id = %s', [comment_id, user.id])
 
             # перевіряємо дозволи - адмін/модератор або власник коментаря
-            if user.has_perm('hitchify.change_comment') or comment.user_id == user.id:
+            if user.has_perm('hitchify.change_comment') or comment[0].user_id == user.id:
                 with connection.cursor() as cursor:
                     cursor.execute(
                         "UPDATE comment SET body_text = %s WHERE id = %s",
@@ -188,10 +188,10 @@ def del_comment_post(request, post_id):
 
         comment = Comment.objects.raw('SELECT * '
                                       'FROM comment '
-                                      'WHERE id = %s AND user_id = %s', [comment_id, user.id])[0]
+                                      'WHERE id = %s AND user_id = %s', [comment_id, user.id])
 
         # перевіряємо дозволи - адмін/модератор або власник коментаря
-        if user.has_perm('hitchify.delete_comment') or comment.user_id == user.id:
+        if user.has_perm('hitchify.delete_comment') or comment[0].user_id == user.id:
             with connection.cursor() as cursor:
                 cursor.execute(
                     "DELETE FROM comment WHERE id = %s",
