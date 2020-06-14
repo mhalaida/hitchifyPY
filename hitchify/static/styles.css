@@ -1,3 +1,18 @@
+@media print {
+    div .sidebar {
+        display: none;
+    }
+    .changelink {
+        display: none;
+    }
+    button.button-style {
+        display: none;
+    }
+    a {
+        display: none;
+    }
+}
+
 body {
     user-select: none;
     background: #2f3437;
