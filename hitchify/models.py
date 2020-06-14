@@ -107,9 +107,11 @@ class Country(models.Model):
     def forum_posts(self):
         res_forum_posts = ForumPost.objects.raw(
             'SELECT * '
-            'FROM forum_post '
-            'INNER JOIN auth_user ON forum_post.user_id = auth_user.id '
-            'WHERE country_id = %s', [self.id])
+            'FROM forum_post fp '
+            'INNER JOIN auth_user au ON fp.user_id = au.id '
+            'WHERE fp.country_id = %s '
+            'ORDER BY fp.id ASC', [self.id])
+
         res_forum_posts = list(res_forum_posts)
         return res_forum_posts
 
@@ -140,7 +142,8 @@ class ForumPost(models.Model):
     def comments(self):
         res_comments = Comment.objects.raw('SELECT * '
                                            'FROM comment '
-                                           'WHERE parent_comment_id IS NULL AND post_id = %s', [self.id])
+                                           'WHERE parent_comment_id IS NULL AND post_id = %s '
+                                           'ORDER BY id ASC', [self.id])
         res_comments_list = []
         for comment in res_comments:
             res_comments_list.append(comment)
@@ -285,7 +288,9 @@ class Comment(models.Model):
     def sub_comments(self):
         res_subcomments = Comment.objects.raw('SELECT * '
                                               'FROM comment '
-                                              'WHERE parent_comment_id = %s', [self.id])
+                                              'WHERE parent_comment_id = %s '
+                                              'ORDER BY id ASC', [self.id])
+
         res_subcomments_list = []
         for subcomment in res_subcomments:
             res_subcomments_list.append(subcomment)

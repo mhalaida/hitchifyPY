@@ -570,17 +570,20 @@ def forum(request):
 
 
 def post(request, post_id):
-    post = ForumPost.objects.get(id=post_id)
+    post = ForumPost.objects.raw('SELECT * '
+                                 'FROM forum_post '
+                                 'WHERE id = %s', [post_id])
 
     context = {
-        'post': post
+        'post': post[0]
     }
 
     return render(request, 'post.html', context=context)
 
 
 def guides(request):
-    guides = Guide.objects.all()
+    guides = Guide.objects.raw('SELECT * '
+                               'FROM guide ')
 
     context = {
         'guides': guides,
@@ -591,10 +594,12 @@ def guides(request):
 
 
 def guide(request, guide_id):
-    guide = Guide.objects.get(id=guide_id)
+    guide = Guide.objects.raw('SELECT * '
+                              'FROM guide '
+                              'WHERE id = %s', [guide_id])
 
     context = {
-        'guide': guide,
+        'guide': guide[0],
     }
 
     return render(request, 'guide.html', context=context)
@@ -618,7 +623,10 @@ def hitchify_map(request):
 
 
 def hitchify_map_country(request, country_id):
-    country = Country.objects.get(id=country_id)
+
+    country = Country.objects.raw('SELECT * '
+                                  'FROM country '
+                                  'WHERE id = %s', [country_id])
 
     context = {
         'country': country,
@@ -629,7 +637,8 @@ def hitchify_map_country(request, country_id):
 
 
 def hitchify_xml(request):
-    hitchspots = Hitchspot.objects.all()
+    hitchspots = Hitchspot.objects.raw('SELECT * '
+                                       'FROM hitchspot')
 
     context = {'hitchspots': hitchspots}
 
