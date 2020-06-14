@@ -1,0 +1,24 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <div class="sub-container">
+        <div class="sub-container-title">🎤 Guide feedback</div>
+
+        <br>
+        <button class="button-style" onclick="location.href='{% url 'guide' guide_id %}'">Back to guide</button>
+
+        <div class="comments-holder">
+            {% for suggestion in suggestions %}
+                <div class="comment">
+                    <span style="font-weight: 800">Title:</span> {{ suggestion.1 }} <br>
+                    <span style="font-weight: 800">Full text:</span> {{ suggestion.2 }}
+                    <br><br>
+                <a href="#" class="deletelink" style="margin-left: 10px"
+                       onclick="location.href='{% url 'del_suggestion' suggestion.0 %}'">Delete</a>
+                </div>
+                <br>
+            {% endfor %}
+        </div>
+
+    </div>
+{% endblock %}

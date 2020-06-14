@@ -18,12 +18,60 @@ from .forms import CustomSignUpForm
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+def delete_suggestion(request, gf_id):
+
+    gf = GuideFeedback.objects.get(id=gf_id)
+    guide = Guide.objects.get(id=gf.guide_id)
+
+    with connection.cursor() as cursor:
+        cursor.execute('DELETE FROM guide_feedback '
+                       'WHERE id = %s', [gf_id])
+
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT * '
+                       'FROM guide_feedback '
+                       'WHERE guide_id = %s', [guide.id])
+
+        suggestions = cursor.fetchall()
+
+    return render(request, 'guide_feedback.html', {'suggestions': suggestions, 'guide_id': guide.id})
+
+
+def see_suggestions(request, guide_id):
+
+    guide = Guide.objects.get(id = guide_id)
+
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT * '
+                       'FROM guide_feedback '
+                       'WHERE guide_id = %s', [guide_id])
+
+        suggestions = cursor.fetchall()
+
+    return render(request, 'guide_feedback.html', {'suggestions': suggestions, 'guide_id': guide_id})
+
+
+def add_suggestion(request, guide_id):
+
+    guide = Guide.objects.get(id = guide_id)
+    user = request.user
+
+    if request.method == 'POST':
+        title = request.POST['suggestion_title']
+        text = request.POST['suggestion_text']
+
+    with connection.cursor() as cursor:
+        cursor.execute('INSERT INTO guide_feedback (title, suggestion_text, guide_id, user_id) '
+                       'VALUES (%s, %s, %s, %s)',
+                       [title, text, guide.id, user.id])
+
+    return redirect('guide', guide_id)
+
+
 def like_post(request, post_id):
 
     post = ForumPost.objects.get(id = post_id)
     user = request.user
-
-    # if request.method == 'POST':
 
     with connection.cursor() as cursor:
         cursor.execute(

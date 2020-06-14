@@ -32,6 +32,11 @@ urlpatterns = [
     path('guide/<guide_id>/edit', views.edit_guide, name='edit_guide'),
     path('add_guide/', views.add_guide, name='add_guide'),
 
+    path('guide/<guide_id>/add_suggestion', views.add_suggestion, name='add_suggestion'),
+    path('guide/<guide_id>/see_suggestions', views.see_suggestions, name='see_suggestions'),
+
+    path('suggestions/<gf_id>/delete', views.delete_suggestion, name='del_suggestion'),
+
     path('administration/', views.administration, name='administration'),
 
     path('map/', views.hitchify_map, name='map'),

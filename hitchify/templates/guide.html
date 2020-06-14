@@ -13,7 +13,19 @@
         <div>
             <a href="#" onclick="printGuide()">🖨️ Print</a>
         </div>
-{#        <button onclick="printGuide()" class="button-style">Print</button>#}
+
+        {% if not user.is_staff %}
+            <div>
+                <a href="#" onclick="suggest(); return false;">🗣 Suggest a change</a>
+            </div>
+        {% endif %}
+
+        {% if user.is_staff %}
+            <div>
+                <a href="#" onclick="location.href='{% url 'see_suggestions' guide.id %}'">🎧 Check suggestions</a>
+            </div>
+        {% endif %}
+
         <div class="properties-holder">
             {#        <div class="property">#}
             {#            <div class="property-name"><span class="property-icon">🔖</span>Title</div>#}
@@ -49,9 +61,39 @@
     <div id="dialog" style="display: none">
     </div>
 
+    <div id="dialog_c" style="display: none">
+    </div>
+
+    <div id="dialog_g" style="display: none">
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
     <script>
+
+        let form_suggestion = '<form action="/guide/{{ guide.id }}/add_suggestion" method="post">' +
+            '{% csrf_token %}' +
+            'Title:<br>' +
+            '<input id="suggestion_title" name="suggestion_title">' +
+            '<br>Suggestion text:<br>' +
+            '<textarea id="suggestion_text" name="suggestion_text" style="width:400px; height:100px"></textarea>' +
+            '<br>' +
+            '<button type="submit" class="button-style">Submit</button>' +
+            '</form>';
+
+        function suggest() {
+            $('#dialog_c').prop('title', 'Add suggestion');
+            $('#dialog_c').html(form_suggestion);
+
+            $('#suggestion_title').val('');
+            $('#suggestion_text').val('');
+
+            $("#dialog_c").dialog({
+                width: 550,
+                modal: true,
+                position: {my: "center", at: "top+300", of: window}
+            });
+        }
 
         function printGuide() {
             window.print()
