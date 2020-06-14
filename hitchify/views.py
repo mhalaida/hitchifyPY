@@ -250,6 +250,79 @@ def del_comment_post(request, post_id):
     return redirect('post', post_id)
 
 
+def add_comment_to_hitchspot(request, hitchspot_id):
+
+    if request.method == 'POST':
+        form = forms.CommentForm(request.POST)
+        if form.is_valid():
+
+            user = request.user
+            body_text = request.POST['body_text']
+            parent_comment_id = request.POST['parent_comment']
+
+            if parent_comment_id == '':
+                parent_comment_id = None
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO comment (id, body_text, creation_date, parent_comment_id, spot_id, user_id) "
+                    "VALUES (nextval('comment_id_seq'), %s, now(), %s, %s, %s)",
+                    [body_text, parent_comment_id, hitchspot_id, user.id])
+
+            return redirect('/hitchspot/' + hitchspot_id + '#new_comment')
+
+    return redirect('hitchspot', hitchspot_id)
+
+
+def edit_comment_hitchspot(request, hitchspot_id):
+
+    if request.method == 'POST':
+        form = forms.CommentForm(request.POST)
+        if form.is_valid():
+
+            body_text = request.POST['body_text']
+            comment_id = request.POST['comment_id']
+
+            user = request.user
+
+            comment = Comment.objects.raw('SELECT * '
+                                          'FROM comment '
+                                          'WHERE id = %s AND user_id = %s', [comment_id, user.id])
+
+            # перевіряємо дозволи - адмін/модератор або власник коментаря
+            if user.has_perm('hitchify.change_comment') or comment[0].user_id == user.id:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "UPDATE comment SET body_text = %s WHERE id = %s",
+                        [body_text, comment_id])
+
+                return redirect('/hitchspot/'+hitchspot_id+'#new_comment')
+
+    return redirect('hitchspot', hitchspot_id)
+
+
+def del_comment_hitchspot(request, hitchspot_id):
+
+    if request.method == 'POST':
+        comment_id = request.POST['comment_id']
+        user = request.user
+
+        comment = Comment.objects.raw('SELECT * '
+                                      'FROM comment '
+                                      'WHERE id = %s AND user_id = %s', [comment_id, user.id])
+
+        # перевіряємо дозволи - адмін/модератор або власник коментаря
+        if user.has_perm('hitchify.delete_comment') or comment[0].user_id == user.id:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM comment WHERE id = %s",
+                    [comment_id])
+
+            return redirect('/hitchspot/'+hitchspot_id+'#new_comment')
+
+    return redirect('hitchspot', hitchspot_id)
+
+
 @permission_required('hitchify.add_country')
 def add_country(request):
 
@@ -429,13 +502,27 @@ def country(request, country_id):
 
 
 def hitchspots(request):
-    hitchspot = Hitchspot.objects.all()
+    hitchspots = Hitchspot.objects.all()
 
     context = {
-        'hitchspot': hitchspot
+        'choose': 'hitchspots',
+        'hitchspots': hitchspots
     }
 
     return render(request, 'hitchspots.html', context=context)
+
+
+def hitchspot(request, hitchspot_id):
+    hitchspot = Hitchspot.objects.raw('SELECT * '
+                                      'FROM hitchspot '
+                                      'WHERE id = %s', [hitchspot_id])
+
+    context = {
+        'choose': 'hitchspots',
+        'hitchspot': hitchspot[0]
+    }
+
+    return render(request, 'hitchspot.html', context=context)
 
 
 def forum(request):

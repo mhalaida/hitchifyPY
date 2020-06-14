@@ -1,0 +1,185 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <div class="sub-container">
+
+        <div class="sub-container-title">📌 Hitchspot</div>
+
+        <div class="properties-holder">
+
+            <div class="property">
+                <div class="property-name"><span class="property-icon">🗺️</span>Coordinate</div>
+                <div class="property-value select-property">{{ hitchspot.latitude }}, {{ hitchspot.longitude }}</div>
+            </div>
+
+            <div class="property">
+                <div class="property-name"><span class="property-icon">🌐</span>Country</div>
+                <div class="property-value select-property"><a href="{% url 'country' hitchspot.country.id %}">{{ hitchspot.country.country_name }}</a></div>
+            </div>
+
+            <div class="property">
+                <div class="property-name"><span class="property-icon">👤</span>Added</div>
+                <div class="property-value select-property">{{ hitchspot.user.username }}</div>
+            </div>
+
+            <div class="property">
+                <div class="property-name"><span class="property-icon">📆</span>Creation Date</div>
+                <div id="created" class="property-value">{{ hitchspot.creation_date }}</div>
+            </div>
+
+            {% if hitchspot.last_update != null %}
+                <div class="property">
+                    <div class="property-name"><span class="property-icon">📆</span>Last Update Date</div>
+                    <div id="updated" class="property-value">{{ hitchspot.last_update }}</div>
+                </div>
+            {% endif %}
+
+            <div class="ticket-content-holder">
+                <span spellcheck="false" contenteditable="true" id="body-text"
+                      class="highlight">{{ hitchspot.description }}</span>
+            </div>
+
+            <a href="#new_comment" onclick="$('#title_comment').html('Add new comment:'); $('#parent_comment').val('');">Add comment</a>
+
+                <div id="comments-holder" class="comments-holder">
+
+                    Comments:
+                    <div id="comment-subholder"></div>
+
+                    {% for comment in hitchspot.comments %}
+                        <div class="comment">
+                            <div class="comment-timestamp">
+                                {{ comment.creation_date }} – {{ comment.user.username }} <a href="#new_comment" onclick="$('#title_comment').html('Add reply to comment {{ comment.creation_date }} – {{ comment.user.username }}:'); $('#parent_comment').val({{ comment.id }});">Reply</a>
+
+                                {% if perms.hitchify.change_comment or comment.user_id == user.id %}
+                                    <a href="#" class="changelink" style="margin-left: 10px" onclick="edit_comment({{ comment.id }}); return false;">Edit</a>
+
+                                    {% if not comment.sub_comments %}
+                                        <a href="#" class="deletelink" style="margin-left: 10px" onclick="del_comment({{ comment.id }}); return false;">Delete</a>
+                                    {% endif %}
+
+                                {% endif %}
+
+                            </div>
+
+                            <div class="comment-content" id="comment_text_{{ comment.id }}">{{ comment.body_text}}</div>
+
+                            {% for subcomment in comment.sub_comments %}
+                                <div class="comment" style="padding-left: 50px">
+                                    <div class="comment-timestamp">
+                                        {{ subcomment.creation_date }} – {{ subcomment.user.username }}
+
+                                        {% if perms.hitchify.change_comment or subcomment.user_id == user.id %}
+                                            <a href="#" class="changelink" style="margin-left: 10px" onclick="edit_comment({{ subcomment.id }}); return false;">Edit</a>
+                                            <a href="#" class="deletelink" style="margin-left: 10px" onclick="del_comment({{ subcomment.id }}); return false;">Delete</a>
+                                        {% endif %}
+
+                                    </div>
+
+                                    <div class="comment-content" id="comment_text_{{ subcomment.id }}">{{ subcomment.body_text}}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                    <br>
+                    <div id="new_comment" class="predefined-comment">
+                        <form action="{% url 'add_comment_to_hitchspot' hitchspot.id %}" method="post">
+                            {% csrf_token %}
+                            <div id="title_comment">Add new comment:</div>
+                            <input id="parent_comment" type="hidden" name="parent_comment" value="">
+                            <textarea name="body_text" rows="7" cols="60"></textarea>
+                            <br>
+                            <button type="submit" class="button-style">Add comment</button>
+                        </form>
+                    </div>
+
+                </div>
+        </div>
+    </div>
+
+    <div id="dialog" style="display: none">
+    </div>
+
+    <div id="dialog_e" style="display: none">
+    </div>
+
+    <div id="dialog_d" style="display: none">
+    </div>
+
+    <script>
+
+        let form_post = '<form action="/hitchspot/{{ hitchspot.id }}/edit" method="post">' +
+            '{% csrf_token %}' +
+            'Title:<br>' +
+            '<input id="edit_title" name="title">' +
+            '<br>Text:<br>' +
+            '<textarea id="edit_body_text" name="body_text" style="width:400px; height:300px"></textarea>' +
+            '<br>' +
+            '<button type="submit" class="button-style">Edit</button>' +
+            '</form>';
+
+        function edit() {
+            $('#dialog').prop('title', 'Edit hitchspot');
+            $('#dialog').html(form_post);
+
+            $('#edit_title').val($('#post_title').html());
+            $('#edit_body_text').val($('#body-text').html());
+
+            $("#dialog").dialog({
+                width: 550,
+                modal: true,
+                position: { my: "center", at: "top+300", of: window }
+            });
+        }
+
+        let form_comment = '<form action="/hitchspot/{{ hitchspot.id }}/edit_comment/" method="post">' +
+            '{% csrf_token %}' +
+            '<input id="comment_id" name="comment_id" type="hidden">' +
+            '<br>Text:<br>' +
+            '<textarea id="edit_body_text" name="body_text" style="width:400px; height:300px"></textarea>' +
+            '<br>' +
+            '<button type="submit" class="button-style">Edit</button>' +
+            '</form>';
+
+        function edit_comment(id) {
+            $('#dialog_e').prop('title', 'Edit comment');
+            $('#dialog_e').html(form_comment);
+
+            $('#comment_id').val(id);
+            $('#edit_body_text').val($('#comment_text_'+id).html());
+
+            $("#dialog_e").dialog({
+                width: 550,
+                modal: true,
+                position: { my: "center", at: "top+300", of: window }
+            });
+        }
+
+        let form_comment_del = '<form action="/hitchspot/{{ hitchspot.id }}/del_comment/" method="post">' +
+            '{% csrf_token %}' +
+            '<input id="comment_del_id" name="comment_id" type="hidden">' +
+            '<br>Text: ' +
+            '<span id="edit_body_text_del"></span>' +
+            '<br><br>' +
+            '<button type="submit" class="button-style">Delete</button>' +
+            '</form>';
+
+        function del_comment(id) {
+            $('#dialog_d').prop('title', 'Delete comment');
+            $('#dialog_d').html(form_comment_del);
+
+            $('#comment_del_id').val(id);
+            $('#edit_body_text_del').html($('#comment_text_'+id).html());
+
+            $("#dialog_d").dialog({
+                width: 550,
+                modal: true,
+                position: { my: "center", at: "top+300", of: window }
+            });
+        }
+
+    </script>
+
+
+{% endblock %}

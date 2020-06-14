@@ -18,6 +18,14 @@ urlpatterns = [
     path('add_country/', views.add_country, name='add_country'),
 
     path('hitchspots/', views.hitchspots, name='hitchspots'),
+    path('hitchspot/<hitchspot_id>', views.hitchspot, name='hitchspot'),
+    path('hitchspot/<hitchspot_id>/add_comment/', views.add_comment_to_hitchspot,
+       name='add_comment_to_hitchspot'),
+    path('hitchspot/<hitchspot_id>/edit_comment/', views.edit_comment_hitchspot,
+       name='edit_comment_hitchspot'),
+    path('hitchspot/<hitchspot_id>/del_comment/', views.del_comment_hitchspot,
+       name='del_comment_hitchspot'),
+
     path('forum/', views.forum, name='forum'),
 
     path('post/<post_id>', views.post, name='post'),
