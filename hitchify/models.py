@@ -179,6 +179,17 @@ class Hitchspot(models.Model):
     #user = models.ForeignKey(MyUser, models.DO_NOTHING)
     user = models.ForeignKey(User, models.DO_NOTHING)
 
+    @property
+    def comments(self):
+        res_comments = Comment.objects.raw('SELECT * '
+                                           'FROM comment '
+                                           'WHERE parent_comment_id IS NULL AND spot_id = %s', [self.id])
+        res_comments_list = []
+        for comment in res_comments:
+            res_comments_list.append(comment)
+
+        return res_comments_list
+
     class Meta:
         managed = True
         db_table = 'hitchspot'

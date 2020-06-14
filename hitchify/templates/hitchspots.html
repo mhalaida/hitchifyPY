@@ -8,9 +8,10 @@
         <form id="filter">
             <input class="input_black" name="query" placeholder="Query">
             <select class="select_black" name="select">
-                <option selected >Country</option>
-                <option >Date</option>
-                <option >Hitchability</option>
+                <option selected>Country</option>
+                <option>Date</option>
+                <option>Hitchability</option>
+                <option>User</option>
             </select>
             <button type="submit" class="button-style">Filter</button>
         </form>
@@ -25,30 +26,29 @@
             <th>🕑 Waiting time</th>
             <th>📆 Created</th>
             <th>📆 Updated</th>
+            <th>👤 Added</th>
             <th></th>
         </tr>
         </thead>
         <tbody id="hitchspots-grid">
-            {% for hs in hitchspot %}
+            {% for hs in hitchspots %}
             <tr>
-                <td>{{hs.country_id}}</td>
-                <td>{{hs.latitude}};
-                    {{hs.longitude}}</td>
-                <td>{{hs.avg_hitchability}}</td>
-                <td>{{hs.avg_waiting_time}} min</td>
-                <td>{{hs.creation_date}}</td>
-                <td>{{hs.last_update}}</td>
+                <td>{{ hs.country.country_name }}</td>
+                <td>{{ hs.latitude }};
+                    {{ hs.longitude }}</td>
+                <td>{{ hs.avg_hitchability }}</td>
+                <td>{{ hs.avg_waiting_time }} min</td>
+                <td>{{ hs.creation_date }}</td>
+                <td>{{ hs.last_update }}</td>
+                <td>{{ hs.user }}</td>
                 <td>
-                    <button class="button-style">Open</button>
+                    <a href="{% url 'hitchspot' hs.id %}"><button class="button-style">Open</button></a>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <div class="bottom-toolbar" >
-        <button id="add-hitchspot" class="button-style">Add</button>
-    </div>
 </div>
 {% endblock %}
 

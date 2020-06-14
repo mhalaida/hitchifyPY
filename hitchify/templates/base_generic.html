@@ -31,6 +31,12 @@
                         <span class="sidebar-member-label">Countries</span>
                     </div>
                 </a>
+                <a href="{% url 'hitchspots' %}">
+                    <div class="sidebar-member {% if choose == 'hitchspots' %}chosen{% endif %}">
+                        <span class="sidebar-member-icon">📌</span>
+                        <span class="sidebar-member-label">Hitchspots</span>
+                    </div>
+                </a>
                 <a href="{% url 'guides' %}">
                     <div class="sidebar-member {% if choose == 'guide' %}chosen{% endif %}">
                         <span class="sidebar-member-icon">📜</span>
