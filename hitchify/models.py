@@ -253,8 +253,8 @@ class LanguageToCountry(models.Model):
 
 
 class Photo(models.Model):
-    # url = models.CharField(max_length=255)
-    src_file = models.ImageField(upload_to='photos/', default='default.jpg')
+    url = models.URLField(default="https://dapp.dblog.org/img/default.jpg")
+    # src_file = models.ImageField(upload_to='photos/', default='default.jpg')
     post = models.ForeignKey(ForumPost, models.DO_NOTHING, blank=True, null=True)
     spot = models.ForeignKey(Hitchspot, models.DO_NOTHING, blank=True, null=True)
     guide = models.ForeignKey(Guide, models.DO_NOTHING, blank=True, null=True)

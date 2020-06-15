@@ -71,6 +71,19 @@ def see_suggestions(request, guide_id):
     return render(request, 'guide_feedback.html', {'suggestions': suggestions, 'guide_id': guide_id})
 
 
+def add_photo_to_post(request, post_id):
+
+    if request.method == 'POST':
+        photo_url = request.POST['photo_url']
+
+    with connection.cursor() as cursor:
+        cursor.execute('INSERT INTO photo (post_id, url) '
+                       'VALUES (%s, %s)',
+                       [post_id, photo_url])
+
+    return redirect('post', post_id)
+
+
 def add_feedback_to_spot(request, spot_id):
 
     with connection.cursor() as cursor:
