@@ -69,15 +69,16 @@ class Country(models.Model):
     def most_active_user(self):
         with connection.cursor() as cursor:
             cursor.execute('SELECT auth_user.username, COUNT(forum_post.user_id) AS posted_last_week '
-                           'FROM forum_post INNER JOIN auth_user ON auth_user.id = forum_post.user_id '
+                           'FROM forum_post '
+                           'INNER JOIN auth_user ON auth_user.id = forum_post.user_id '
                            'WHERE forum_post.country_id = %s '
                            'GROUP BY forum_post.user_id, auth_user.username '
-                           'HAVING COUNT (forum_post.user_id)=( '
+                           'HAVING COUNT (forum_post.user_id)>=( '
                            'SELECT MAX(mycount) '
                            'FROM (SELECT user_id,COUNT(forum_post.user_id) AS mycount '
                            'FROM forum_post '
-                           'WHERE creation_date > current_date - interval \'7 days\' '
-                           'GROUP BY user_id) AS auxTable );', [self.id])
+                           'WHERE forum_post.country_id = %s AND creation_date > current_date - interval \'7 days\' '
+                           'GROUP BY user_id) AS auxTable );', [self.id, self.id])
             most_active_user = cursor.fetchall()
         return most_active_user
 
