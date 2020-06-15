@@ -200,14 +200,35 @@ def like_post(request, post_id):
 
     with connection.cursor() as cursor:
         cursor.execute(
-            "INSERT INTO user_liked_forum_post (user_id, post_id) "
-            "VALUES (%s, %s)",
+            "SELECT user_id "
+            "FROM user_liked_forum_post "
+            "WHERE user_id = %s AND post_id = %s",
             [user.id, post_id])
+        liked_fp = cursor.fetchall()
 
-    with connection.cursor() as cursor:
-        cursor.execute('UPDATE forum_post '
-                       'SET likes = likes + 1 '
-                       'WHERE id = %s', [post_id])
+    if len(liked_fp) == 0:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO user_liked_forum_post (user_id, post_id) "
+                "VALUES (%s, %s)",
+                [user.id, post_id])
+
+        with connection.cursor() as cursor:
+            cursor.execute('UPDATE forum_post '
+                           'SET likes = likes + 1 '
+                           'WHERE id = %s', [post_id])
+
+    else:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "DELETE FROM user_liked_forum_post "
+                "WHERE user_id = %s AND post_id = %s",
+                [user.id, post_id])
+
+        with connection.cursor() as cursor:
+            cursor.execute('UPDATE forum_post '
+                           'SET likes = likes - 1 '
+                           'WHERE id = %s', [post_id])
 
     return redirect('post', post_id)
 

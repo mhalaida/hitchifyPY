@@ -43,11 +43,11 @@
         let form_country = '<form action="/add_country/" method="post">' +
             '{% csrf_token %}' +
             'Country name:<br>' +
-            '<input name="country_name">' +
+            '<input name="country_name" onkeypress="return (event.charCode > 64 && event.charCode < 91) || (event.charCode > 96 && event.charCode < 123)">' +
             '<br>Short description:<br>' +
             '<textarea name="short_description" style="width:400px; height:100px"></textarea>' +
             '<br>National currency:<br>' +
-            '<input name="national_currency">' +
+            '<input name="national_currency" onkeypress="return (event.charCode > 64 && event.charCode < 91) || (event.charCode > 96 && event.charCode < 123)"  >' +
             '<br><br>' +
             '<button type="submit" class="button-style">Add</button>' +
             '</form>';
