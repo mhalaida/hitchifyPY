@@ -26,16 +26,14 @@
             </div>
         {% endif %}
 
-        {# TODO VISUAL PART #}
-        {% for tc in guide.top_contributors %}
-            {{ tc }}
-        {% endfor %}
+        <div id="top_contributors">
+            <br>👨‍💻 Top contributors: <br>
+            {% for tc in guide.top_contributors %}
+                {{ tc.0 }}
+            {% endfor %}
+        </div>
 
         <div class="properties-holder">
-            {#        <div class="property">#}
-            {#            <div class="property-name"><span class="property-icon">🔖</span>Title</div>#}
-            {#            <div id="title" contenteditable="true" spellcheck="false" class="property-value text-property"></div>#}
-            {#        </div>#}
 
             <div class="property">
                 <div class="property-name"><span class="property-icon">📆</span>Creation Date</div>
@@ -61,6 +59,24 @@
 
         </div>
 
+        <div id="guide_photos">
+            {% if guide.photos %}
+                <br>Photos:<br><br>
+                {% for photo in guide.photos %}
+                    {% if user.id == guide.user_id %}
+                        <a href="#" class="deletelink" style="margin-left: 10px"
+                           onclick="location.href='{% url 'del_photo_from_guide' guide.id photo.0 %}'">Delete</a><br>
+                    {% endif %}
+                    <img src="{{ photo.4 }}" height="200" style="padding-top: 10px"> &nbsp;<br><br>
+                {% endfor %}
+                <br>
+            {% endif %}
+
+            {% if user.id == guide.user_id %}
+                <a href="#" class="button-style" style="margin-bottom: 100px" onclick="add_photo(); return false;">Add photo</a>
+            {% endif %}
+        </div>
+
     </div>
 
     <div id="dialog" style="display: none">
@@ -72,9 +88,31 @@
     <div id="dialog_g" style="display: none">
     </div>
 
+    <div id="dialog_p" style="display: none">
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
     <script>
+
+        let form_photo = '<form action="/guide/{{ guide.id }}/add_photo/" method="post">' +
+            '{% csrf_token %}' +
+            'URL:<br>' +
+            '<input id="photo_url" name="photo_url">' +
+            '<br><br> ' +
+            '<button type="submit" class="button-style">Add photo</button>' +
+            '</form>';
+
+        function add_photo() {
+            $('#dialog_p').prop('title', 'Add photo');
+            $('#dialog_p').html(form_photo);
+
+            $("#dialog_p").dialog({
+                width: 550,
+                modal: true,
+                position: {my: "center", at: "top+300", of: window}
+            });
+        }
 
         let form_suggestion = '<form action="/guide/{{ guide.id }}/add_suggestion" method="post">' +
             '{% csrf_token %}' +

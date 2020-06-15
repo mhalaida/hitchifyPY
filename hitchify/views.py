@@ -84,6 +84,59 @@ def add_photo_to_post(request, post_id):
     return redirect('post', post_id)
 
 
+def add_photo_to_spot(request, spot_id):
+
+    if request.method == 'POST':
+        photo_url = request.POST['photo_url']
+
+    with connection.cursor() as cursor:
+        cursor.execute('INSERT INTO photo (spot_id, url) '
+                       'VALUES (%s, %s)',
+                       [spot_id, photo_url])
+
+    return redirect('hitchspot', spot_id)
+
+
+def add_photo_to_guide(request, guide_id):
+
+    if request.method == 'POST':
+        photo_url = request.POST['photo_url']
+
+    with connection.cursor() as cursor:
+        cursor.execute('INSERT INTO photo (guide_id, url) '
+                       'VALUES (%s, %s)',
+                       [guide_id, photo_url])
+
+    return redirect('guide', guide_id)
+
+
+def del_photo_from_guide(request, guide_id, photo_id):
+
+    with connection.cursor() as cursor:
+        cursor.execute('DELETE FROM photo '
+                       'WHERE id = %s', [photo_id])
+
+    return redirect('guide', guide_id)
+
+
+def del_photo_from_spot(request, spot_id, photo_id):
+
+    with connection.cursor() as cursor:
+        cursor.execute('DELETE FROM photo '
+                       'WHERE id = %s', [photo_id])
+
+    return redirect('hitchspot', spot_id)
+
+
+def del_photo_from_post(request, post_id, photo_id):
+
+    with connection.cursor() as cursor:
+        cursor.execute('DELETE FROM photo '
+                       'WHERE id = %s', [photo_id])
+
+    return redirect('post', post_id)
+
+
 def add_feedback_to_spot(request, spot_id):
 
     with connection.cursor() as cursor:

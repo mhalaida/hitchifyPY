@@ -69,8 +69,23 @@
                       class="highlight">{{ hitchspot.description }}</span>
             </div>
 
-            <a href="#new_comment"
-               onclick="$('#title_comment').html('Add new comment:'); $('#parent_comment').val('');">Add comment</a>
+            {% if hitchspot.photos %}
+                <br>Photos:<br><br>
+                {% for photo in hitchspot.photos %}
+                    {% if user.id == hitchspot.user_id %}
+                    <a href="#" class="deletelink" style="margin-left: 10px" onclick="location.href='{% url 'del_photo_from_spot' hitchspot.id photo.0 %}'">Delete</a><br>
+                    {% endif %}
+                    <img src="{{ photo.4 }}" height="200" style="padding-top: 10px"> &nbsp;<br><br>
+                {% endfor %}
+                <br>
+            {% endif %}
+
+            {% if user.id == hitchspot.user_id %}
+                <a href="#" class="button-style" onclick="add_photo(); return false;">Add photo</a>
+            {% endif %}
+
+{#            <a href="#new_comment"#}
+{#               onclick="$('#title_comment').html('Add new comment:'); $('#parent_comment').val('');">Add comment</a>#}
 
             <div id="comments-holder" class="comments-holder">
 
@@ -147,7 +162,29 @@
     <div id="dialog_z" style="display: none">
     </div>
 
+    <div id="dialog_p" style="display: none">
+    </div>
+
     <script>
+
+        let form_photo = '<form action="/hitchspot/{{ hitchspot.id }}/add_photo/" method="post">' +
+            '{% csrf_token %}' +
+            'URL:<br>' +
+            '<input id="photo_url" name="photo_url">' +
+            '<br><br> ' +
+            '<button type="submit" class="button-style">Add photo</button>' +
+            '</form>';
+
+        function add_photo() {
+            $('#dialog_p').prop('title', 'Add photo');
+            $('#dialog_p').html(form_photo);
+
+            $("#dialog_p").dialog({
+                width: 550,
+                modal: true,
+                position: { my: "center", at: "top+300", of: window }
+            });
+        }
 
         let form_feedback = '<form action="/hitchspot/{{ hitchspot.id }}/add_feedback/" method="post">' +
             '{% csrf_token %}' +

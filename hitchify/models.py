@@ -49,8 +49,7 @@ class Country(models.Model):
                                                                      'WHERE c.user_id = us.id AND c.post_id=cp.post_id))',
                            [self.id])
             loyalists = cursor.fetchall()
-            print(loyalists)
-            return loyalists
+        return loyalists
 
     @property
     def expert_users(self):
@@ -63,7 +62,7 @@ class Country(models.Model):
                            'GROUP BY auth_user.username, country.country_name '
                            'HAVING COUNT(hitchspot.id)>=2;', [self.id])
             experts = cursor.fetchall()
-            return experts
+        return experts
 
     @property
     def most_active_user(self):
@@ -72,14 +71,15 @@ class Country(models.Model):
                            'FROM forum_post INNER JOIN auth_user ON auth_user.id = forum_post.user_id '
                            'WHERE forum_post.country_id = %s '
                            'GROUP BY forum_post.user_id, auth_user.username '
-                           'HAVING COUNT (forum_post.user_id)=( '
+                           'HAVING COUNT(forum_post.user_id)=('
                            'SELECT MAX(mycount) '
-                           'FROM (SELECT user_id,COUNT(forum_post.user_id) AS mycount '
+                           'FROM (SELECT user_id, COUNT(forum_post.user_id) AS mycount '
                            'FROM forum_post '
                            'WHERE creation_date > current_date - interval \'7 days\' '
                            'GROUP BY user_id) AS auxTable );', [self.id])
-            most_active_user = cursor.fetchall()
-        return most_active_user
+            most_active = cursor.fetchall()
+        print("Active users:", most_active)
+        return most_active
 
     @property
     def languages(self):
@@ -139,7 +139,7 @@ class ForumPost(models.Model):
                            'FROM photo '
                            'WHERE post_id = %s', [self.id])
             photos = cursor.fetchall()
-            return photos
+        return photos
 
     @property
     def comments(self):
@@ -173,6 +173,15 @@ class Guide(models.Model):
     creation_date = models.DateField(auto_now_add=True)
     update_date = models.DateField(blank=True, null=True)
     user = models.ForeignKey(User, models.DO_NOTHING)
+
+    @property
+    def photos(self):
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT * '
+                           'FROM photo '
+                           'WHERE guide_id = %s', [self.id])
+            photos = cursor.fetchall()
+        return photos
 
     @property
     def top_contributors(self):
@@ -219,6 +228,15 @@ class Hitchspot(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
 
     @property
+    def photos(self):
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT * '
+                           'FROM photo '
+                           'WHERE spot_id = %s', [self.id])
+            photos = cursor.fetchall()
+        return photos
+
+    @property
     def comments(self):
         res_comments = Comment.objects.raw('SELECT * '
                                            'FROM comment '
@@ -253,7 +271,7 @@ class LanguageToCountry(models.Model):
 
 
 class Photo(models.Model):
-    url = models.URLField(default="https://dapp.dblog.org/img/default.jpg")
+    url = models.TextField(default="https://dapp.dblog.org/img/default.jpg")
     # src_file = models.ImageField(upload_to='photos/', default='default.jpg')
     post = models.ForeignKey(ForumPost, models.DO_NOTHING, blank=True, null=True)
     spot = models.ForeignKey(Hitchspot, models.DO_NOTHING, blank=True, null=True)

@@ -40,13 +40,16 @@
                       class="highlight">{{ post.body_text }}</span>
             </div>
 
-{#            {% if post.photos.length > 0 %}#}
+            {% if post.photos %}
                 <br>Photos:<br><br>
                 {% for photo in post.photos %}
-                    <img src="{{ photo.4 }}" height="200" style="padding-top: 10px"> &nbsp;
+                    {% if user.id == post.user_id %}
+                    <a href="#" class="deletelink" style="margin-left: 10px" onclick="location.href='{% url 'del_photo_from_post' post.id photo.0 %}'">Delete</a><br>
+                    {% endif %}
+                    <img src="{{ photo.4 }}" height="200" style="padding-top: 10px"> &nbsp;<br><br>
                 {% endfor %}
                 <br>
-{#            {% endif %}#}
+            {% endif %}
 
             {% if post.id is not Null %}
                 {{ post.likes }}
@@ -135,6 +138,9 @@
     <div id="dialog_p" style="display: none">
     </div>
 
+    <div id="dialog_dp" style="display: none">
+    </div>
+
     <script>
 
         let form_photo = '<form action="/post/{{ post.id }}/add_photo/" method="post">' +
@@ -202,6 +208,24 @@
                 position: { my: "center", at: "top+300", of: window }
             });
         }
+
+        {#let form_photo_del = '<form action="/post/{{ photo.id }}/del_photo/" method="post">' +#}
+        {#    '{% csrf_token %}' +#}
+        {#    '<input id="photo_del_id" name="photo_id" type="hidden">' +#}
+        {#    '<br>Are you sure?<br><br>' +#}
+        {#    '<button type="submit" class="button-style">Delete</button>' +#}
+        {#    '</form>';#}
+        {##}
+        {#function del_photo(id) {#}
+        {#    $('#dialog_dp').prop('title', 'Delete photo');#}
+        {#    $('#dialog_dp').html(form_photo_del);#}
+        {##}
+        {#    $("#dialog_dp").dialog({#}
+        {#        width: 550,#}
+        {#        modal: true,#}
+        {#        position: { my: "center", at: "top+300", of: window }#}
+        {#    });#}
+        {#}#}
 
         let form_comment_del = '<form action="/post/{{ post.id }}/del_comment/" method="post">' +
             '{% csrf_token %}' +

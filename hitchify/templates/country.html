@@ -57,9 +57,11 @@
 
         <br><br>
         👑 Loyalists: <br>
-        {% for loyalist in country.loyal_users %}
-        {{ loyalist.0 }}
-        {% endfor %}
+        {% if country.loyal_users.length > 0 %}
+            {% for loyalist in country.loyal_users %}
+                {{ loyalist.0 }}
+            {% endfor %}
+        {% endif %}
 
         <div class="tab">
             <button id="button_1" class="tablinks active" onclick="openTab(1,'country-hitchspots')">Hitchspots</button>

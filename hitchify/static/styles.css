@@ -1,4 +1,7 @@
 @media print {
+    body, html, #wrapper {
+          height: 100%;
+    }
     div .sidebar {
         display: none;
     }
@@ -9,6 +12,12 @@
         display: none;
     }
     a {
+        display: none;
+    }
+    #top_contributors {
+        display: none;
+    }
+    #guide_photos {
         display: none;
     }
 }

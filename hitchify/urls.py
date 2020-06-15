@@ -26,6 +26,8 @@ urlpatterns = [
     path('hitchspot/<hitchspot_id>/del_comment/', views.del_comment_hitchspot,
        name='del_comment_hitchspot'),
     path('hitchspot/<spot_id>/add_feedback/', views.add_feedback_to_spot, name='add_feedback_to_spot'),
+    path('hitchspot/<spot_id>/add_photo/', views.add_photo_to_spot, name='add_photo_to_spot'),
+    path('hitchspot/<spot_id>/del_photo/<photo_id>', views.del_photo_from_spot, name='del_photo_from_spot'),
 
     path('forum/', views.forum, name='forum'),
 
@@ -36,11 +38,14 @@ urlpatterns = [
     path('post/<post_id>/edit_comment/', views.edit_comment_post, name='edit_comment_post'),
     path('post/<post_id>/del_comment/', views.del_comment_post, name='del_comment_post'),
     path('post/<post_id>/add_photo/', views.add_photo_to_post, name='add_photo_to_post'),
+    path('post/<post_id>/del_photo/<photo_id>', views.del_photo_from_post, name='del_photo_from_post'),
 
     path('guides/', views.guides, name='guides'),
     path('guide/<guide_id>', views.guide, name='guide'),
     path('guide/<guide_id>/edit', views.edit_guide, name='edit_guide'),
     path('add_guide/', views.add_guide, name='add_guide'),
+    path('guide/<guide_id>/add_photo/', views.add_photo_to_guide, name='add_photo_to_guide'),
+    path('guide/<guide_id>/del_photo/<photo_id>', views.del_photo_from_guide, name='del_photo_from_guide'),
 
     path('guide/<guide_id>/add_suggestion', views.add_suggestion, name='add_suggestion'),
     path('guide/<guide_id>/see_suggestions', views.see_suggestions, name='see_suggestions'),
