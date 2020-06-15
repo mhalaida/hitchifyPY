@@ -16,10 +16,65 @@
         <div class="login-container">
             <form method="post">
                 {% csrf_token %}
-                <div>{{ form.as_p }}</div>
-                <button type="submit">Create account</button>
+                {#  <div>{{ form.as_table }}</div> #}
+
+                {{ form.non_field_errors }}
+                <div class="fieldWrapper">
+                    {{ form.username.errors }}
+                    <label for="id_username">Username:</label>
+                    {{ form.username }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.first_name.errors }}
+                    <label for="id_first_name">First name:</label>
+                    {{ form.first_name }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.last_name.errors }}
+                    <label for="id_last_name">Last name:</label>
+                    {{ form.last_name }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.password1.errors }}
+                    <label for="id_password1">Password:</label>
+                    {{ form.password1 }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.password2.errors }}
+                    <label for="id_password2">Password confirmation:</label>
+                    {{ form.password2 }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.email.errors }}
+                    <label for="id_password1">Email:</label>
+                    {{ form.email }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.birth_date.errors }}
+                    <label for="id_birth_date">Birth date</label>
+                    {{ form.birth_date }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.gender.errors }}
+                    <label for="id_gender">Gender</label>
+                    {{ form.gender }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.res_country.errors }}
+                    <label for="id_res_country">Your country</label>
+                    {{ form.res_country }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.res_city.errors }}
+                    <label for="id_res_city">Your city</label>
+                    {{ form.res_city }}
+                </div>
+
+                All fields is required.<br><br>
+                <button class="button-style" type="submit">Create account</button>
             </form>
         </div>
     </div>
+    <br><br>
 
 {% endblock %}
