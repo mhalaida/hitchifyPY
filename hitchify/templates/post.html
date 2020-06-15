@@ -51,7 +51,9 @@
             {% if post.id is not Null %}
                 {{ post.likes }}
                 <a href="{% url 'like_post' post.id %}" class="button-style" style="margin-top: 10px">❤️</a> &nbsp; &nbsp;
+                {% if user.id == post.user_id %}
                 <a href="#" class="button-style" onclick="add_photo(); return false;">Add photo</a>
+                {% endif %}
             {% endif %}
 
 {#            <div>#}
