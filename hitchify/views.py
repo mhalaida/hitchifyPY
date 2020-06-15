@@ -162,8 +162,8 @@ def add_post(request, country_id):
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "INSERT INTO forum_post (id, body_text, creation_date, title, country_id, user_id) "
-                    "VALUES (nextval('forum_post_id_seq'), %s, now(), %s, %s, %s)",
+                    "INSERT INTO forum_post (id, body_text, likes, creation_date, title, country_id, user_id) "
+                    "VALUES (nextval('forum_post_id_seq'), %s, 0, now(), %s, %s, %s)",
                     [body_text, title, country_id, user.id])
 
             return redirect('country_post', country_id)

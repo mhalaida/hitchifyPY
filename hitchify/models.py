@@ -39,18 +39,15 @@ class Country(models.Model):
         with connection.cursor() as cursor:
             cursor.execute('SELECT us.username '
                            'FROM auth_user us '
-                           'WHERE us.id IN (SELECT p.user_id '
-                                           'FROM country cou INNER JOIN '
-                                           'forum_post p ON cou.id = p.country_id '
-                                           'WHERE cou.id !  = %s AND NOT EXISTS (SELECT * '
-                                                                              'FROM comment c INNER JOIN forum_post f ON '
-                                                                              'f.id = c.post_id '
-                                                                              'WHERE c.user_id = f.user_id '
-                                                                              'AND f.id NOT IN (SELECT forum_post.id '
-                                                                                               'FROM forum_post INNER JOIN country ON '
-                                                                                               'country.id = forum_post.country_id '
-                                                                                               'WHERE country.id = %s)))', [self.id, self.id])
-
+                           'WHERE NOT EXISTS (SELECT * '
+                                             'FROM (SELECT fp.id AS post_id '
+                                                   'FROM country cou '
+                                                   'INNER JOIN forum_post fp ON fp.country_id=cou.id '
+                                                   'WHERE cou.id = %s) cp '
+                                                   'WHERE NOT EXISTS (SELECT * '
+                                                                     'FROM comment c '
+                                                                     'WHERE c.user_id = us.id AND c.post_id=cp.post_id))',
+                           [self.id])
             loyalists = cursor.fetchall()
             print(loyalists)
             return loyalists
@@ -129,7 +126,7 @@ class Country(models.Model):
 class ForumPost(models.Model):
     title = models.CharField(max_length=255)
     body_text = models.TextField()
-    likes = models.IntegerField(blank=True, null=True, default=0)
+    likes = models.IntegerField(default=0)
     creation_date = models.DateField(auto_now_add=True)
     last_update = models.DateField(blank=True, null=True)
     user = models.ForeignKey(User, models.DO_NOTHING)
