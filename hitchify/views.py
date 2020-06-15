@@ -676,7 +676,8 @@ def hitchspot(request, hitchspot_id):
 
 
 def forum(request):
-    forum = ForumPost.objects.all()
+    forum = ForumPost.objects.raw('SELECT * '
+                                  'FROM forum_post')
 
     context = {
         'forum': forum
