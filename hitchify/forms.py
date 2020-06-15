@@ -34,6 +34,12 @@ class AddCountryForm(forms.ModelForm):
         fields = ['country_name', 'short_description', 'national_currency']
 
 
+class AddLanguageForm(forms.ModelForm):
+    class Meta:
+        model = models.Language
+        fields = ['language_name']
+
+
 class CustomSignUpForm(UserCreationForm):
 
     first_name = forms.CharField()

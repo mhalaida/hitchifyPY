@@ -17,6 +17,8 @@ urlpatterns = [
     path('country/<country_id>/edit', views.edit_country, name='edit_country'),
     path('add_country/', views.add_country, name='add_country'),
 
+    path('add_language/', views.add_language, name='add_language'),
+
     path('hitchspots/', views.hitchspots, name='hitchspots'),
     path('hitchspot/<hitchspot_id>', views.hitchspot, name='hitchspot'),
     path('hitchspot/<hitchspot_id>/add_comment/', views.add_comment_to_hitchspot,

@@ -28,6 +28,14 @@
                     {# <a href="#" class="changelink">Change</a> #}
                 </td>
             </tr>
+            <tr>
+                <td>
+                    Languages
+                </td>
+                <td>
+                    <a href="#" class="addlink" onclick="add('language'); return false">Add</a>
+                </td>
+            </tr>
         </table>
 
     </div>
@@ -36,6 +44,9 @@
     </div>
 
     <div id="dialog_g" style="display: none">
+    </div>
+
+    <div id="dialog_l" style="display: none">
     </div>
 
     <script>
@@ -64,31 +75,52 @@
             '<button type="submit" class="button-style">Add</button>' +
             '</form>';
 
+        let form_language = '<form action="/add_language/" method="post">' +
+            '{% csrf_token %}' +
+            'Language name:<br>' +
+            '<input name="language_name">' +
+            '<br>' +
+            '<button type="submit" class="button-style">Add</button>' +
+            '</form>';
+
         function add(to) {
             switch (to) {
                 case "country":
-                        $('#dialog_c').prop('title', 'Add new country');
-                        $('#dialog_c').html(form_country);
+                    $('#dialog_c').prop('title', 'Add new country');
+                    $('#dialog_c').html(form_country);
 
-                        $("#dialog_c").dialog({
-                            width: 550,
-                            modal: true,
-                            position: { my: "center", at: "top+300", of: window }
-                        });
+                    $("#dialog_c").dialog({
+                        width: 550,
+                        modal: true,
+                        position: {my: "center", at: "top+300", of: window}
+                    });
 
                     break;
 
                 case "guide":
-                        $('#dialog_g').prop('title', 'Add new guide');
-                        $('#dialog_g').html(form_guide);
+                    $('#dialog_g').prop('title', 'Add new guide');
+                    $('#dialog_g').html(form_guide);
 
-                        $("#dialog_g").dialog({
-                            width: 550,
-                            modal: true,
-                            position: { my: "center", at: "top+400", of: window }
-                        });
+                    $("#dialog_g").dialog({
+                        width: 550,
+                        modal: true,
+                        position: {my: "center", at: "top+400", of: window}
+                    });
 
                     break;
+
+                case "language":
+                    $('#dialog_l').prop('title', 'Add new language');
+                    $('#dialog_l').html(form_language);
+
+                    $("#dialog_l").dialog({
+                        width: 550,
+                        modal: true,
+                        position: {my: "center", at: "top+400", of: window}
+                    });
+
+                    break;
+
             }
         }
     </script>

@@ -471,6 +471,23 @@ def del_comment_hitchspot(request, hitchspot_id):
     return redirect('hitchspot', hitchspot_id)
 
 
+@permission_required('hitchify.add_language')
+def add_language(request):
+
+    if request.method == 'POST':
+        form = forms.AddLanguageForm(request.POST)
+        if form.is_valid():
+
+            language_name = request.POST['language_name']
+
+            with connection.cursor() as cursor:
+                cursor.execute('INSERT INTO language (language_name) '
+                               'VALUES (%s)',
+                               [language_name])
+
+    return redirect(administration)
+
+
 @permission_required('hitchify.add_country')
 def add_country(request):
 
