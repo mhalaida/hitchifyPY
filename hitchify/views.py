@@ -528,19 +528,79 @@ def country(request, country_id):
 
 def hitchspots(request):
 
-    with connection.cursor() as cursor:
-        cursor.execute('SELECT hs.id, hs.latitude, hs.longitude, hs.avg_hitchability, '
-                       'hs.avg_waiting_time, hs.creation_date, hs.last_update, '
-                       'c.country_name, au.username '
-                       'FROM hitchspot hs '
-                       'INNER JOIN country c on hs.country_id = c.id '
-                       'INNER JOIN auth_user au on hs.user_id = au.id')
+    try:
+        query = request.GET['query'].replace("'", "")
+    except KeyError:
+        query = ''
 
+    try:
+        select = request.GET['select']
+    except KeyError:
+        select = ''
+
+    try:
+        country = request.GET['country'].replace("'", "")
+    except KeyError:
+        country = ''
+
+    try:
+        added = request.GET['added'].replace("'", "")
+    except KeyError:
+        added = ''
+
+    try:
+        waiting_time = request.GET['waiting_time'].replace("'", "")
+    except KeyError:
+        waiting_time = ''
+
+    try:
+        hitchability = request.GET['hitchability'].replace("'", "")
+    except KeyError:
+        hitchability = ''
+
+    where_c = ''
+    where_u = ''
+    where_w = ''
+    where_h = ''
+
+    if country != '':
+        where_c = " AND c.country_name LIKE '%" + country + "%'"
+
+    if added != '':
+        where_u = " AND au.username LIKE '%" + added + "%'"
+
+    if waiting_time != '':
+        where_w = " AND hs.avg_waiting_time <= " + waiting_time
+
+    if hitchability != '':
+        where_h = " AND hs.avg_hitchability >= " + hitchability
+
+    if select == 'country':
+        where_c = " AND c.country_name LIKE '%" + query + "%'"
+        country = query
+
+    if select == 'added':
+        where_u = " AND au.username LIKE '%" + query + "%'"
+        added = query
+
+    if select == 'waiting_time':
+        where_w = " AND hs.avg_waiting_time <= " + query
+        waiting_time = query
+
+    if select == 'hitchability':
+        where_h = " AND hs.avg_hitchability >= " + query
+        hitchability = query
+
+    sql = 'SELECT hs.id, hs.latitude, hs.longitude, hs.avg_hitchability, hs.avg_waiting_time, hs.creation_date, hs.last_update, c.country_name, au.username FROM hitchspot hs INNER JOIN country c on hs.country_id = c.id INNER JOIN auth_user au on hs.user_id = au.id WHERE 1=1 ' + where_c + where_h + where_u + where_w
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql)
         hitchspots = dictfetchall(cursor)
 
     context = {
         'choose': 'hitchspots',
-        'hitchspots': hitchspots
+        'hitchspots': hitchspots,
+        'filters': {'country': country, 'added': added, 'waiting_time': waiting_time, 'hitchability': hitchability}
     }
 
     return render(request, 'hitchspots.html', context=context)

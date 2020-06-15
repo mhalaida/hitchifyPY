@@ -4,14 +4,52 @@
 <div class="sub-container">
     <div class="sub-container-title">📌 Hitchspots</div>
 
-    <div class="top-toolbar">
-        <form id="filter">
+    <div class="top-toolbar" style="display: block; height: auto">
+        <div style="margin:5px">
+            {% if filters.country != '' %}
+                Country: {{ filters.country }}
+            {% endif %}
+
+            {% if filters.hitchability != '' %}
+                Hitchability > {{ filters.hitchability }}
+            {% endif %}
+
+            {% if filters.waiting_time != '' %}
+                Waiting time < {{ filters.waiting_time }}
+            {% endif %}
+
+            {% if filters.added != '' %}
+                Added: {{ filters.added }}
+            {% endif %}
+
+            {% if filters.country != '' or filters.hitchability != '' or filters.waiting_time != '' or filters.added != '' %}
+                <a href="{% url 'hitchspots' %}"><button class="button-style">Clear</button></a>
+            {% endif %}
+        </div>
+
+        <form id="filter" method="get">
+            {% if filters.country != '' %}
+                <input type="hidden" name="country" value="{{ filters.country }}">
+            {% endif %}
+
+            {% if filters.hitchability != '' %}
+                <input type="hidden" name="hitchability" value="{{ filters.hitchability }}">
+            {% endif %}
+
+            {% if filters.waiting_time != '' %}
+                <input type="hidden" name="waiting_time" value="{{ filters.waiting_time }}">
+            {% endif %}
+
+            {% if filters.added != '' %}
+                <input type="hidden" name="added" value="{{ filters.added }}">
+            {% endif %}
+
             <input class="input_black" name="query" placeholder="Query">
             <select class="select_black" name="select">
-                <option selected>Country</option>
-                <option>Date</option>
-                <option>Hitchability</option>
-                <option>User</option>
+                <option value="country" selected>Country</option>
+                <option value="hitchability">Hitchability</option>
+                <option value="waiting_time">Waiting time</option>
+                <option value="added">Added</option>
             </select>
             <button type="submit" class="button-style">Filter</button>
         </form>
@@ -48,7 +86,6 @@
             {% endfor %}
         </tbody>
     </table>
-
 </div>
 {% endblock %}
 

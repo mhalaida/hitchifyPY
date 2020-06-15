@@ -74,6 +74,7 @@
                         {# <option>Date</option> #}
                         <option value="1" selected>Hitchability</option>
                         <option value="2">Waiting time</option>
+                        <option value="3">Added</option>
                     </select>
                     <button onclick="filter_hs()" type="submit" class="button-style">Filter</button>
 {#                </form>#}
@@ -87,6 +88,7 @@
                     <th>🕑 Waiting time</th>
                     <th>📆 Created</th>
                     <th>📆 Updated</th>
+                    <th>👤 Added</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -100,6 +102,7 @@
                         <td attr_aw="{{ spot.id }}">{{ spot.avg_waiting_time }}</td>
                         <td>{{ spot.creation_date }}</td>
                         <td>{{ spot.last_update }}</td>
+                        <td attr_ad="{{ spot.id }}">{{ spot.user }}</td>
                         <td>
                              <a href="{% url 'hitchspot' spot.id %}">
                                 <button id="add-hitchspot" class="button-style">Open</button>
@@ -222,12 +225,12 @@
                     let str = $(element).html();
 
                     if (!str.match(filter_query)) {
-                        $('#hs_'+$(element).attr('attr_ah')).hide();
+                        $('#hs_' + $(element).attr('attr_ah')).hide();
                     } else {
-                        $('#hs_'+$(element).attr('attr_ah')).show();
+                        $('#hs_' + $(element).attr('attr_ah')).show();
                     }
                 });
-            } else {
+            } else if (filter == 2) {
                 $('#table_hs td[attr_aw]').each(function (index, element) {
                     let str = $(element).html();
 
@@ -235,6 +238,16 @@
                         $('#hs_'+$(element).attr('attr_aw')).hide();
                     } else {
                         $('#hs_'+$(element).attr('attr_aw')).show();
+                    }
+                });
+            } else {
+                $('#table_hs td[attr_ad]').each(function (index, element) {
+                    let str = $(element).html();
+
+                    if (!str.match(filter_query)) {
+                        $('#hs_'+$(element).attr('attr_ad')).hide();
+                    } else {
+                        $('#hs_'+$(element).attr('attr_ad')).show();
                     }
                 });
             }

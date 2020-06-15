@@ -97,7 +97,9 @@ class Country(models.Model):
     def hitchspots(self):
         res_hitchspots = Hitchspot.objects.raw('SELECT * '
                                                'FROM hitchspot '
-                                               'WHERE country_id = %s', [self.id])
+                                               'WHERE country_id = %s '
+                                               'ORDER BY id ASC', [self.id])
+
         res_hitchspots_list = []
         for spot in res_hitchspots:
             res_hitchspots_list.append(spot)
