@@ -585,14 +585,16 @@ def hitchspots(request):
 
     if select == 'waiting_time' and query != '':
         where_w = " AND hs.avg_waiting_time <= " + query
-
-    if select == 'waiting_time':
+        waiting_time = query
+    elif select == 'waiting_time':
+        where_w = ""
         waiting_time = query
 
     if select == 'hitchability' and query != '':
         where_h = " AND hs.avg_hitchability >= " + query
-
-    if select == 'hitchability':
+        hitchability = query
+    elif select == 'hitchability':
+        where_h = ""
         hitchability = query
 
     sql = 'SELECT hs.id, hs.latitude, hs.longitude, hs.avg_hitchability, hs.avg_waiting_time, hs.creation_date, hs.last_update, c.country_name, au.username FROM hitchspot hs INNER JOIN country c on hs.country_id = c.id INNER JOIN auth_user au on hs.user_id = au.id WHERE 1=1 ' + where_c + where_h + where_u + where_w

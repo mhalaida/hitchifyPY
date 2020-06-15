@@ -19,7 +19,7 @@
             {% endif %}
 
             {% if filters.added != '' %}
-                Added: {{ filters.added }}
+                Added by: {{ filters.added }}
             {% endif %}
 
             {% if filters.country != '' or filters.hitchability != '' or filters.waiting_time != '' or filters.added != '' %}
@@ -49,7 +49,7 @@
                 <option value="country" selected>Country</option>
                 <option value="hitchability">Hitchability</option>
                 <option value="waiting_time">Waiting time</option>
-                <option value="added">Added</option>
+                <option value="added">Added by</option>
             </select>
             <button type="submit" class="button-style">Filter</button>
         </form>
@@ -64,7 +64,7 @@
             <th>🕑 Waiting time</th>
             <th>📆 Created</th>
             <th>📆 Updated</th>
-            <th>👤 Added</th>
+            <th>👤 Added by</th>
             <th></th>
         </tr>
         </thead>
