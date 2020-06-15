@@ -61,8 +61,6 @@ def delete_suggestion(request, gf_id):
 
 def see_suggestions(request, guide_id):
 
-    guide = Guide.objects.get(id = guide_id)
-
     with connection.cursor() as cursor:
         cursor.execute('SELECT * '
                        'FROM guide_feedback '
@@ -116,7 +114,6 @@ def add_feedback_to_spot(request, spot_id):
 
 def add_suggestion(request, guide_id):
 
-    guide = Guide.objects.get(id = guide_id)
     user = request.user
 
     if request.method == 'POST':
@@ -126,21 +123,20 @@ def add_suggestion(request, guide_id):
     with connection.cursor() as cursor:
         cursor.execute('INSERT INTO guide_feedback (title, suggestion_text, guide_id, user_id) '
                        'VALUES (%s, %s, %s, %s)',
-                       [title, text, guide.id, user.id])
+                       [title, text, guide_id, user.id])
 
     return redirect('guide', guide_id)
 
 
 def like_post(request, post_id):
 
-    post = ForumPost.objects.get(id = post_id)
     user = request.user
 
     with connection.cursor() as cursor:
         cursor.execute(
             "INSERT INTO user_liked_forum_post (user_id, post_id) "
             "VALUES (%s, %s)",
-            [user.id, post.id])
+            [user.id, post_id])
 
     with connection.cursor() as cursor:
         cursor.execute('UPDATE forum_post '
@@ -152,7 +148,9 @@ def like_post(request, post_id):
 
 def add_post(request, country_id):
 
-    country = Country.objects.get(id=country_id)
+    country = Country.objects.raw('SELECT * '
+                                  'FROM country '
+                                  'WHERE id = %s', [country_id])
 
     if request.method == 'POST':
         form = forms.AddPostForm(request.POST)
@@ -173,7 +171,7 @@ def add_post(request, country_id):
     else:
         form = forms.AddPostForm()
 
-    return render(request, 'new_post.html', {'form': form, 'country': country})
+    return render(request, 'new_post.html', {'form': form, 'country': country[0]})
 
 
 def edit_post(request, post_id):
