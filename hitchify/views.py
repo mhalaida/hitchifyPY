@@ -479,7 +479,8 @@ def signup(request):
             # my_login(request, user)
             return redirect('index')
     else:
-        form = UserCreationForm()
+        form = CustomSignUpForm()
+
     return render(request, os.path.join(BASE_DIR, 'templates/registration/signup.html'), {'form': form})
 
 
