@@ -73,6 +73,47 @@ def see_suggestions(request, guide_id):
     return render(request, 'guide_feedback.html', {'suggestions': suggestions, 'guide_id': guide_id})
 
 
+def add_feedback_to_spot(request, spot_id):
+
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT * '
+                       'FROM hitchspot '
+                       'WHERE id = %s', [spot_id])
+        spot = cursor.fetchone()
+
+    if request.method == 'POST':
+        hitchability = request.POST['avg_hitchability']
+        waiting_time = request.POST['avg_waiting_time']
+
+    with connection.cursor() as cursor:
+        cursor.execute('INSERT INTO spot_feedback (hitchability, waiting_time, spot_id, user_id) '
+                       'VALUES (%s, %s, %s, %s)',
+                       [hitchability, waiting_time, spot[0], request.user.id])
+
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT AVG(hitchability) '
+                       'FROM spot_feedback '
+                       'WHERE spot_id = %s '
+                       'GROUP BY spot_id ', [spot_id])
+
+        new_hitchability = cursor.fetchone()
+
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT AVG(waiting_time) '
+                       'FROM spot_feedback '
+                       'WHERE spot_id = %s '
+                       'GROUP BY spot_id ', [spot_id])
+
+        new_waiting_time = cursor.fetchone()
+
+    with connection.cursor() as cursor:
+        cursor.execute('UPDATE hitchspot '
+                       'SET avg_hitchability = %s, avg_waiting_time = %s '
+                       'WHERE id = %s', [new_hitchability, new_waiting_time, spot[0]])
+
+    return redirect('hitchspot', spot_id)
+
+
 def add_suggestion(request, guide_id):
 
     guide = Guide.objects.get(id = guide_id)
@@ -459,6 +500,17 @@ def add_point(request):
             "INSERT INTO hitchspot (id, latitude, longitude, description, avg_hitchability, avg_waiting_time, creation_date, last_update, country_id,user_id)"
             " VALUES (nextval('hitchspot_id_seq'), %s, %s, %s, %s, %s, now(), now(), %s, %s)",
             [lt, ln, description, avg_hitchability, avg_waiting_time, country_id, user_id])
+
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT MAX(id) '
+                       'FROM hitchspot')
+
+        new_spot_id = cursor.fetchone()
+
+    with connection.cursor() as cursor:
+        cursor.execute('INSERT INTO spot_feedback (hitchability, waiting_time, spot_id, user_id) '
+                       'VALUES (%s, %s, %s, %s)',
+                       [avg_hitchability, avg_waiting_time, new_spot_id, request.user.id])
 
     with connection.cursor() as cursor:
         cursor.execute('SELECT COUNT(*) AS spot_count '

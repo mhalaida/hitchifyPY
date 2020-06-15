@@ -37,33 +37,37 @@ class Country(models.Model):
     @property
     def loyal_users(self):
         with connection.cursor() as cursor:
-            cursor.execute('SELECT username '
-                           'FROM auth_user '
-                           'WHERE NOT EXISTS (SELECT * '
-                                             'FROM country INNER JOIN '
-                                             'forum_post ON country.id = forum_post.country_id '
-                                             'WHERE country.id = %s '
-                                             'AND NOT EXISTS (SELECT * '
-                                                             'FROM comment '
-                                                             'WHERE comment.user_id = auth_user.id AND comment.post_id = forum_post.id ))',
-                           [self.id])
+            cursor.execute('SELECT us.username '
+                           'FROM auth_user us '
+                           'WHERE us.id IN (SELECT p.user_id '
+                                           'FROM country cou INNER JOIN '
+                                           'forum_post p ON cou.id = p.country_id '
+                                           'WHERE cou.id !  = %s AND NOT EXISTS (SELECT * '
+                                                                              'FROM comment c INNER JOIN forum_post f ON '
+                                                                              'f.id = c.post_id '
+                                                                              'WHERE c.user_id = f.user_id '
+                                                                              'AND f.id NOT IN (SELECT forum_post.id '
+                                                                                               'FROM forum_post INNER JOIN country ON '
+                                                                                               'country.id = forum_post.country_id '
+                                                                                               'WHERE country.id = %s)))', [self.id, self.id])
 
             loyalists = cursor.fetchall()
+            print(loyalists)
             return loyalists
 
     @property
     def expert_users(self):
         with connection.cursor() as cursor:
-            cursor.execute('SELECT auth_user.username, country.country_name, COUNT(hitchspot.id) AS spots ' 
-                           'FROM ((auth_user INNER JOIN hitchspot ON auth_user.id = hitchspot.user_id) ' 
-                           'INNER JOIN country ON country.id = hitchspot.country_id) ' 
+            cursor.execute('SELECT auth_user.username, country.country_name, COUNT(hitchspot.id) AS spots '
+                           'FROM ((auth_user INNER JOIN hitchspot ON auth_user.id = hitchspot.user_id) '
+                           'INNER JOIN country ON country.id = hitchspot.country_id) '
                            'INNER JOIN forum_post ON forum_post.user_id = auth_user.id '
                            'WHERE country.id = %s '
                            'GROUP BY auth_user.username, country.country_name '
                            'HAVING COUNT(hitchspot.id)>=2;', [self.id])
             experts = cursor.fetchall()
             return experts
-        
+
     @property
     def most_active_user(self):
         with connection.cursor() as cursor:
@@ -214,7 +218,7 @@ class Hitchspot(models.Model):
     creation_date = models.DateField(auto_now_add=True)
     last_update = models.DateField(blank=True, null=True)
     country = models.ForeignKey(Country, models.DO_NOTHING)
-    #user = models.ForeignKey(MyUser, models.DO_NOTHING)
+    # user = models.ForeignKey(MyUser, models.DO_NOTHING)
     user = models.ForeignKey(User, models.DO_NOTHING)
 
     @property
@@ -281,7 +285,7 @@ class Comment(models.Model):
     creation_date = models.DateField(auto_now_add=True)
     last_update = models.DateField(blank=True, null=True)
     parent_comment = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True,
-                                          related_name='child_comment')
+                                       related_name='child_comment')
     spot = models.ForeignKey(Hitchspot, models.DO_NOTHING, blank=True, null=True)
     post = models.ForeignKey(ForumPost, models.DO_NOTHING, blank=True, null=True)
     user = models.ForeignKey(User, models.DO_NOTHING)

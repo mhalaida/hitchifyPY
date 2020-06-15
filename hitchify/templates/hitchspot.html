@@ -17,7 +17,9 @@
 
                         <div class="property">
                             <div class="property-name"><span class="property-icon">🌐</span>Country</div>
-                            <div class="property-value select-property"><a href="{% url 'country' hitchspot.country.id %}">{{ hitchspot.country.country_name }}</a></div>
+                            <div class="property-value select-property"><a
+                                    href="{% url 'country' hitchspot.country.id %}">{{ hitchspot.country.country_name }}</a>
+                            </div>
                         </div>
 
                         <div class="property">
@@ -47,6 +49,14 @@
                             </div>
                         {% endif %}
 
+                        {% if user.id != hitchspot.user.id %}
+                            <br><br>
+                            <div class="property">
+                                <a href="#" onclick="add_feedback(); return false" class="button-style">Add your own
+                                    feedback</a>
+                            </div>
+                        {% endif %}
+
                     </td>
                     <td>
                         <div id="map"></div>
@@ -59,62 +69,69 @@
                       class="highlight">{{ hitchspot.description }}</span>
             </div>
 
-            <a href="#new_comment" onclick="$('#title_comment').html('Add new comment:'); $('#parent_comment').val('');">Add comment</a>
+            <a href="#new_comment"
+               onclick="$('#title_comment').html('Add new comment:'); $('#parent_comment').val('');">Add comment</a>
 
-                <div id="comments-holder" class="comments-holder">
+            <div id="comments-holder" class="comments-holder">
 
-                    Comments:
-                    <div id="comment-subholder"></div>
+                Comments:
+                <div id="comment-subholder"></div>
 
-                    {% for comment in hitchspot.comments %}
-                        <div class="comment">
-                            <div class="comment-timestamp">
-                                {{ comment.creation_date }} – {{ comment.user.username }} <a href="#new_comment" onclick="$('#title_comment').html('Add reply to comment {{ comment.creation_date }} – {{ comment.user.username }}:'); $('#parent_comment').val({{ comment.id }});">Reply</a>
+                {% for comment in hitchspot.comments %}
+                    <div class="comment">
+                        <div class="comment-timestamp">
+                            {{ comment.creation_date }} – {{ comment.user.username }} <a href="#new_comment"
+                                                                                         onclick="$('#title_comment').html('Add reply to comment {{ comment.creation_date }} – {{ comment.user.username }}:'); $('#parent_comment').val({{ comment.id }});">Reply</a>
 
-                                {% if perms.hitchify.change_comment or comment.user_id == user.id %}
-                                    <a href="#" class="changelink" style="margin-left: 10px" onclick="edit_comment({{ comment.id }}); return false;">Edit</a>
+                            {% if perms.hitchify.change_comment or comment.user_id == user.id %}
+                                <a href="#" class="changelink" style="margin-left: 10px"
+                                   onclick="edit_comment({{ comment.id }}); return false;">Edit</a>
 
-                                    {% if not comment.sub_comments %}
-                                        <a href="#" class="deletelink" style="margin-left: 10px" onclick="del_comment({{ comment.id }}); return false;">Delete</a>
-                                    {% endif %}
-
+                                {% if not comment.sub_comments %}
+                                    <a href="#" class="deletelink" style="margin-left: 10px"
+                                       onclick="del_comment({{ comment.id }}); return false;">Delete</a>
                                 {% endif %}
 
-                            </div>
+                            {% endif %}
 
-                            <div class="comment-content" id="comment_text_{{ comment.id }}">{{ comment.body_text}}</div>
-
-                            {% for subcomment in comment.sub_comments %}
-                                <div class="comment" style="padding-left: 50px">
-                                    <div class="comment-timestamp">
-                                        {{ subcomment.creation_date }} – {{ subcomment.user.username }}
-
-                                        {% if perms.hitchify.change_comment or subcomment.user_id == user.id %}
-                                            <a href="#" class="changelink" style="margin-left: 10px" onclick="edit_comment({{ subcomment.id }}); return false;">Edit</a>
-                                            <a href="#" class="deletelink" style="margin-left: 10px" onclick="del_comment({{ subcomment.id }}); return false;">Delete</a>
-                                        {% endif %}
-
-                                    </div>
-
-                                    <div class="comment-content" id="comment_text_{{ subcomment.id }}">{{ subcomment.body_text}}</div>
-                                </div>
-                            {% endfor %}
                         </div>
-                    {% endfor %}
 
-                    <br>
-                    <div id="new_comment" class="predefined-comment">
-                        <form action="{% url 'add_comment_to_hitchspot' hitchspot.id %}" method="post">
-                            {% csrf_token %}
-                            <div id="title_comment">Add new comment:</div>
-                            <input id="parent_comment" type="hidden" name="parent_comment" value="">
-                            <textarea name="body_text" rows="7" cols="60"></textarea>
-                            <br>
-                            <button type="submit" class="button-style">Add comment</button>
-                        </form>
+                        <div class="comment-content" id="comment_text_{{ comment.id }}">{{ comment.body_text }}</div>
+
+                        {% for subcomment in comment.sub_comments %}
+                            <div class="comment" style="padding-left: 50px">
+                                <div class="comment-timestamp">
+                                    {{ subcomment.creation_date }} – {{ subcomment.user.username }}
+
+                                    {% if perms.hitchify.change_comment or subcomment.user_id == user.id %}
+                                        <a href="#" class="changelink" style="margin-left: 10px"
+                                           onclick="edit_comment({{ subcomment.id }}); return false;">Edit</a>
+                                        <a href="#" class="deletelink" style="margin-left: 10px"
+                                           onclick="del_comment({{ subcomment.id }}); return false;">Delete</a>
+                                    {% endif %}
+
+                                </div>
+
+                                <div class="comment-content"
+                                     id="comment_text_{{ subcomment.id }}">{{ subcomment.body_text }}</div>
+                            </div>
+                        {% endfor %}
                     </div>
+                {% endfor %}
 
+                <br>
+                <div id="new_comment" class="predefined-comment">
+                    <form action="{% url 'add_comment_to_hitchspot' hitchspot.id %}" method="post">
+                        {% csrf_token %}
+                        <div id="title_comment">Add new comment:</div>
+                        <input id="parent_comment" type="hidden" name="parent_comment" value="">
+                        <textarea name="body_text" rows="7" cols="60"></textarea>
+                        <br>
+                        <button type="submit" class="button-style">Add comment</button>
+                    </form>
                 </div>
+
+            </div>
         </div>
     </div>
 
@@ -127,7 +144,37 @@
     <div id="dialog_d" style="display: none">
     </div>
 
+    <div id="dialog_z" style="display: none">
+    </div>
+
     <script>
+
+        let form_feedback = '<form action="/hitchspot/{{ hitchspot.id }}/add_feedback/" method="post">' +
+            '{% csrf_token %}' +
+            'Hitchability (1-5): ' +
+            '<select id="avg_hitchability" name="avg_hitchability" style="padding:0">' +
+            '<option value="1">1</option>' +
+            '<option value="2">2</option>' +
+            '<option value="3">3</option>' +
+            '<option value="4">4</option>' +
+            '<option value="5">5</option>' +
+            '</select>' +
+            '<br><br>Waiting time (min): <input style="width:40px" id="avg_waiting_time" name="avg_waiting_time" type="number" min="0">' +
+            '<br><br><br>' +
+            '<button type="submit" class="button-style">Submit feedback</button>' +
+            '</form>';
+
+        function add_feedback() {
+            $('#dialog').prop('title', 'Add feedback');
+            $('#dialog').html(form_feedback);
+
+            $("#dialog").dialog({
+                width: 300,
+                height: 200,
+                modal: true,
+                position: {my: "center", at: "top+300", of: window}
+            });
+        }
 
         let form_post = '<form action="/hitchspot/{{ hitchspot.id }}/edit" method="post">' +
             '{% csrf_token %}' +
@@ -149,7 +196,7 @@
             $("#dialog").dialog({
                 width: 550,
                 modal: true,
-                position: { my: "center", at: "top+300", of: window }
+                position: {my: "center", at: "top+300", of: window}
             });
         }
 
@@ -167,12 +214,12 @@
             $('#dialog_e').html(form_comment);
 
             $('#comment_id').val(id);
-            $('#edit_body_text').val($('#comment_text_'+id).html());
+            $('#edit_body_text').val($('#comment_text_' + id).html());
 
             $("#dialog_e").dialog({
                 width: 550,
                 modal: true,
-                position: { my: "center", at: "top+300", of: window }
+                position: {my: "center", at: "top+300", of: window}
             });
         }
 
@@ -190,12 +237,12 @@
             $('#dialog_d').html(form_comment_del);
 
             $('#comment_del_id').val(id);
-            $('#edit_body_text_del').html($('#comment_text_'+id).html());
+            $('#edit_body_text_del').html($('#comment_text_' + id).html());
 
             $("#dialog_d").dialog({
                 width: 550,
                 modal: true,
-                position: { my: "center", at: "top+300", of: window }
+                position: {my: "center", at: "top+300", of: window}
             });
         }
 

@@ -25,6 +25,7 @@ urlpatterns = [
        name='edit_comment_hitchspot'),
     path('hitchspot/<hitchspot_id>/del_comment/', views.del_comment_hitchspot,
        name='del_comment_hitchspot'),
+    path('hitchspot/<spot_id>/add_feedback/', views.add_feedback_to_spot, name='add_feedback_to_spot'),
 
     path('forum/', views.forum, name='forum'),
 
