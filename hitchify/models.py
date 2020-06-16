@@ -72,7 +72,7 @@ class Country(models.Model):
                            'INNER JOIN auth_user ON auth_user.id = forum_post.user_id '
                            'WHERE forum_post.country_id = %s '
                            'GROUP BY forum_post.user_id, auth_user.username '
-                           'HAVING COUNT (forum_post.user_id)>=( '
+                           'HAVING COUNT (forum_post.user_id)=( '
                            'SELECT MAX(mycount) '
                            'FROM (SELECT user_id, COUNT(forum_post.user_id) AS mycount '
                            'FROM forum_post '
