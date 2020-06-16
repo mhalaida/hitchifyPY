@@ -240,7 +240,8 @@ class Hitchspot(models.Model):
     def comments(self):
         res_comments = Comment.objects.raw('SELECT * '
                                            'FROM comment '
-                                           'WHERE parent_comment_id IS NULL AND spot_id = %s', [self.id])
+                                           'WHERE parent_comment_id IS NULL AND spot_id = %s '
+                                           'ORDER BY id ASC', [self.id])
         res_comments_list = []
         for comment in res_comments:
             res_comments_list.append(comment)
