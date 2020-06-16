@@ -72,7 +72,7 @@
             {% if hitchspot.photos %}
                 <br>Photos:<br><br>
                 {% for photo in hitchspot.photos %}
-                    {% if user.id == hitchspot.user_id %}
+                    {% if user.id == hitchspot.user_id or user.is_staff %}
                     <a href="#" class="deletelink" style="margin-left: 10px" onclick="location.href='{% url 'del_photo_from_spot' hitchspot.id photo.0 %}'">Delete</a><br>
                     {% endif %}
                     <img src="{{ photo.4 }}" height="200" style="padding-top: 10px"> &nbsp;<br><br>

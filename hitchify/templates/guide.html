@@ -63,7 +63,7 @@
             {% if guide.photos %}
                 <br>Photos:<br><br>
                 {% for photo in guide.photos %}
-                    {% if user.id == guide.user_id %}
+                    {% if user.id == guide.user_id or user.is_staff %}
                         <a href="#" class="deletelink" style="margin-left: 10px"
                            onclick="location.href='{% url 'del_photo_from_guide' guide.id photo.0 %}'">Delete</a><br>
                     {% endif %}

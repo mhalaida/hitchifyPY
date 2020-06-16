@@ -43,7 +43,7 @@
             {% if post.photos %}
                 <br>Photos:<br><br>
                 {% for photo in post.photos %}
-                    {% if user.id == post.user_id %}
+                    {% if user.id == post.user_id or user.is_staff %}
                     <a href="#" class="deletelink" style="margin-left: 10px" onclick="location.href='{% url 'del_photo_from_post' post.id photo.0 %}'">Delete</a><br>
                     {% endif %}
                     <img src="{{ photo.4 }}" height="200" style="padding-top: 10px"> &nbsp;<br><br>
