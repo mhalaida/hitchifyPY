@@ -6,8 +6,9 @@
 					lng="{{ marker.longitude }}" 
 					av_h="{{ marker.avg_hitchability }}" 
 					av_wt="{{ marker.avg_waiting_time }}" 
-					desc="{{ marker.description }}" />
-					
+					desc="{{ marker.description }}"
+                    id="{{ marker.id }}"
+                />
 			{% endfor %}
 		</hs>
 	</markers>

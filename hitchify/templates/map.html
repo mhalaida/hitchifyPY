@@ -69,6 +69,7 @@
 
 				let lt = parseFloat(markerElem.getAttribute('lat'));
 				let ln = parseFloat(markerElem.getAttribute('lng'));
+				let id = parseFloat(markerElem.getAttribute('id'));
 
 				let point = new google.maps.LatLng( lt, ln);
 
@@ -82,7 +83,7 @@
 				});
 
 				let infoWindow = new google.maps.InfoWindow({
-					content: '<div class="text_on_map">Average hitchability (1-5): '+av_h +'<br>Average waiting time: '+av_wt+' min<br>Description: ' +desc+'</div>'
+					content: '<div class="text_on_map">Average hitchability (1-5): '+av_h +'<br>Average waiting time: '+av_wt+' min<br>Description: ' +desc+'<br><br><a style="color: grey; text-decoration: underline" href="/hitchspot/'+id+'">Open spot info</a></div>'
 				});
 
 				marker.addListener('click', function() {
