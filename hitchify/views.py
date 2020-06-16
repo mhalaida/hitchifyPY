@@ -233,6 +233,46 @@ def like_post(request, post_id):
     return redirect('post', post_id)
 
 
+def like_post_comment(request, post_id):
+
+    user = request.user
+    comment_id = request.GET['comment_id']
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT user_id "
+            "FROM user_liked_comment "
+            "WHERE user_id = %s AND comment_id = %s",
+            [user.id, comment_id])
+        liked_fp = cursor.fetchall()
+
+    if len(liked_fp) == 0:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO user_liked_comment (user_id, comment_id) "
+                "VALUES (%s, %s)",
+                [user.id, comment_id])
+
+        with connection.cursor() as cursor:
+            cursor.execute('UPDATE comment '
+                           'SET likes = likes + 1 '
+                           'WHERE id = %s', [comment_id])
+
+    else:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "DELETE FROM user_liked_comment "
+                "WHERE user_id = %s AND comment_id = %s",
+                [user.id, comment_id])
+
+        with connection.cursor() as cursor:
+            cursor.execute('UPDATE comment '
+                           'SET likes = likes - 1 '
+                           'WHERE id = %s', [comment_id])
+
+    return redirect('/post/'+post_id+'#comment'+comment_id)
+
+
 def add_post(request, country_id):
 
     country = Country.objects.raw('SELECT * '
@@ -340,8 +380,8 @@ def add_comment_to_post(request, post_id):
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "INSERT INTO comment (id, body_text, creation_date, parent_comment_id, post_id, user_id) "
-                    "VALUES (nextval('comment_id_seq'), %s, now(), %s, %s, %s)",
+                    "INSERT INTO comment (id, body_text, creation_date, parent_comment_id, post_id, user_id, likes) "
+                    "VALUES (nextval('comment_id_seq'), %s, now(), %s, %s, %s, 0)",
                     [body_text, parent_comment_id, post_id, user.id])
 
             return redirect('/post/'+post_id+'#new_comment')
@@ -413,8 +453,8 @@ def add_comment_to_hitchspot(request, hitchspot_id):
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "INSERT INTO comment (id, body_text, creation_date, parent_comment_id, spot_id, user_id) "
-                    "VALUES (nextval('comment_id_seq'), %s, now(), %s, %s, %s)",
+                    "INSERT INTO comment (id, body_text, creation_date, parent_comment_id, spot_id, user_id, likes) "
+                    "VALUES (nextval('comment_id_seq'), %s, now(), %s, %s, %s, 0)",
                     [body_text, parent_comment_id, hitchspot_id, user.id])
 
             return redirect('/hitchspot/' + hitchspot_id + '#new_comment')

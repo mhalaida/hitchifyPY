@@ -42,6 +42,7 @@ urlpatterns = [
     path('post/<post_id>/del_comment/', views.del_comment_post, name='del_comment_post'),
     path('post/<post_id>/add_photo/', views.add_photo_to_post, name='add_photo_to_post'),
     path('post/<post_id>/del_photo/<photo_id>', views.del_photo_from_post, name='del_photo_from_post'),
+    path('post/<post_id>/like_post_comment/', views.like_post_comment, name='like_post_comment'),
 
     path('guides/', views.guides, name='guides'),
     path('guide/<guide_id>', views.guide, name='guide'),
