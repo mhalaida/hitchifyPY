@@ -95,7 +95,7 @@
                 {% for comment in hitchspot.comments %}
                     <div class="comment">
                         <div id="comment_id_{{ comment.id }}" class="comment-timestamp">
-                            {{ comment.creation_date }} – {{ comment.user.username }} {% if comment.likes != None %}{{ comment.likes }}{% else %}0{% endif %} <a href="/hitchspot/{{ hitchspot.id }}/like_spot_comment/?comment_id={{ comment.id }}" class="button-style" style="margin-top: 10px">❤️</a> <a href="#new_comment"
+                            {{ comment.creation_date }} – {{ comment.user.username }} {{ comment.likes }} <a href="/hitchspot/{{ hitchspot.id }}/like_spot_comment/?comment_id={{ comment.id }}" class="button-style" style="margin-top: 10px">❤️</a> <a href="#new_comment"
                                                                                          onclick="$('#title_comment').html('Add reply to comment {{ comment.creation_date }} – {{ comment.user.username }}:'); $('#parent_comment').val({{ comment.id }});">Reply</a>
 
                             {% if perms.hitchify.change_comment or comment.user_id == user.id %}
@@ -115,8 +115,8 @@
 
                         {% for subcomment in comment.sub_comments %}
                             <div class="comment" style="padding-left: 50px">
-                                <div class="comment-timestamp">
-                                    {{ subcomment.creation_date }} – {{ subcomment.user.username }}
+                                <div id="comment_id_{{ subcomment.id }}" class="comment-timestamp">
+                                    {{ subcomment.creation_date }} – {{ subcomment.user.username }} {{ subcomment.likes }} <a href="/hitchspot/{{ hitchspot.id }}/like_spot_comment/?comment_id={{ subcomment.id }}" class="button-style" style="margin-top: 10px">❤️</a>
 
                                     {% if perms.hitchify.change_comment or subcomment.user_id == user.id %}
                                         <a href="#" class="changelink" style="margin-left: 10px"
