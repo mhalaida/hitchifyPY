@@ -57,9 +57,9 @@
 
         <br><br>
         👑 Loyalists: <br>
-        {% if country.loyal_users.length > 0 %}
+        {% if country.loyal_users %}
             {% for loyalist in country.loyal_users %}
-                {{ loyalist.0 }}
+                {{ loyalist.0 }}<br>
             {% endfor %}
         {% endif %}
 
