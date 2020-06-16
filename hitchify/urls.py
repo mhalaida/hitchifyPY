@@ -18,6 +18,7 @@ urlpatterns = [
     path('add_country/', views.add_country, name='add_country'),
 
     path('add_language/', views.add_language, name='add_language'),
+    path('connect_lang_country/', views.connect_lang_country, name='connect_lang_country'),
 
     path('hitchspots/', views.hitchspots, name='hitchspots'),
     path('hitchspot/<hitchspot_id>', views.hitchspot, name='hitchspot'),

@@ -85,7 +85,7 @@ class Country(models.Model):
     def languages(self):
         res_languages = Language.objects.raw('SELECT id, language_name '
                                              'FROM language '
-                                             'WHERE id IN (SELECT id '
+                                             'WHERE id IN (SELECT language_id '
                                              'FROM language_to_country '
                                              'WHERE country_id = %s)', [self.id])
         res_languages_list = []

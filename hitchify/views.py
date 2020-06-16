@@ -489,6 +489,21 @@ def add_language(request):
 
 
 @permission_required('hitchify.add_country')
+def connect_lang_country(request):
+
+    # form = forms.ConnectLangCountry(request.POST)
+    country_id = request.POST['country_select']
+    language_id = request.POST['language_select']
+
+    with connection.cursor() as cursor:
+        cursor.execute('INSERT INTO language_to_country (country_id, language_id) '
+                        'VALUES (%s, %s)',
+                        [country_id, language_id])
+
+    return redirect('administration')
+
+
+@permission_required('hitchify.add_country')
 def add_country(request):
 
     if request.method == 'POST':
@@ -829,8 +844,23 @@ def guide(request, guide_id):
 
 @permission_required('hitchify.add_country')
 def administration(request):
+
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT * '
+                       'FROM language')
+
+        languages = cursor.fetchall()
+
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT * '
+                       'FROM country')
+
+        countries = cursor.fetchall()
+
     context = {
         'choose': 'administration',
+        'languages': languages,
+        'countries': countries
     }
 
     return render(request, 'administration.html', context=context)

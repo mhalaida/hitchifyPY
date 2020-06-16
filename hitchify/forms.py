@@ -40,6 +40,12 @@ class AddLanguageForm(forms.ModelForm):
         fields = ['language_name']
 
 
+class ConnectLangCountry(forms.ModelForm):
+    class Meta:
+        model = models.LanguageToCountry
+        fields = ['country', 'language']
+
+
 class CustomSignUpForm(UserCreationForm):
 
     first_name = forms.CharField()

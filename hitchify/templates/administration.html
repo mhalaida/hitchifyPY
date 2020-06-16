@@ -36,6 +36,14 @@
                     <a href="#" class="addlink" onclick="add('language'); return false">Add</a>
                 </td>
             </tr>
+            <tr>
+                <td>
+                    Language to Country
+                </td>
+                <td>
+                    <a href="#" class="addlink" onclick="add('lang_country'); return false">Add</a>
+                </td>
+            </tr>
         </table>
 
     </div>
@@ -47,6 +55,9 @@
     </div>
 
     <div id="dialog_l" style="display: none">
+    </div>
+
+    <div id="dialog_lc" style="display: none">
     </div>
 
     <script>
@@ -79,6 +90,26 @@
             '{% csrf_token %}' +
             'Language name:<br>' +
             '<input name="language_name">' +
+            '<br>' +
+            '<button type="submit" class="button-style">Add</button>' +
+            '</form>';
+
+        let form_lang_country = '<form action="/connect_lang_country/" method="post">' +
+            '{% csrf_token %}' +
+            'Language:<br>' +
+            '<select id="language_select" name="language_select">' +
+            '{% for lang in languages %} b' +
+            '<option value="{{ lang.0 }}">{{ lang.1 }}</option>' +
+            '{% endfor %} ' +
+            '</select><br><br> ' +
+
+            'Country:<br>' +
+            '<select id="country_select" name="country_select" style="height: 30px;">' +
+            '{% for country in countries %} b' +
+            '<option value="{{ country.0 }}">{{ country.1 }}</option>' +
+            '{% endfor %} ' +
+            '</select><br> ' +
+
             '<br>' +
             '<button type="submit" class="button-style">Add</button>' +
             '</form>';
@@ -121,6 +152,17 @@
 
                     break;
 
+                case "lang_country":
+                    $('#dialog_lc').prop('title', 'Add new language to country connection');
+                    $('#dialog_lc').html(form_lang_country);
+
+                    $("#dialog_lc").dialog({
+                        width: 550,
+                        modal: true,
+                        position: {my: "center", at: "top+400", of: window}
+                    });
+
+                    break;
             }
         }
     </script>
