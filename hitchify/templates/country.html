@@ -287,11 +287,11 @@
         let form_country = '<form action="/country/{{ country.id }}/edit" method="post">' +
             '{% csrf_token %}' +
             'Country name:<br>' +
-            '<input name="country_name" id="edit_title">' +
+            '<input required name="country_name" id="edit_title">' +
             '<br>Short description:<br>' +
-            '<textarea name="short_description" style="width:400px; height:100px" id="edit_short_description"></textarea>' +
+            '<textarea required name="short_description" style="width:400px; height:100px" id="edit_short_description"></textarea>' +
             '<br>National currency:<br>' +
-            '<input id="edit_national_currency" name="national_currency">' +
+            '<input required id="edit_national_currency" name="national_currency">' +
             '<br><br>' +
             '<button type="submit" class="button-style">Edit</button>' +
             '</form>';

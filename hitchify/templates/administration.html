@@ -65,11 +65,11 @@
         let form_country = '<form action="/add_country/" method="post">' +
             '{% csrf_token %}' +
             'Country name:<br>' +
-            '<input name="country_name" onkeypress="return (event.charCode > 64 && event.charCode < 91) || (event.charCode > 96 && event.charCode < 123)">' +
+            '<input required name="country_name" onkeypress="return (event.charCode > 64 && event.charCode < 91) || (event.charCode > 96 && event.charCode < 123)">' +
             '<br>Short description:<br>' +
-            '<textarea name="short_description" style="width:400px; height:100px"></textarea>' +
+            '<textarea required name="short_description" style="width:400px; height:100px"></textarea>' +
             '<br>National currency:<br>' +
-            '<input name="national_currency" onkeypress="return (event.charCode > 64 && event.charCode < 91) || (event.charCode > 96 && event.charCode < 123)"  >' +
+            '<input required name="national_currency" onkeypress="return (event.charCode > 64 && event.charCode < 91) || (event.charCode > 96 && event.charCode < 123)"  >' +
             '<br><br>' +
             '<button type="submit" class="button-style">Add</button>' +
             '</form>';
@@ -77,11 +77,11 @@
         let form_guide = '<form action="/add_guide/" method="post">' +
             '{% csrf_token %}' +
             'Title:<br>' +
-            '<input name="title">' +
+            '<input required name="title">' +
             '<br>Short summary:<br>' +
-            '<textarea name="short_summary" style="width:400px; height:100px"></textarea>' +
+            '<textarea required name="short_summary" style="width:400px; height:100px"></textarea>' +
             '<br>Text:<br>' +
-            '<textarea name="body_text" style="width:400px; height:300px"></textarea>' +
+            '<textarea required name="body_text" style="width:400px; height:300px"></textarea>' +
             '<br>' +
             '<button type="submit" class="button-style">Add</button>' +
             '</form>';
@@ -89,7 +89,7 @@
         let form_language = '<form action="/add_language/" method="post">' +
             '{% csrf_token %}' +
             'Language name:<br>' +
-            '<input name="language_name">' +
+            '<input required name="language_name">' +
             '<br>' +
             '<button type="submit" class="button-style">Add</button>' +
             '</form>';

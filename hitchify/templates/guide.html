@@ -98,7 +98,7 @@
         let form_photo = '<form action="/guide/{{ guide.id }}/add_photo/" method="post">' +
             '{% csrf_token %}' +
             'URL:<br>' +
-            '<input id="photo_url" name="photo_url">' +
+            '<input required id="photo_url" name="photo_url">' +
             '<br><br> ' +
             '<button type="submit" class="button-style">Add photo</button>' +
             '</form>';
@@ -117,9 +117,9 @@
         let form_suggestion = '<form action="/guide/{{ guide.id }}/add_suggestion" method="post">' +
             '{% csrf_token %}' +
             'Title:<br>' +
-            '<input id="suggestion_title" name="suggestion_title">' +
+            '<input required id="suggestion_title" name="suggestion_title">' +
             '<br>Suggestion text:<br>' +
-            '<textarea id="suggestion_text" name="suggestion_text" style="width:400px; height:100px"></textarea>' +
+            '<textarea required id="suggestion_text" name="suggestion_text" style="width:400px; height:100px"></textarea>' +
             '<br>' +
             '<button type="submit" class="button-style">Submit</button>' +
             '</form>';
@@ -145,11 +145,11 @@
         let form_post = '<form action="/guide/{{ guide.id }}/edit" method="post">' +
             '{% csrf_token %}' +
             'Title:<br>' +
-            '<input id="edit_title" name="title">' +
+            '<input required id="edit_title" name="title">' +
             '<br>Short summary:<br>' +
-            '<textarea id="edit_short_summary" name="short_summary" style="width:400px; height:100px"></textarea>' +
+            '<textarea required id="edit_short_summary" name="short_summary" style="width:400px; height:100px"></textarea>' +
             '<br>Text:<br>' +
-            '<textarea id="edit_body_text" name="body_text" style="width:400px; height:300px"></textarea>' +
+            '<textarea required id="edit_body_text" name="body_text" style="width:400px; height:300px"></textarea>' +
             '<br>' +
             '<button type="submit" class="button-style">Edit</button>' +
             '</form>';

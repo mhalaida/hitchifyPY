@@ -114,7 +114,7 @@
                             {% csrf_token %}
                             <div id="title_comment">Add new comment:</div>
                             <input id="parent_comment" type="hidden" name="parent_comment" value="">
-                            <textarea name="body_text" rows="7" cols="60"></textarea>
+                            <textarea required name="body_text" rows="7" cols="60"></textarea>
                             <br>
                             <button type="submit" class="button-style">Add comment</button>
                         </form>
@@ -146,7 +146,7 @@
         let form_photo = '<form action="/post/{{ post.id }}/add_photo/" method="post">' +
             '{% csrf_token %}' +
             'URL:<br>' +
-            '<input id="photo_url" name="photo_url">' +
+            '<input required id="photo_url" name="photo_url">' +
             '<br><br> ' +
             '<button type="submit" class="button-style">Add photo</button>' +
             '</form>';
@@ -165,9 +165,9 @@
         let form_post = '<form action="/post/{{ post.id }}/edit" method="post">' +
             '{% csrf_token %}' +
             'Title:<br>' +
-            '<input id="edit_title" name="title">' +
+            '<input required id="edit_title" name="title">' +
             '<br>Text:<br>' +
-            '<textarea id="edit_body_text" name="body_text" style="width:400px; height:300px"></textarea>' +
+            '<textarea required id="edit_body_text" name="body_text" style="width:400px; height:300px"></textarea>' +
             '<br>' +
             '<button type="submit" class="button-style">Edit</button>' +
             '</form>';
@@ -190,7 +190,7 @@
             '{% csrf_token %}' +
             '<input id="comment_id" name="comment_id" type="hidden">' +
             '<br>Text:<br>' +
-            '<textarea id="edit_body_text" name="body_text" style="width:400px; height:300px"></textarea>' +
+            '<textarea required id="edit_body_text" name="body_text" style="width:400px; height:300px"></textarea>' +
             '<br>' +
             '<button type="submit" class="button-style">Edit</button>' +
             '</form>';
