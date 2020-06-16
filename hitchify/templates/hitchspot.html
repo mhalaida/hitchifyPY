@@ -186,7 +186,7 @@
             });
         }
 
-        let form_feedback = '<form action="/hitchspot/{{ hitchspot.id }}/add_feedback/" method="post">' +
+        let form_feedback = '<form action="/country/{{ hitchspot.country.id }}/hitchspot/{{ hitchspot.id }}/add_feedback/" method="post">' +
             '{% csrf_token %}' +
             'Hitchability (1-5): ' +
             '<select id="avg_hitchability" name="avg_hitchability" style="padding:0">' +

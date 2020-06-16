@@ -137,7 +137,7 @@ def del_photo_from_post(request, post_id, photo_id):
     return redirect('post', post_id)
 
 
-def add_feedback_to_spot(request, spot_id):
+def add_feedback_to_spot(request, spot_id, country_id):
 
     with connection.cursor() as cursor:
         cursor.execute('SELECT * '
@@ -161,6 +161,7 @@ def add_feedback_to_spot(request, spot_id):
                        'GROUP BY spot_id ', [spot_id])
 
         new_hitchability = cursor.fetchone()
+        new_hitchability_res = round(new_hitchability[0], 2)
 
     with connection.cursor() as cursor:
         cursor.execute('SELECT AVG(waiting_time) '
@@ -169,11 +170,26 @@ def add_feedback_to_spot(request, spot_id):
                        'GROUP BY spot_id ', [spot_id])
 
         new_waiting_time = cursor.fetchone()
+        new_waiting_time_res = round(new_waiting_time[0], 2)
 
     with connection.cursor() as cursor:
         cursor.execute('UPDATE hitchspot '
                        'SET avg_hitchability = %s, avg_waiting_time = %s '
-                       'WHERE id = %s', [new_hitchability, new_waiting_time, spot[0]])
+                       'WHERE id = %s', [new_hitchability_res, new_waiting_time_res, spot[0]])
+
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT AVG(avg_hitchability) AS spot_hitchability_sum '
+                       'FROM hitchspot '
+                       'GROUP BY country_id '
+                       'HAVING country_id = %s', [country_id])
+
+        bruh = cursor.fetchone()
+        bruh_res = round(bruh[0], 2)
+
+    with connection.cursor() as cursor:
+        cursor.execute('UPDATE country '
+                       'SET hitchrating = %s '
+                       'WHERE id = %s', [bruh_res, country_id])
 
     return redirect('hitchspot', spot_id)
 
