@@ -94,8 +94,8 @@
 
                 {% for comment in hitchspot.comments %}
                     <div class="comment">
-                        <div class="comment-timestamp">
-                            {{ comment.creation_date }} – {{ comment.user.username }} <a href="#new_comment"
+                        <div id="comment_id_{{ comment.id }}" class="comment-timestamp">
+                            {{ comment.creation_date }} – {{ comment.user.username }} {% if comment.likes != None %}{{ comment.likes }}{% else %}0{% endif %} <a href="/hitchspot/{{ hitchspot.id }}/like_spot_comment/?comment_id={{ comment.id }}" class="button-style" style="margin-top: 10px">❤️</a> <a href="#new_comment"
                                                                                          onclick="$('#title_comment').html('Add reply to comment {{ comment.creation_date }} – {{ comment.user.username }}:'); $('#parent_comment').val({{ comment.id }});">Reply</a>
 
                             {% if perms.hitchify.change_comment or comment.user_id == user.id %}
@@ -140,7 +140,7 @@
                         {% csrf_token %}
                         <div id="title_comment">Add new comment:</div>
                         <input id="parent_comment" type="hidden" name="parent_comment" value="">
-                        <textarea name="body_text" rows="7" cols="60"></textarea>
+                        <textarea required name="body_text" rows="7" cols="60"></textarea>
                         <br>
                         <button type="submit" class="button-style">Add comment</button>
                     </form>

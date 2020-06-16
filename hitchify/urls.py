@@ -31,6 +31,7 @@ urlpatterns = [
     path('hitchspot/<spot_id>/add_feedback/', views.add_feedback_to_spot, name='add_feedback_to_spot'),
     path('hitchspot/<spot_id>/add_photo/', views.add_photo_to_spot, name='add_photo_to_spot'),
     path('hitchspot/<spot_id>/del_photo/<photo_id>', views.del_photo_from_spot, name='del_photo_from_spot'),
+    path('hitchspot/<spot_id>/like_spot_comment/', views.like_spot_comment, name='like_spot_comment'),
 
     path('forum/', views.forum, name='forum'),
 

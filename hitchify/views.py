@@ -270,7 +270,47 @@ def like_post_comment(request, post_id):
                            'SET likes = likes - 1 '
                            'WHERE id = %s', [comment_id])
 
-    return redirect('/post/'+post_id+'#comment'+comment_id)
+    return redirect('/post/'+post_id+'#comment_id_'+comment_id)
+
+
+def like_spot_comment(request, spot_id):
+
+    user = request.user
+    comment_id = request.GET['comment_id']
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT user_id "
+            "FROM user_liked_comment "
+            "WHERE user_id = %s AND comment_id = %s",
+            [user.id, comment_id])
+        liked_fp = cursor.fetchall()
+
+    if len(liked_fp) == 0:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO user_liked_comment (user_id, comment_id) "
+                "VALUES (%s, %s)",
+                [user.id, comment_id])
+
+        with connection.cursor() as cursor:
+            cursor.execute('UPDATE comment '
+                           'SET likes = likes + 1 '
+                           'WHERE id = %s', [comment_id])
+
+    else:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "DELETE FROM user_liked_comment "
+                "WHERE user_id = %s AND comment_id = %s",
+                [user.id, comment_id])
+
+        with connection.cursor() as cursor:
+            cursor.execute('UPDATE comment '
+                           'SET likes = likes - 1 '
+                           'WHERE id = %s', [comment_id])
+
+    return redirect('/hitchspot/'+spot_id+'#comment_id_'+comment_id)
 
 
 def add_post(request, country_id):
